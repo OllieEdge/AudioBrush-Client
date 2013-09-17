@@ -1,0 +1,65 @@
+package com.edgington.constants
+{
+	
+	import flash.system.Capabilities;
+
+	public class DynamicConstants
+	{
+		//Populated at start-up
+		public static var SCREEN_WIDTH:int = 0;
+		public static var SCREEN_HEIGHT:int = 0;
+		
+		public static var CURRENT_LANGUAGE:String = "en_GB";
+		
+		public static var CURRENT_GAME_STATE:String;
+		
+		public static var BUTTON_SCALE:Number = 1;
+		public static var BUTTON_MINI_SCALE:Number = 1;
+		public static var BUTTON_SPACING:int = 17;
+		
+		public static var BUTTON_PURCHASE_SCALE:Number;
+		
+		public static var MESSAGE_SCALE:Number = 1;
+		
+		public static var SCREEN_MARGIN:int = 100;
+		
+		public static var DEVICE_TYPE:String;
+		public static var DEVICE_NAME:String;
+		
+		public static var IS_CONNECTED:Boolean = true;
+		
+		public static function isMobileOS():Boolean{
+			return (getOperatingSystem() == Constants.OS_IOS || getOperatingSystem() == Constants.OS_ANDRIOD);
+		}
+		
+		public static function isIOSPlatform():Boolean{
+			return (getOperatingSystem() == Constants.OS_IOS);
+		}
+		
+		private static function getOperatingSystem():String{
+			var str:String = String(Capabilities.os);
+			if(str == "iPhone OS 6.1 x86_64"){
+				return Constants.OS_MAC;
+			}
+			str = str.substr(0, 1);
+			switch(str.toLowerCase()){
+				case "win":
+					return Constants.OS_WINDOWS;
+					break;
+				case "m":
+					return Constants.OS_MAC;
+					break;
+				case "l":
+					return Constants.OS_ANDRIOD;
+					break;
+				case "and":
+					return Constants.OS_ANDRIOD;
+					break;
+				case "i":
+					return Constants.OS_IOS;
+					break;
+			}
+			return Constants.OS_MAC;
+		}
+	}
+}

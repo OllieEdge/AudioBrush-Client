@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Restricted Area"
+AuthUserFile /homepages/6/d476238786/htdocs/amfphp/.htpasswd
+require valid-user

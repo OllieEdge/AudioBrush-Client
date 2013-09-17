@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<game>	
+	<title>AudioBrush</title>
+	<founding-date>April 6, 2013</founding-date>
+	<website>http://audiobrush.com/</website>
+	<based-in>London, UK</based-in>
+	
+	<press-contact>ollie@audiobrush.com</press-contact>
+	<phone>+44 (0) 1322 400 119</phone>
+	<address>
+		<line>Marlborough Road</line>
+		<line>Dartford</line>
+		<line>DA1 3EL</line>
+		<line>UK</line>
+	</address>
+
+	<socials>
+		<social>
+			<name>Facebook</name>
+			<link>https://www.facebook.com/pages/Audiobrush-Community/453176274763500</link>
+		</social>
+		<social>
+			<name>Blog</name>
+			<link>http://audiobrush.blogspot.co.uk/</link>
+		</social>
+	</socials>
+
+	<description>	
+		AudioBrush is a rhythm detection game for iOS and Android. AudioBrush uses your own music to bring a fresh new feel to the music games genre with completely redefined controls and visuals. 
+	</description>
+		
+	<histories>
+		<history>
+			<header>The birth of AudioBrush</header>
+			<text>AudioBrush started as a concept on PC in 2009, whereby developer Ollie Edgington was trying out new ways of visually representing music on the screen. After a couple of days, a paint-brush like arcade game was born.
+				It was not until 2012 when the realisation of playing this game on a touch screen device may actually be something people will enjoy playing.</text>
+		</history>
+		<history>
+			<header>When development began</header>
+			<text>The development of AudioBrush got underway in April 2013, with the added addition of some great gameplay elements, including multiplayer tournaments, track leaderboards and various other bits such as the famous "Star Power".
+				The public first saw glimpses of AudioBrush when IndieGames did an interview with Ollie. That same day the public BETA was opened and a small group of the public got to play and provide some great feedback. AudioBrush currently has a Kickstarter project underway and will be completed later this year.</text>
+		</history>
+	</histories>
+		
+	<trailers>
+		<trailer>
+			<name>What, Why and How - Walkthrough Video</name>
+			<youtube>rUMHDxpqf9g</youtube>
+		</trailer>
+		<trailer>
+			<name>BETA Gameplay Video</name>
+			<youtube>3RE8wMtmMDo</youtube>
+		</trailer>
+	</trailers>
+	
+	<!-- <awards>
+		<award>
+			<description></description>
+			<info></info>
+		</award>
+	</awards> -->
+	
+	<quotes>
+		<quote>
+			<description>AudioBrush aims to cure iOS music games of their offbeat afflictions</description>
+			<name>John Polson</name>
+			<website>IndieGames.com</website>
+			<link>http://indiegames.com/2013/05/audiobrush_aims_to_cure_music_.html</link>
+		</quote>
+		<quote>
+			<description>I think AudioBrush is amazing, and it should be on everyones phones ever.</description>
+			<name>Callum Cieciala</name>
+		</quote>
+	</quotes>
+	
+	<additionals>
+		<additional>
+			<title>Kickstarter Project Page</title>
+			<description>Limited edition features avaliable for Kickstarter Pledgers!</description>
+			<link>http://www.kickstarter.com/projects/1170517564/audiobrush-music-adapting-arcade-game-using-your-o</link>
+		</additional>
+		<additional>
+			<title>YouTube Milestone Videos</title>
+			<description>The major stages of what AudioBrush has been through since the idea began.</description>
+			<link>http://www.youtube.com/playlist?list=PL5BADA93CB15EEAA1</link>
+		</additional>
+		<additional>
+			<title>YouTube Development Videos</title>
+			<description>Insignificant for the general public, but possibly interesting for developers.</description>
+			<link>http://www.youtube.com/playlist?list=PL0STouBUwzdZ1jmjY7k2HQMtfvp-vTs0u</link>
+		</additional>
+		<additional>
+			<title>IndieDB.com AudioBrush</title>
+			<description>AudioBrush's page on IndieDB with news throughout development and images</description>
+			<link>http://www.indiedb.com/games/audiobrush</link>
+		</additional>
+	</additionals>
+	
+	<credits>
+		<credit>
+			<person>Ollie Edgington</person>
+			<role>Creator &amp; Developer</role>
+		</credit>
+		<credit>
+			<person>Jon Parsons</person>
+			<website>http://ctrlxctrlv.co.uk</website>
+			<role>Server Developer, Freelancer</role>
+		</credit>
+		<credit>
+			<person>Vernon Wroe</person>
+			<website>vernonwroe.com</website>
+			<role>Community Manager, Freelancer</role>
+		</credit>
+	</credits>
+	
+	<contacts>
+		<contact>
+			<name>Inquiries</name>
+			<mail>ollie@audiobrush.com</mail>
+		</contact>
+		<contact>
+			<name>Facebook</name>
+			<link>https://facebook.com/pages/Audiobrush-Community/453176274763500</link>
+		</contact>
+		<contact>
+			<name>Web</name>
+			<link>http://audiobrush.com</link>
+		</contact>
+	</contacts>
+</game>

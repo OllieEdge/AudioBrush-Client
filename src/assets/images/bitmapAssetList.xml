@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bitmaps>
+
+	<bitmap>
+		<url>assets/images/ink/background.png</url>
+		<assetID>normal_gameBackground</assetID>
+	</bitmap>
+	
+	<bitmap>
+		<url>assets/images/ink/originalBackground.png</url>
+		<assetID>normal_gameStarBackground</assetID>
+	</bitmap>
+	
+	<bitmap>
+		<url>assets/images/ink/swirlyNormal.png</url>
+		<assetID>swirly_gameBackground</assetID>
+	</bitmap>
+	
+	<bitmap>
+		<url>assets/images/ink/swirlyStar.png</url>
+		<assetID>swirly_gameStarBackground</assetID>
+	</bitmap>
+	
+	<bitmap>
+		<url>assets/images/ink/fireNormal.png</url>
+		<assetID>fire_gameBackground</assetID>
+	</bitmap>
+	
+	<bitmap>
+		<url>assets/images/ink/fireStar.png</url>
+		<assetID>fire_gameStarBackground</assetID>
+	</bitmap>
+	
+</bitmaps>

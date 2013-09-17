@@ -1,0 +1,10 @@
+<?php
+
+class TournamentManager{
+	function getCurrentTournament(){
+		include '../connectToDatabase.php';
+
+		$sqlObject = mysql_query("SELECT * FROM ab_tournaments WHERE NOW() BETWEEN activeDate AND endDate;");
+	}
+}
+?>
