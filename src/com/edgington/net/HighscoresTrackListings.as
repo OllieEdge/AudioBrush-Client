@@ -2,14 +2,16 @@ package com.edgington.net
 {
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.events.HighscoreEvent;
+	import com.edgington.net.helpers.NetResponceHandler;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.valueobjects.net.ServerTrackVO;
 	
 	import flash.net.NetConnection;
 	import flash.net.Responder;
 	
 	import org.osflash.signals.Signal;
 	
-	public class HighscoresTrackListings
+	public class HighscoresTrackListings extends BaseData
 	{
 		
 		private var netConnection:NetConnection;
@@ -29,25 +31,22 @@ package com.edgington.net
 		
 		private var friendSearch:Boolean = false;
 		
+		private var latestTrackListing:Vector.<ServerTrackVO>;
+		
 		public function HighscoresTrackListings()
 		{
-			netConnection = NetManager.getInstance().netConnection;
-			NetManager.getInstance().serverConnectionErrorSignal.add(connectionErrorHandler);
-			
-			TrackListingPopular = new Responder(onTrackListingPopularSuccess, onTrackListingPopularFailed);
-			TrackListingLatest = new Responder(onTrackListingLatestSuccess, onTrackListingLatestFailed);
-			TrackListingFriends = new Responder(onTrackListingFriendsSuccess, onTrackListingFriendsFailed);
-			TrackListingSearch = new Responder(onTrackListingSearchSuccess, onTrackListingSearchFailed);
+			super("track", "tracks");
+			LOG.create(this);
 			
 			responceSignal = new Signal();
 		}
 		
 		public function getLatestTracks(amountToList:int):void{
-			netConnection.call(CALL_GET_LATEST_TRACKS, TrackListingLatest, amountToList);
+			GET(new NetResponceHandler(onTrackListingLatestSuccess, onTrackListingLatestFailed), true);
 		}
 		
 		public function getPopularTracks(amountToList:int):void{
-			netConnection.call(CALL_GET_POPULAR_TRACKS, TrackListingPopular, amountToList);
+			GET(new NetResponceHandler(onTrackListingPopularSuccess, onTrackListingPopularSuccess), true);
 		}
 		
 		public function getFriendsTracks(searchCriteria:String = ""):void{
@@ -84,8 +83,19 @@ package com.edgington.net
 			LOG.error("UserData: " + e.description);
 		}
 		
-		private function onTrackListingLatestSuccess(e:Array):void{
-			responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_LATEST, e);
+		private function onTrackListingLatestSuccess(e:Object = null):void{
+			if(e && e.length > 0){
+				latestTrackListing = new Vector.<ServerTrackVO>;
+				for(var i:int = 0; i < e.length; i++){
+					if(ServerTrackVO.checkObject(e[i])){
+						latestTrackListing.push(new ServerTrackVO(e[i]));
+					}
+				}
+			}
+			else{
+				LOG.error("There were no tracks to return form the server");
+			}
+			responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_LATEST, latestTrackListing);
 		}
 		
 		private function onTrackListingLatestFailed(e:Object):void{
@@ -107,7 +117,18 @@ package com.edgington.net
 		}
 		
 		private function onTrackListingPopularSuccess(e:Array):void{
-			responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_POPULAR, e);
+			if(e && e.length > 0){
+				latestTrackListing = new Vector.<ServerTrackVO>;
+				for(var i:int = 0; i < e.length; i++){
+					if(ServerTrackVO.checkObject(e[i])){
+						latestTrackListing.push(new ServerTrackVO(e[i]));
+					}
+				}
+			}
+			else{
+				LOG.error("There were no tracks to return form the server");
+			}
+			responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_POPULAR, latestTrackListing);
 		}
 		
 		private function onTrackListingPopularFailed(e:Object):void{

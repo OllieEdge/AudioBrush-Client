@@ -102,33 +102,21 @@ package com.edgington.net
 				if(FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 					LOG.info("User doesn't exist - creating new user now");
 					
-					var serverUserVO:ServerUserVO = new ServerUserVO();
-					var str:String;
-					var urlVariables:URLVariables
+					var urlVariables:Object = new Object();
 					
 					if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 						
-						serverUserVO.fb_id = FacebookConstants.DEBUG_USER_ID;
-						serverUserVO.username = FacebookConstants.DEBUG_USER_NAME;
+						urlVariables.fb_id = FacebookConstants.DEBUG_USER_ID;
+						urlVariables.username = FacebookConstants.DEBUG_USER_NAME;
 						
-						str = JSON.stringify(serverUserVO);
-						
-						urlVariables = new URLVariables();
-						urlVariables.data = JSON.parse(str);
-						
-						PUT(new NetResponceHandler(onNewUserCreated, onNewUserCreatedFailed), FacebookConstants.DEBUG_USER_ID, null);
+						PUT(new NetResponceHandler(onNewUserCreated, onNewUserCreatedFailed), FacebookConstants.DEBUG_USER_ID, urlVariables);
 					}
 					else{
 						
-						serverUserVO.fb_id = FacebookManager.getInstance().currentLoggedInUser.profileID;
-						serverUserVO.username = FacebookManager.getInstance().currentLoggedInUser.firstName;
+						urlVariables.fb_id = FacebookManager.getInstance().currentLoggedInUser.profileID;
+						urlVariables.username = FacebookManager.getInstance().currentLoggedInUser.firstName;
 						
-						str = JSON.stringify(serverUserVO);
-						
-						urlVariables = new URLVariables();
-						urlVariables.data = JSON.parse(str);
-						
-						PUT(new NetResponceHandler(onNewUserCreated, onNewUserCreatedFailed), FacebookManager.getInstance().currentLoggedInUser.profileID, null);
+						PUT(new NetResponceHandler(onNewUserCreated, onNewUserCreatedFailed), FacebookManager.getInstance().currentLoggedInUser.profileID, urlVariables);
 					}
 				}
 			}

@@ -2,8 +2,6 @@ package com.edgington.net
 {
 	import com.edgington.net.helpers.NetResponceHandler;
 	
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 
@@ -13,16 +11,11 @@ package com.edgington.net
 		private var objectSingular:String;
 		private var objectPlural:String;
 		
-		private var URLRequests:Vector.<URLRequest>;
-		private var URLLoaders:Vector.<URLLoader>;
-		private var URLVariablesArr:Vector.<URLVariables>;
-		
 		public function BaseData(objectSingular:String, objectPlural:String)
 		{
 			this.objectSingular = objectSingular;
 			this.objectPlural = objectPlural;
 			
-			URLRequests = new Vector.<URLRequest>;
 		}
 		
 		/**
@@ -72,9 +65,14 @@ package com.edgington.net
 			var VARIBALES:URLVariables = new URLVariables();
 			
 			if(urlVariables != null){
-				//Converts a standard object into a URLVariables Object
-				for(var key:String in urlVariables){
-					VARIBALES[key] = urlVariables[key];
+				if(urlVariables is URLVariables){
+					VARIBALES = urlVariables as URLVariables;
+				}
+				else{
+					//Converts a standard object into a URLVariables Object
+					for(var key:String in urlVariables){
+						VARIBALES[key] = urlVariables[key];
+					}
 				}
 			}
 			else{

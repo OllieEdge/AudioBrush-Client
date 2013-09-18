@@ -7,6 +7,10 @@ package com.edgington.types
 		
 		public static const PRODUCT:String = "ServerObjectTypes::PRODUCT";
 		
+		public static const SCORE:String = "ServerObjectTypes::SCORE";
+		
+		public static const TRACK:String = "ServerObjectTypes::TRACK";
+		
 		
 		public static const UNKNOWN:String = "ServerObjectTypes::UNKNOWN";
 	}

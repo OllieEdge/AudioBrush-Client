@@ -10,7 +10,7 @@ package com.edgington.net
 	
 	import org.osflash.signals.Signal;
 
-	public class HighscoresGetData
+	public class HighscoresGetData extends BaseData
 	{
 		
 		private var netConnection:NetConnection;
@@ -25,6 +25,9 @@ package com.edgington.net
 		
 		public function HighscoresGetData()
 		{
+			super("scores", "scores");
+			LOG.create(this);
+			
 			netConnection = NetManager.getInstance().netConnection;
 			NetManager.getInstance().serverConnectionErrorSignal.add(connectionErrorHandler);
 			

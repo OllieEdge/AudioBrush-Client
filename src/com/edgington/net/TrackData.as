@@ -1,9 +1,11 @@
 package com.edgington.net
 {
 	
+	import com.edgington.util.debug.LOG;
 	import com.edgington.view.huds.elements.element_artwork;
 	
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	
@@ -38,12 +40,28 @@ package com.edgington.net
 			
 			request.url = urlCall;
 			loader.addEventListener(Event.COMPLETE, onLoaderComplete);
+			loader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			loader.load(request);
+		}
+		
+		private function onIOError(e:IOErrorEvent):void{
+			LOG.warning("There was an IO Error when attempting to access the iTunes Store.");
+			loader.removeEventListener(Event.COMPLETE, onLoaderComplete);
+			loader.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+			resultsSignal.dispatch();
 		}
 		
 		private function onLoaderComplete(e:Event):void{
 			loader.removeEventListener(Event.COMPLETE, onLoaderComplete);
-			trackData = JSON.parse(e.target.data);
+			loader.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+			try{
+				trackData = JSON.parse(e.target.data);
+			}
+			catch(e:Error){
+				LOG.error("The iTunes store did not return valid JSON for the track details");
+				resultsSignal.dispatch();
+				return;
+			}
 			if(trackData.resultCount > 0){
 				for(var i:int = 0; i < trackData.resultCount; i++){
 					if(trackData.results[i].kind == "song"){

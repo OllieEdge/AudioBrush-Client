@@ -9,6 +9,7 @@ package com.edgington.view.huds
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
+	import com.edgington.valueobjects.net.ServerTrackVO;
 	import com.edgington.view.huds.base.AbstractHud;
 	import com.edgington.view.huds.base.IAbstractHud;
 	import com.edgington.view.huds.elements.element_mainButton;
@@ -49,13 +50,13 @@ package com.edgington.view.huds
 		
 		private var readyToRemoveSignal:Signal;
 		
-		private var latestTrackListing:Array;
-		private var popularTrackListing:Array;
-		private var	freindTrackListing:Array;
+		private var latestTrackListing:Vector.<ServerTrackVO>;
+		private var popularTrackListing:Vector.<ServerTrackVO>;
+		private var	freindTrackListing:Vector.<ServerTrackVO>;
 		
-		private var searchLatestTrackListing:Array;
-		private var searchPopularTrackListing:Array;
-		private var	searchFreindTrackListing:Array;
+		private var searchLatestTrackListing:Vector.<ServerTrackVO>;
+		private var searchPopularTrackListing:Vector.<ServerTrackVO>;
+		private var	searchFreindTrackListing:Vector.<ServerTrackVO>;
 		
 		private var searchTrackListing:Array;
 		
@@ -171,7 +172,7 @@ package com.edgington.view.huds
 			handleTabChanged(TabContainerEvent.TAB_CHANGED, tabLabels[currentTab]);
 		}
 		
-		private function tracksListed(eventType:String, tracks:Array):void{
+		private function tracksListed(eventType:String, tracks:Vector.<ServerTrackVO>):void{
 			switch(eventType){
 				case HighscoreEvent.TRACK_LISTING_POPULAR:
 						popularTrackListing = tracks.concat();
@@ -263,7 +264,7 @@ package com.edgington.view.huds
 		}
 		
 		private function addTrackListing():void{
-			var currentArray:Array;
+			var currentArray:Vector.<ServerTrackVO>;;
 			if(SearchProxy.getInstance().isSearch){
 				switch(currentTab){
 					case 0:

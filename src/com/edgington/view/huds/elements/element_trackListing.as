@@ -8,6 +8,7 @@ package com.edgington.view.huds.elements
 	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.MouseSignalsVO;
+	import com.edgington.valueobjects.net.ServerTrackVO;
 	import com.edgington.view.huds.vo.TrackListingVO;
 	
 	import flash.display.Sprite;
@@ -20,7 +21,7 @@ package com.edgington.view.huds.elements
 
 	public class element_trackListing extends Sprite
 	{
-		private var items:Array;
+		private var items:Vector.<ServerTrackVO>;;
 		
 		private var _width:int = 0;
 		private var _height:int = 0;
@@ -83,7 +84,7 @@ package com.edgington.view.huds.elements
 			this.addChild(loading);
 		}
 		
-		public function addTrackListing(items:Array):void{
+		public function addTrackListing(items:Vector.<ServerTrackVO>):void{
 			mouseEvents.DOWN_Signal.add(trackScrolling);
 			this.items = items.concat();
 			if(trackListings != null){
@@ -122,9 +123,9 @@ package com.edgington.view.huds.elements
 					
 					trackListingVO.clip.addChild(trackListingVO.image);
 					
-					trackListingVO.trackListingData = new TrackData(new <String>[items[i].track, items[i].artist], trackListingVO.image);
+					trackListingVO.trackListingData = new TrackData(new <String>[items[i].trackname, items[i].artist], trackListingVO.image);
 					
-					trackListingVO.trackNameField = TextFieldManager.createTextField(items[i].track, FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 26, false, TextFieldAutoSize.LEFT);
+					trackListingVO.trackNameField = TextFieldManager.createTextField(items[i].trackname, FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 26, false, TextFieldAutoSize.LEFT);
 					trackListingVO.name = TextFieldManager.createTextField(gettext("highscores_track_item_listing_artist", {artist:items[i].artist}), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 18, false, TextFieldAutoSize.LEFT);
 					var plays:String 
 					if(items[i].plays == 1){
@@ -149,7 +150,7 @@ package com.edgington.view.huds.elements
 					trackListingVO.clip.addChild(trackListingVO.name);
 					trackListingVO.clip.addChild(trackListingVO.plays);
 					
-					trackListingVO.trackName = items[i].track;
+					trackListingVO.trackName = items[i].trackname;
 					trackListingVO.artist = items[i].artist;
 					
 					trackListingVO.clip.cacheAsBitmap = true;

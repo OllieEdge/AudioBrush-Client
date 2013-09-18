@@ -3,6 +3,8 @@ package com.edgington.net.helpers
 	import com.edgington.types.ServerObjectTypes;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.valueobjects.net.ServerProductsVO;
+	import com.edgington.valueobjects.net.ServerScoreVO;
+	import com.edgington.valueobjects.net.ServerTrackVO;
 	import com.edgington.valueobjects.net.ServerUserVO;
 
 	public class NetResponceTypeIdentifier
@@ -25,6 +27,16 @@ package com.edgington.net.helpers
 						return ServerObjectTypes.PRODUCT;
 					}
 					
+					//-------------------------------------------------------------------   SCORE
+					if(ServerScoreVO.checkObject(responceObj[0])){
+						return ServerObjectTypes.SCORE;
+					}
+					
+					//-------------------------------------------------------------------   TRACK
+					if(ServerTrackVO.checkObject(responceObj[0])){
+						return ServerObjectTypes.TRACK;
+					}
+					
 				}
 				else{
 					LOG.warning("Server response contains no data");
@@ -38,6 +50,14 @@ package com.edgington.net.helpers
 				//-------------------------------------------------------------------   PRODUCT
 				else if(ServerProductsVO.checkObject(responceObj)){
 					return ServerObjectTypes.PRODUCT;
+				}
+				//-------------------------------------------------------------------   SCORE
+				else if(ServerScoreVO.checkObject(responceObj)){
+					return ServerObjectTypes.SCORE;
+				}
+				//-------------------------------------------------------------------   TRACK
+				else if(ServerTrackVO.checkObject(responceObj)){
+					return ServerObjectTypes.TRACK;
 				}
 			}
 			
