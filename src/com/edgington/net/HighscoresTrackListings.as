@@ -66,17 +66,35 @@ package com.edgington.net
 				}
 			}
 			else{
-				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_NO_FACEBOOK, []);
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_NO_FACEBOOK, null);
 			}
 		}
 		
 		public function getSearchedTracks(searchCriteria:String):void{
-			netConnection.call(CALL_GET_SEARCHED_TRACKS, TrackListingSearch, [searchCriteria]);
+			GET(new NetResponceHandler(onTrackListingSearchSuccess, onTrackListingSearchFailed), true, "", "search/" + searchCriteria);
 		}
 		
-		private function onTrackListingSearchSuccess(e:Array):void{
-			responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_LATEST_SEARCH, e);
-			responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_POPULAR_SEARCH, e);
+		private function onTrackListingSearchSuccess(e:Object):void{
+			if(e && e.length > 0){
+				latestTrackListing = new Vector.<ServerTrackVO>;
+				for(var i:int = 0; i < e.length; i++){
+					if(ServerTrackVO.checkObject(e[i])){
+						latestTrackListing.push(new ServerTrackVO(e[i]));
+					}
+				}
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_LATEST_SEARCH, latestTrackListing);
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_POPULAR_SEARCH, latestTrackListing);
+			}
+			else{
+				if(e.length == 0){
+					LOG.warning("There were no tracks to return form the server");
+				}
+				else{
+					LOG.error("Something went wrong with the response from the server.");
+				}
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_LATEST_SEARCH, new Vector.<ServerTrackVO>);
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_POPULAR_SEARCH, new Vector.<ServerTrackVO>);
+			}
 		}
 		
 		private function onTrackListingSearchFailed(e:Object):void{
@@ -91,11 +109,17 @@ package com.edgington.net
 						latestTrackListing.push(new ServerTrackVO(e[i]));
 					}
 				}
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_LATEST, latestTrackListing);
 			}
 			else{
-				LOG.error("There were no tracks to return form the server");
+				if(e.length == 0){
+					LOG.warning("There were no tracks to return form the server");
+				}
+				else{
+					LOG.error("Something went wrong with the response from the server.");
+				}
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_LATEST, new Vector.<ServerTrackVO>);
 			}
-			responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_LATEST, latestTrackListing);
 		}
 		
 		private function onTrackListingLatestFailed(e:Object):void{
@@ -124,11 +148,17 @@ package com.edgington.net
 						latestTrackListing.push(new ServerTrackVO(e[i]));
 					}
 				}
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_POPULAR, latestTrackListing);
 			}
 			else{
-				LOG.error("There were no tracks to return form the server");
+				if(e.length == 0){
+					LOG.warning("There were no tracks to return form the server");
+				}
+				else{
+					LOG.error("Something went wrong with the response from the server.");
+				}
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_POPULAR, new Vector.<ServerTrackVO>);
 			}
-			responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_POPULAR, latestTrackListing);
 		}
 		
 		private function onTrackListingPopularFailed(e:Object):void{

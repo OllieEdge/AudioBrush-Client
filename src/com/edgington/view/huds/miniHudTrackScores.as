@@ -11,6 +11,7 @@ package com.edgington.view.huds
 	import com.edgington.util.TextFieldManager;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
+	import com.edgington.valueobjects.net.ServerScoreVO;
 	import com.edgington.view.huds.base.AbstractHud;
 	import com.edgington.view.huds.base.IAbstractHud;
 	import com.edgington.view.huds.elements.element_mainButton;
@@ -47,8 +48,8 @@ package com.edgington.view.huds
 		private var trackDetails:NativeMediaVO;
 		
 		private var highscoresData:HighscoresGetData;
-		private var highscores:Array;
-		private var highscoresFriends:Array;
+		private var highscores:Vector.<ServerScoreVO>;
+		private var highscoresFriends:Vector.<ServerScoreVO>;
 		
 		private var currentTab:int = 0;
 		
@@ -175,16 +176,16 @@ package com.edgington.view.huds
 						clip.addChild(listing);
 					}
 					
-					var profilePicture:element_profile_picture = new element_profile_picture(null, highscores[i].facebookID);
+					var profilePicture:element_profile_picture = new element_profile_picture(null, highscores[i].userId.fb_id);
 					profilePicture.width = 44;
 					profilePicture.height = 44;
 					profilePicture.x = 3;
 					profilePicture.y = 3;
 					clip.addChild(profilePicture);
 					
-					var txtFieldRank:TextField = TextFieldManager.createTextField(highscores[i].rank, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
-					var txtFieldName:TextField = TextFieldManager.createTextField(highscores[i].name, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
-					var txtFieldScore:TextField = TextFieldManager.createTextField(highscores[i].score, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.RIGHT);
+					var txtFieldRank:TextField = TextFieldManager.createTextField(String(highscores[i].rank), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
+					var txtFieldName:TextField = TextFieldManager.createTextField(highscores[i].userId.username, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
+					var txtFieldScore:TextField = TextFieldManager.createTextField(String(highscores[i].score), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.RIGHT);
 					
 					txtFieldRank.height = 50;
 					txtFieldRank.x = DynamicConstants.BUTTON_SPACING;
@@ -243,9 +244,9 @@ package com.edgington.view.huds
 					profilePicture.y = 3;
 					clip.addChild(profilePicture);
 					
-					var txtFieldRank:TextField = TextFieldManager.createTextField(highscoresFriends[i].rank, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
-					var txtFieldName:TextField = TextFieldManager.createTextField(highscoresFriends[i].name, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
-					var txtFieldScore:TextField = TextFieldManager.createTextField(highscoresFriends[i].score, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.RIGHT);
+					var txtFieldRank:TextField = TextFieldManager.createTextField(String(highscoresFriends[i].rank), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
+					var txtFieldName:TextField = TextFieldManager.createTextField(highscoresFriends[i].userId.username, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
+					var txtFieldScore:TextField = TextFieldManager.createTextField(String(highscoresFriends[i].score), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.RIGHT);
 					
 					txtFieldRank.height = 50;
 					txtFieldRank.x = DynamicConstants.BUTTON_SPACING;
@@ -302,8 +303,8 @@ package com.edgington.view.huds
 			super.destroy();
 			readyToRemoveSignal.dispatch();
 		}
-		
-		private function highscoresHandler(eventType:String, highscoresList:Array = null):void{
+
+		private function highscoresHandler(eventType:String, highscoresList:Vector.<ServerScoreVO> = null):void{
 			switch(eventType){
 				case HighscoreEvent.HIGHSCORES_FAILED:
 					displayOffline();

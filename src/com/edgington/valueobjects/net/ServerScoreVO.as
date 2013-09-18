@@ -6,16 +6,45 @@ package com.edgington.valueobjects.net
 	{
 		private var created:String;
 		
-		public var userID:ServerUserVO;
-		public var trackID:ServerTrackVO;
+		public var userId:ServerUserVO;
+		public var trackId:ServerTrackVO;
 		public var score:Number;
 		public var trackkey:String;
+		
+		public var userIdSTRING:String;
+		public var trackIdSTRING:String;
+		
+		//This value is populated after obtaining from the server
+		public var rank:int;
 		
 		public function ServerScoreVO(rawObject:Object = null)
 		{
 			for(var key:String in rawObject){
 				if(key.charAt(0) != "_"){
-					this[key] = rawObject[key];
+					if(rawObject[key] is Array){
+						if(ServerUserVO.checkObject(rawObject[key][0])){
+							userId = new ServerUserVO(rawObject[key][0]);
+						}	
+						else if(ServerTrackVO.checkObject(rawObject[key][0])){
+							trackId = new ServerTrackVO(rawObject[key][0]);
+						}
+					}
+					else{
+						try{
+							this[key] = rawObject[key];
+						}
+						catch(e:Error){
+							if(key == "userId"){
+								userIdSTRING = rawObject[key];
+							}
+							else if(key == "trackId"){
+								trackIdSTRING = rawObject[key];
+							}
+							else{
+								LOG.fatal("There was a type failure when attempting to add a key to the scores object");
+							}
+						}
+					}
 				}
 			}
 		}

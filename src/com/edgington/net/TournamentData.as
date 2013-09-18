@@ -42,9 +42,6 @@ package com.edgington.net
 			
 			responceSignal = new Signal();
 			
-			netConnection = NetManager.getInstance().netConnection;
-			NetManager.getInstance().serverConnectionErrorSignal.add(connectionErrorHandler);
-			
 			tournamentDataReposnder = new Responder(onTournamentReceived, onTournamentFailed);
 			tournamentLeaderResponder= new Responder(onLeaderReceived, onLeaderFailed);
 			

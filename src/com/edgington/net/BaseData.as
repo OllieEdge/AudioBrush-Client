@@ -23,10 +23,10 @@ package com.edgington.net
 		 * 
 		 * If there is a plural for this resource (eg. user > users) in the Server API parsing true will default to get all objects.
 		 */
-		public function GET(responseHandler:NetResponceHandler, getAll:Boolean = false, singularExtension:String = ""):void{
+		public function GET(responseHandler:NetResponceHandler, getAll:Boolean = false, singularExtension:String = "", pluralExtension:String = ""):void{
 			var URL:String = NetManager.getURL();
 			if(getAll){
-				URL += "/" + objectPlural;
+				URL += "/" + objectPlural + "/" + pluralExtension;
 			}
 			else{
 				URL += "/" + objectSingular + "/" + singularExtension;
