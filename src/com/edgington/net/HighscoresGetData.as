@@ -2,6 +2,7 @@ package com.edgington.net
 {
 	import com.edgington.NativeMediaManager.NativeMediaVO;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.FacebookConstants;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.events.HighscoreEvent;
 	import com.edgington.net.helpers.NetResponceHandler;
@@ -50,28 +51,62 @@ package com.edgington.net
 		}
 		
 		public function getFriendsScores(amountOfResults:int, trackDetails:NativeMediaVO, difficulty:int):void{
-//			var friendIDs:Array = new Array();
-//			friendIDs.push(FacebookManager.getInstance().currentLoggedInUser.profileID);
-//			var regExp:RegExp=new RegExp(/[^a-zA-Z 0-9]+|\s/g);
-//			var track:String = trackDetails.trackTitle.replace(regExp, "").toLowerCase();
-//			var artist:String = trackDetails.artistName.replace(regExp, "").toLowerCase();
-//			if(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall != null && FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.length > 0){
-//				for(var i:int = 0; i < FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.length; i++){
-//					friendIDs.push(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].profileID);
-//				}
-//				netConnection.call(CALL_GET_FRIEND_SCORES, FriendScoresResponder, track, artist, difficulty, amountOfResults, friendIDs);
-//			}
-//			else{
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+				var friendIDs:Array = new Array();
+				
+				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+					friendIDs = FacebookConstants.DEBUG_USER_FRIENDS.concat();
+				}
+				else{
+					friendIDs.push(FacebookManager.getInstance().currentLoggedInUser.profileID);
+					for(var i:int = 0; i < FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.length; i++){
+						friendIDs.push(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].profileID);
+					}
+				}
+				
+				var regExp:RegExp=new RegExp(/[^a-zA-Z 0-9]+|\s/g);
+				var track:String = trackDetails.trackTitle.replace(regExp, "").toLowerCase();
+				var artist:String = trackDetails.artistName.replace(regExp, "").toLowerCase();
+				
+				var obj:Object = new Object();
+				obj.friends = friendIDs;
+				
+				POST(new NetResponceHandler(onFriendScoresRecevied, onFriendScoresFailed), "related/"+artist+"_"+track, obj);
+			}
+			else{
 				responceSignal.dispatch(HighscoreEvent.NO_FRIENDS_WITH_HIGHSCORES);
-//			}
+			}
 		}
 		
-		private function onFriendScoresRecevied(e:Array):void{
-			responceSignal.dispatch(HighscoreEvent.FRIEND_HIGHSCORES_RECEIVED, e as Array);
+		private function onFriendScoresRecevied(e:Object = null):void{
+			if(e && e.length > 0){
+				var scores:Vector.<ServerScoreVO> = new Vector.<ServerScoreVO>;
+				for(var i:int = 0; i < e.length; i++){
+					if(ServerScoreVO.checkObject(e[i])){
+						var scr:ServerScoreVO = new ServerScoreVO(e[i]);
+						scr.rank = i+1;
+						scores.push(scr);
+					}
+				}
+				
+				responceSignal.dispatch(HighscoreEvent.FRIEND_HIGHSCORES_RECEIVED, scores);
+			}
+			else{
+				if(e == null){
+					LOG.error("There was an error in retrieving the scores on the server");
+				}
+				else if(e.length == 0){
+					LOG.warning("Track requested does not contain any scores");
+				}
+				else{
+					LOG.error("There is something wrong with the format of the scores that were sent back.");
+				}
+				responceSignal.dispatch(HighscoreEvent.FRIEND_HIGHSCORES_RECEIVED, new Vector.<ServerScoreVO>);
+			}
 		}
 		
-		private function onFriendScoresFailed(e:Object):void{
-			LOG.error("UserData: " + e.description);
+		private function onFriendScoresFailed():void{
+			LOG.error("There was a problem getting the scores from the server");
 			responceSignal.dispatch(HighscoreEvent.HIGHSCORES_FAILED);
 		}
 		
@@ -102,12 +137,13 @@ package com.edgington.net
 			}
 		}
 		
-		private function onTopXFailed(e:Object):void{
-			LOG.error("UserData: " + e.description);
+		private function onTopXFailed():void{
+			LOG.error("There was a problem getting the scores from the server");
 			responceSignal.dispatch(HighscoreEvent.HIGHSCORES_FAILED);
 		}
 		
 		private function connectionErrorHandler():void{
+			LOG.error("There was a problem getting the scores from the server");
 			responceSignal.dispatch(HighscoreEvent.HIGHSCORES_FAILED);
 		}
 		

@@ -43,11 +43,11 @@ package com.edgington.net
 		}
 		
 		public function getLatestTracks(amountToList:int):void{
-			GET(new NetResponceHandler(onTrackListingLatestSuccess, onTrackListingLatestFailed), true);
+			GET(new NetResponceHandler(onTrackListingLatestSuccess, onTrackListingLatestFailed), true, "", "latest");
 		}
 		
 		public function getPopularTracks(amountToList:int):void{
-			GET(new NetResponceHandler(onTrackListingPopularSuccess, onTrackListingPopularSuccess), true);
+			GET(new NetResponceHandler(onTrackListingPopularSuccess, onTrackListingPopularSuccess), true, "", "popular");
 		}
 		
 		public function getFriendsTracks(searchCriteria:String = ""):void{
@@ -159,7 +159,7 @@ package com.edgington.net
 				}
 			}
 			else{
-				if(e.length == 0){
+				if(e && e.length == 0){
 					LOG.warning("There were no tracks to return form the server");
 				}
 				else{
