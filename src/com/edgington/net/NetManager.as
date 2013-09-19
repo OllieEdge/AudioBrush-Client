@@ -13,7 +13,7 @@ package com.edgington.net
 		
 		public var netConnection:NetConnection;
 		
-		private static const CORE_URL:String = "http://82.10.100.127:3000/api/";
+		public static var CORE_URL:String = "http://82.10.100.127:3000/api/";
 		private static const CORE_API:String = "v1"
 		
 		public var serverConnectionErrorSignal:Signal;
@@ -21,7 +21,7 @@ package com.edgington.net
 		public function NetManager()
 		{
 			LOG.create(this);
-			
+			LOG.server("Connected to: " + CORE_URL);
 		}
 		
 		public static function getURL():String{

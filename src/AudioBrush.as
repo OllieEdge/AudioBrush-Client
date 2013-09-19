@@ -5,6 +5,7 @@ package
 		import com.edgington.control.Control;
 		import com.edgington.model.facebook.FacebookManager;
 		import com.edgington.model.payments.MobilePurchaseManager;
+		import com.edgington.net.NetManager;
 		import com.edgington.net.UserData;
 		import com.edgington.types.GameStateTypes;
 		import com.edgington.util.TextFieldManager;
@@ -88,6 +89,7 @@ package
 				DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MESSAGE_FACEBOOK_LOGIN;
 			}
 			else{
+				NetManager.CORE_URL = "http://192.168.33.10:3000/api/";
 				UserData.getInstance().getUser();
 				DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_MAIN;
 			}

@@ -1,10 +1,16 @@
 package com.edgington.net
 {
+	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.FacebookConstants;
+	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.model.tournaments.TournamentAssetsManager;
 	import com.edgington.net.events.TournamentEvent;
+	import com.edgington.net.helpers.NetResponceHandler;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.TournamentVO;
+	import com.edgington.valueobjects.net.ServerScoreVO;
+	import com.edgington.valueobjects.net.ServerTournamentDataVO;
 	
 	import flash.net.NetConnection;
 	import flash.net.Responder;
@@ -12,7 +18,7 @@ package com.edgington.net
 	
 	import org.osflash.signals.Signal;
 
-	public class TournamentData
+	public class TournamentData extends BaseData
 	{
 		
 		private static var INSTANCE:TournamentData;
@@ -29,8 +35,10 @@ package com.edgington.net
 		
 		private var tournamentData:SharedObject = SharedObject.getLocal("ab_tournaments");
 		
+		public var currentActiveTournaments:Vector.<TournamentVO>;
+		
 		public var currentActiveTournament:TournamentVO;
-		public var currentLeader:Object;
+		public var currentLeader:ServerScoreVO;
 		
 		public var currentTournamentDataDownloaded:Boolean = false;
 		
@@ -38,6 +46,7 @@ package com.edgington.net
 		
 		public function TournamentData()
 		{
+			super("tournament", "tournaments");
 			LOG.create(this);
 			
 			responceSignal = new Signal();
@@ -52,51 +61,60 @@ package com.edgington.net
 		}
 		
 		public function getCurrentTournamentData():void{
-			netConnection.call(CALL_GET_TOURNAMENT, tournamentDataReposnder);
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+				GET(new NetResponceHandler(onTournamentReceived, onTournamentFailed), true, "", "active");
+			}
 		}
 		
-		private function onTournamentReceived(e:Object):void{
-			var tournamentFound:Boolean = false;
-			for(var i:int = 0; i < tournamentData.data.listings; i++){
-				if(tournamentData.data.listing[i].id == e.id){
-					currentActiveTournament = convertDatabaseObjectToTournamentVO(e);
-					tournamentFound = true;
-					break;
+		private function onTournamentReceived(e:Object = null):void{
+			if(e && e.length > 0){
+				if(ServerTournamentDataVO.checkObject(e[0])){
+					currentActiveTournaments = new Vector.<TournamentVO>;
+					for(var i:int = 0; i < e.length; i++){
+						var serverTournamentDataVO:ServerTournamentDataVO = new ServerTournamentDataVO(e[i]);
+						var tournamentVO:TournamentVO = convertDatabaseObjectToTournamentVO(serverTournamentDataVO);
+						tournamentVO.CACHED = (TournamentAssetsManager.getInstance().checkForCachedTournamentData(String(serverTournamentDataVO.tournamentID)));
+						currentActiveTournaments.push(tournamentVO);
+					}
+					currentActiveTournament = currentActiveTournaments[0];
 				}
 			}
-			if(!tournamentFound){
-				tournamentData.data.listings.push(e);
-				currentActiveTournament = convertDatabaseObjectToTournamentVO(e);
-			}
-			
-			//If the current tournament data has already been download (ie, track, data files etc);
-			if(TournamentAssetsManager.getInstance().checkForCachedTournamentData(e.id)){
-				currentTournamentDataDownloaded = true
-			}
 			else{
-				currentTournamentDataDownloaded = false;
+				if(e && e.length == 0){
+					LOG.warning("There are no active tournaments");
+				}
+				else{
+					LOG.error("There was a problem getting the tournaments from the server");
+				}
 			}
-			
 			responceSignal.dispatch(TournamentEvent.TOURNAMENT_DATA_RECEIVED);
 		}
 		
-		private function onTournamentFailed(e:Object):void{
-			LOG.error("TournamentData Data: " + e.description);
+		private function onTournamentFailed():void{
+			LOG.error("There was a problem when trying to retrieve the tournaments data from the server");
 			responceSignal.dispatch(TournamentEvent.TOURNAMENT_DATA_FAILED);
 		}
 		
-		public function getLeader():void{
-			netConnection.call(CALL_GET_CURRENT_LEADER, tournamentLeaderResponder, currentActiveTournament.ID);
+		public function getLeader(tournamentID:String):void{
+			GET(new NetResponceHandler(onLeaderReceived, onLeaderFailed), false, "leader/"+tournamentID);
+			//netConnection.call(CALL_GET_CURRENT_LEADER, tournamentLeaderResponder, currentActiveTournament.ID);
 		}
 		
-		private function onLeaderReceived(e:Object):void{
-			if(e != 0){
-				currentLeader = e;
+		private function onLeaderReceived(e:Object = null):void{
+			if(e != null){
+				if(ServerScoreVO.checkObject(e)){
+					currentLeader = new ServerScoreVO(e);
+				}
+				else{
+					currentLeader = new ServerScoreVO();
+					currentLeader.score = 0;
+					currentLeader.userId.username = gettext("tournament_entry_no_entries");
+				}
 			}
 			else{
-				currentLeader = new Object();
-				currentLeader.name = gettext("tournament_entry_no_entries");
+				currentLeader = new ServerScoreVO();
 				currentLeader.score = 0;
+				currentLeader.userId.username = gettext("tournament_entry_no_entries");
 			}
 			responceSignal.dispatch(TournamentEvent.TOURNAMENT_LEADER_RECEIVED);
 		}
@@ -114,13 +132,13 @@ package com.edgington.net
 			tournamentData.flush();
 		}
 		
-		private function convertDatabaseObjectToTournamentVO(e:Object):TournamentVO{
+		private function convertDatabaseObjectToTournamentVO(e:ServerTournamentDataVO):TournamentVO{
 			var tVO:TournamentVO = new TournamentVO();
 			
-			tVO.ID = e.id;
+			tVO.ID = String(e.tournamentID);
 			tVO.ACTIVE_DATE = e.activeDate;
-			tVO.END_DATE = e.endData;
-			tVO.COST = parseInt(e.cost);
+			tVO.END_DATE = e.endDate;
+			tVO.COST = e.cost;
 			tVO.TRACK = e.track;
 			tVO.ARTIST = e.artist;
 			tVO.ARTWORK_URL = e.artworkURL;

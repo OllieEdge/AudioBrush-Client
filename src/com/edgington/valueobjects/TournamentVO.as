@@ -3,8 +3,8 @@ package com.edgington.valueobjects
 	public class TournamentVO
 	{
 		public var ID:String;
-		public var ACTIVE_DATE:String;
-		public var END_DATE:String;
+		public var ACTIVE_DATE:Date;
+		public var END_DATE:Date;
 		public var COST:int;
 		public var TRACK:String;
 		public var ARTIST:String;
@@ -17,5 +17,6 @@ package com.edgington.valueobjects
 		public var SECTIONS_FILE_URL:String;
 		public var STAR_SECTIONS_FILE_URL:String;
 		public var PRIZES:String;
+		public var CACHED:Boolean = false;
 	}
 }

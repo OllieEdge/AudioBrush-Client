@@ -30,6 +30,8 @@ package com.edgington.view.huds
 		
 		private var tournamentData:TournamentData;
 		
+		private var currentSelectedTournamedIndex:int = 0;
+		
 		public function hudTournamentEntry(removeSignal:Signal)
 		{
 			super();
@@ -67,7 +69,7 @@ package com.edgington.view.huds
 		}
 		
 		private function displayTournamentInformation():void{
-			if(tournamentData.currentTournamentDataDownloaded){
+			if(tournamentData.currentActiveTournament.CACHED){
 				tournament.displayTournamentData();
 				enterButton = new element_mainButton(gettext("tournament_entry_button_play"), buttonOptions[2], tournamentData.currentActiveTournament.COST);
 				enterButton.x = tournament.x + tournament.width - enterButton.width;

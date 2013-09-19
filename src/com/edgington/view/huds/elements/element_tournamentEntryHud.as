@@ -55,15 +55,15 @@ package com.edgington.view.huds.elements
 			hud.removeChild(hud.loader);
 			
 			tournamentData.responceSignal.add(leaderHandle);
-			tournamentData.getLeader();
+			tournamentData.getLeader(tournamentVO.ID);
 		}
 		
 		private function leaderHandle(eventType:String):void{
 			switch(eventType){
 				case TournamentEvent.TOURNAMENT_LEADER_RECEIVED:
-					hud.details.txt_player_name.text = tournamentData.currentLeader.name;
+					hud.details.txt_player_name.text = tournamentData.currentLeader.userId.username;
 					hud.details.txt_score.text = NumberFormat.addThreeDigitCommaSeperator(int(tournamentData.currentLeader.score));
-					new element_profile_picture(hud.details.picture_user, tournamentData.currentLeader.facebookID);
+					new element_profile_picture(hud.details.picture_user, tournamentData.currentLeader.userId.fb_id);
 					break;
 				case TournamentEvent.TOURNAMENT_LEADER_FAILED:
 					hud.details.txt_player_name.text = gettext("tournament_entry_error_finding_leader");

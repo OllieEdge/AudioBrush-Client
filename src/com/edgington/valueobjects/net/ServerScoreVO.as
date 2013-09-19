@@ -22,10 +22,10 @@ package com.edgington.valueobjects.net
 			for(var key:String in rawObject){
 				if(key.charAt(0) != "_"){
 					if(rawObject[key] is Array){
-						if(ServerUserVO.checkObject(rawObject[key][0])){
+						if(key == "userId" && ServerUserVO.checkObject(rawObject[key][0])){
 							userId = new ServerUserVO(rawObject[key][0]);
 						}	
-						else if(ServerTrackVO.checkObject(rawObject[key][0])){
+						else if(key == "trackId" && ServerTrackVO.checkObject(rawObject[key][0])){
 							trackId = new ServerTrackVO(rawObject[key][0]);
 						}
 					}

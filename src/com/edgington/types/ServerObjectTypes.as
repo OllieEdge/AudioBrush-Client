@@ -11,6 +11,9 @@ package com.edgington.types
 		
 		public static const TRACK:String = "ServerObjectTypes::TRACK";
 		
+		public static const TOURNAMENT:String = "ServerObjectTypes::TOURNAMENT";
+		public static const TOURNAMENTS:String = "ServerObjectTypes::TOURNAMENTS";
+		
 		
 		public static const UNKNOWN:String = "ServerObjectTypes::UNKNOWN";
 	}

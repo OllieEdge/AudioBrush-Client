@@ -2,6 +2,7 @@ package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.facebook.FacebookManager;
+	import com.edgington.util.debug.LOG;
 	import com.milkmangames.nativeextensions.GoViral;
 	import com.milkmangames.nativeextensions.events.GVFacebookEvent;
 	
@@ -10,6 +11,8 @@ package com.edgington.view.huds.elements
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	
 	public class element_profile_picture extends Sprite
@@ -35,15 +38,22 @@ package com.edgington.view.huds.elements
 				this.addChild(picture);
 			}
 			
-			if(FacebookManager.getInstance().isSupported){
-				GoViral.goViral.addEventListener(GVFacebookEvent.FB_REQUEST_FAILED, checkFailureResponce);
-				GoViral.goViral.addEventListener(GVFacebookEvent.FB_REQUEST_RESPONSE, checkResponce);
-				GoViral.goViral.facebookGraphRequest(profileID+"?fields=picture.height("+picture.height+").width("+picture.width+").type(square)", "GET");
-			}
+			var urlRequest:URLRequest = new URLRequest("http://graph.facebook.com/"+profileID+"/picture?type=large");
+			imageLoader = new Loader();
+			imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded);
+			imageLoader.load(urlRequest);
 			
 			this.cacheAsBitmap = true;
 			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
+		}
+		
+		private function facebookPicDownloaded(e:Event):void{
+			LOG.info(e.target.data);
+		}
+		
+		private function facebookPicDownloadError(e:IOErrorEvent):void{
+			LOG.info("There was a problem downloading the requested Facebook image");
 		}
 		
 		private function checkResponce(e:GVFacebookEvent):void{
