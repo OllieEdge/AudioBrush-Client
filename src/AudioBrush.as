@@ -1,6 +1,7 @@
 package
 {
 		import com.edgington.constants.DynamicConstants;
+		import com.edgington.constants.FacebookConstants;
 		import com.edgington.control.Control;
 		import com.edgington.model.facebook.FacebookManager;
 		import com.edgington.model.payments.MobilePurchaseManager;
@@ -81,6 +82,9 @@ package
 		
 		private function loadGame():void{
 			if(DynamicConstants.isMobileOS()){
+				//If this is being run on mobile lets make sure that we use the proper facebook.
+				FacebookConstants.DEBUG_FACEBOOK_ALLOWED = false;
+				
 				DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MESSAGE_FACEBOOK_LOGIN;
 			}
 			else{

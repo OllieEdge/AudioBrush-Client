@@ -40,7 +40,7 @@ package com.edgington.net
 		 * The URL extension must contain the the directory to the call (eg. a user would be /user/userID)
 		 * If there are any additional variables to add to that they can be populated in the object
 		 */
-		public function POST(responseHandler:NetResponceHandler, singularExtension, urlVariables:Object):void{
+		public function POST(responseHandler:NetResponceHandler, singularExtension:String, urlVariables:Object, pluralExtension:String = ""):void{
 			var URL:String = NetManager.getURL();
 			var VARIBALES:URLVariables = new URLVariables();
 			
@@ -49,7 +49,12 @@ package com.edgington.net
 				VARIBALES[key] = urlVariables[key];
 			}
 			
-			URL += "/" + objectSingular + "/" + singularExtension;
+			if(pluralExtension != ""){
+				URL += "/" + objectPlural + "/" + pluralExtension;
+			}
+			else{
+				URL += "/" + objectSingular + "/" + singularExtension;
+			}
 			
 			NetResponder.getInstance().newCall(responseHandler, URL, URLRequestMethod.POST, VARIBALES);
 		}

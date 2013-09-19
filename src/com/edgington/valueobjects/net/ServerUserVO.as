@@ -12,6 +12,7 @@ package com.edgington.valueobjects.net
 		public var fb_id:String;
 		public var credits:int;
 		public var unlimited:Boolean;
+		public var tracks:Array;
 		
 		public function ServerUserVO(rawObject:Object = null)
 		{
