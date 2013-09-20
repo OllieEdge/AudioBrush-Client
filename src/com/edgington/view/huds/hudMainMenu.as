@@ -12,6 +12,7 @@ package com.edgington.view.huds
 	import com.edgington.view.huds.elements.element_mainButton;
 	import com.edgington.view.huds.elements.element_mainMenuProfileIphone;
 	import com.edgington.view.huds.elements.element_mainMenuProfileiPad;
+	import com.edgington.view.huds.elements.element_mainMiniButton;
 	
 	import flash.display.StageQuality;
 	import flash.events.Event;
@@ -31,10 +32,12 @@ package com.edgington.view.huds
 		
 		private var feedbackButton:element_mainButton;
 		
+		private var inboxButton:element_mainMiniButton;
+		
 		private var ipadProfileInfo:element_mainMenuProfileiPad;
 		private var iphoneProfileInfo:element_mainMenuProfileIphone;
 		
-		private var buttonOptions:Vector.<String> = new <String>["NAVIGATE_NEW_GAME", "TOURNAMENT", "LEADERBOARDS", "BETA_FEEDBACK", "PROFILE"];
+		private var buttonOptions:Vector.<String> = new <String>["NAVIGATE_NEW_GAME", "TOURNAMENT", "LEADERBOARDS", "BETA_FEEDBACK", "PROFILE", "INBOX"];
 		
 		public function hudMainMenu(removeSignal:Signal)
 		{
@@ -75,6 +78,10 @@ package com.edgington.view.huds
 			feedbackButton.x = playButton.x;
 			feedbackButton.y = profileButton.y + profileButton.height + DynamicConstants.BUTTON_SPACING;
 			
+			inboxButton = new element_mainMiniButton("Messages", buttonOptions[5]);
+			inboxButton.x = playButton.x;
+			inboxButton.y = feedbackButton.y + feedbackButton.height  + DynamicConstants.BUTTON_SPACING;
+			
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
 				ipadProfileInfo = new element_mainMenuProfileiPad();
 				ipadProfileInfo.x = DynamicConstants.SCREEN_WIDTH - ipadProfileInfo.width - DynamicConstants.SCREEN_MARGIN;
@@ -94,10 +101,11 @@ package com.edgington.view.huds
 			addButton(settingsButton);
 			addButton(profileButton);
 			addButton(feedbackButton);
+			addButton(inboxButton);
 			
 			buttonSignal.add(handleInteraction);
 			
-			onScreenElements.push(playButton, howToPlayButton, settingsButton, profileButton, feedbackButton);
+			onScreenElements.push(playButton, howToPlayButton, settingsButton, profileButton, feedbackButton, inboxButton);
 			if(ipadProfileInfo){
 				onScreenElements.push(ipadProfileInfo);
 			}
@@ -133,6 +141,10 @@ package com.edgington.view.huds
 					break;
 				case buttonOptions[4]:
 					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_SETTINGS;
+					cleanButtons();
+					break;
+				case buttonOptions[5]:
+					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_INBOX;
 					cleanButtons();
 					break;
 			}

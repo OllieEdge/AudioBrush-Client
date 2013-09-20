@@ -10,6 +10,8 @@ package com.edgington.types
 		
 		public static const MENU_SETTINGS:String = "GameStateTypes::MENU_SETTINGS";
 		
+		public static const MENU_INBOX:String = "GameStateTypes::MENU_INBOX";
+		
 		
 		public static const GAME_LOADING:String = "GameStateTypes::GAME_LOADING";
 		

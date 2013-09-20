@@ -18,7 +18,7 @@ package com.edgington.view.huds.elements
 	{
 		
 		public var body:ui_tabConatiner;
-		private var tabDescription:ui_list_description_box;
+		public var tabDescription:ui_list_description_box;
 		
 		private var tabsContainer:Sprite;
 		private var tabs:Vector.<ui_tab>;
@@ -80,19 +80,23 @@ package com.edgington.view.huds.elements
 			}
 			this.addChild(body);
 			if(tabDescriptions.length > 0){
-				if(tabDescriptions[0] != ""){
-					tabDescription = new ui_list_description_box();
-					tabDescription.txt_description.text = tabDescriptions[0];
-					tabDescription.background.width = (DynamicConstants.SCREEN_WIDTH-(DynamicConstants.SCREEN_MARGIN*2)) - (DynamicConstants.BUTTON_SPACING*2);
-					tabDescription.x = body.x + DynamicConstants.BUTTON_SPACING;
-					tabDescription.y = body.y + DynamicConstants.BUTTON_SPACING;
-					tabDescription.txt_description.autoSize = TextFieldAutoSize.LEFT;
-					tabDescription.cacheAsBitmap = true;
-					this.addChild(tabDescription);
-				}
+				tabDescription = new ui_list_description_box();
+				tabDescription.txt_description.text = tabDescriptions[0];
+				tabDescription.background.width = (DynamicConstants.SCREEN_WIDTH-(DynamicConstants.SCREEN_MARGIN*2)) - (DynamicConstants.BUTTON_SPACING*2);
+				tabDescription.x = body.x + DynamicConstants.BUTTON_SPACING;
+				tabDescription.y = body.y + DynamicConstants.BUTTON_SPACING;
+				tabDescription.txt_description.autoSize = TextFieldAutoSize.LEFT;
+				tabDescription.cacheAsBitmap = true;
+				tabDescription.visible = (tabDescriptions[0] != "");
+				this.addChild(tabDescription);
 			}			
 			listingX = body.x + DynamicConstants.BUTTON_SPACING;
-			listingY = tabDescription.y + tabDescription.height;
+			if(tabDescriptions.length > 0){
+				listingY = tabDescription.y + tabDescription.height;
+			}
+			else{
+				listingY = body.y + DynamicConstants.BUTTON_SPACING;
+			}
 			listingHeight = body.y + body.height - listingY;
 			
 			//this.scaleX = this.scaleY = DynamicConstants.MESSAGE_SCALE;
@@ -106,6 +110,10 @@ package com.edgington.view.huds.elements
 				for(var i:int = 0; i < tabs.length; i++){
 					if(tabs[i] == e.currentTarget){
 						activeTab = i;
+						if(tabDescription){
+							tabDescription.txt_description.text = tabDescriptions[i];
+							tabDescription.visible = (tabDescriptions[i] != "");
+						}
 						tabDescription.txt_description.text = tabDescriptions[i];
 						tabSignal.dispatch(TabContainerEvent.TAB_CHANGED, tabLabel[i]);
 						tabTweens.push(TweenMax.to(tabs[i], 0.3, {scaleX:DynamicConstants.BUTTON_SCALE, scaleY:DynamicConstants.BUTTON_SCALE, ease:Back.easeOut, onUpdate:positionTab, onUpdateParams:[tabs[i]]}));
@@ -154,6 +162,26 @@ package com.edgington.view.huds.elements
 				tabs[i] = null;
 			}
 			tabs = null;
+		}
+		
+		public function get getTabBodyYOrigin():int{
+			if(tabDescription != null && tabDescription.visible){
+				return tabDescription.y + tabDescription.height;
+			}
+			else{
+				return body.y;
+			}
+			return 0;
+		}
+		
+		public function get getTabBodyHeight():int{
+			if(tabDescription != null && tabDescription.visible){
+				return body.height - tabDescription.y + tabDescription.height;
+			}
+			else{
+				return body.height;
+			}
+			return 0;
 		}
 	}
 }

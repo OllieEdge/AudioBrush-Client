@@ -264,7 +264,7 @@ package com.edgington.view.huds
 		}
 		
 		private function addTrackListing():void{
-			var currentArray:Vector.<ServerTrackVO>;;
+			var currentArray:Vector.<ServerTrackVO>;
 			if(SearchProxy.getInstance().isSearch){
 				switch(currentTab){
 					case 0:
@@ -352,6 +352,7 @@ package com.edgington.view.huds
 			searchButton = null;
 			clearSearchButton = null;
 			ipadSearchBox = null;
+			tabContainer = null;
 		}
 	}
 }

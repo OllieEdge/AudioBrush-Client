@@ -7,6 +7,7 @@ package com.edgington.view
 	import com.edgington.view.game.analysis.ViewTrackAnalysis;
 	import com.edgington.view.huds.hudBackground;
 	import com.edgington.view.huds.hudDownloadTournamentData;
+	import com.edgington.view.huds.hudInboxMenu;
 	import com.edgington.view.huds.hudLeaderboardsMain;
 	import com.edgington.view.huds.hudMainMenu;
 	import com.edgington.view.huds.hudPurchase;
@@ -137,6 +138,11 @@ package com.edgington.view
 					break;
 				case GameStateTypes.TOURNAMENT_DOWNLOAD:
 					onScreenState = new hudDownloadTournamentData(removeInterfaceSignal);
+					positionHudAtRandom();
+					background.newHudActive(onScreenState);
+					break;
+				case GameStateTypes.MENU_INBOX:
+					onScreenState = new hudInboxMenu(removeInterfaceSignal);
 					positionHudAtRandom();
 					background.newHudActive(onScreenState);
 					break;
