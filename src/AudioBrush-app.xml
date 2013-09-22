@@ -277,6 +277,22 @@
 		]]></manifestAdditions>
     </android>
     <iPhone>
+        
+        <Entitlements>
+			<![CDATA[
+			<key>get-task-allow</key>
+			<true/>
+			<key>aps-environment</key>
+			<string>development</string>
+			<key>application-identifier</key>
+			<string>D6U5J2B65E.com.edgington.audiobrush</string>
+			<key>keychain-access-groups</key>
+			<array>
+			<string>D6U5J2B65E.com.edgington.audiobrush</string>
+			</array>
+			]]>
+		</Entitlements>
+        
         <InfoAdditions><![CDATA[
         	<key>UIPrerenderedIcon</key> 
         	<true/> 
@@ -308,5 +324,6 @@
 	    <extensionID>com.edgington.testflight</extensionID>
 	    
 	    
+    <extensionID>com.milkmangames.extensions.EasyPush</extensionID>
     </extensions>
 </application>

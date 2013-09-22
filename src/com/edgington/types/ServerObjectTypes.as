@@ -14,6 +14,8 @@ package com.edgington.types
 		public static const TOURNAMENT:String = "ServerObjectTypes::TOURNAMENT";
 		public static const TOURNAMENTS:String = "ServerObjectTypes::TOURNAMENTS";
 		
+		public static const GIFT:String = "ServerObjectTypes::GIFT";
+		public static const GIFTS:String = "ServerObjectTypes::GIFTS";
 		
 		public static const UNKNOWN:String = "ServerObjectTypes::UNKNOWN";
 	}

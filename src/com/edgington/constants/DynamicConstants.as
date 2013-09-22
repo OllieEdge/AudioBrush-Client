@@ -25,6 +25,7 @@ package com.edgington.constants
 		
 		public static var DEVICE_TYPE:String;
 		public static var DEVICE_NAME:String;
+		public static var DEVICE_SCALE:Number;
 		
 		public static var IS_CONNECTED:Boolean = true;
 		
@@ -60,6 +61,10 @@ package com.edgington.constants
 					break;
 			}
 			return Constants.OS_MAC;
+		}
+		
+		public static function isDebug():Boolean{
+			return new Error().getStackTrace().search(/:[0-9]+\]$/m) > -1;
 		}
 	}
 }

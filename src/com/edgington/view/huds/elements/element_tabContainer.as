@@ -164,6 +164,29 @@ package com.edgington.view.huds.elements
 			tabs = null;
 		}
 		
+		public function overrideTabSelection(tabIndex:int):void{
+			cleanTweens();
+			for(var i:int = 0; i < tabs.length; i++){
+				if(tabs[i] == tabs[tabIndex]){
+					activeTab = i;
+					if(tabDescription){
+						tabDescription.txt_description.text = tabDescriptions[i];
+						tabDescription.visible = (tabDescriptions[i] != "");
+					}
+					tabDescription.txt_description.text = tabDescriptions[i];
+					tabSignal.dispatch(TabContainerEvent.TAB_CHANGED, tabLabel[i]);
+					tabTweens.push(TweenMax.to(tabs[i], 0.3, {scaleX:DynamicConstants.BUTTON_SCALE, scaleY:DynamicConstants.BUTTON_SCALE, ease:Back.easeOut, onUpdate:positionTab, onUpdateParams:[tabs[i]]}));
+					tabTweens.push(TweenMax.to(tabs[i].background, 0.2, {tint:0xF0F0F0, ease:Linear.easeNone}));
+					tabTweens.push(TweenMax.to(tabs[i].txt_label, 0.2, {tint:0x333333, ease:Linear.easeNone}));
+				}
+				else{
+					tabTweens.push(TweenMax.to(tabs[i], 0.3, {scaleX:DynamicConstants.BUTTON_MINI_SCALE, scaleY:DynamicConstants.BUTTON_MINI_SCALE, ease:Back.easeOut, onUpdate:positionTab, onUpdateParams:[tabs[i]]}));
+					tabTweens.push(TweenMax.to(tabs[i].background, 0.2, {tint:0x333333, ease:Linear.easeNone}));
+					tabTweens.push(TweenMax.to(tabs[i].txt_label, 0.2, {tint:0xCCCCCC, ease:Linear.easeNone}));
+				}
+			}
+		}
+		
 		public function get getTabBodyYOrigin():int{
 			if(tabDescription != null && tabDescription.visible){
 				return tabDescription.y + tabDescription.height;

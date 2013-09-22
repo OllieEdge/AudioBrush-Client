@@ -47,6 +47,8 @@ package com.edgington.model.facebook
 				
 				facebookOpenGraphDispatcher = new FacebookOpenGraphDispatcher();
 				
+				
+				
 				isSupported = true;
 			}
 			else {

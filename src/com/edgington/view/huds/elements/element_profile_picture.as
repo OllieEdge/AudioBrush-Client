@@ -8,17 +8,15 @@ package com.edgington.view.huds.elements
 	
 	import flash.display.Bitmap;
 	import flash.display.Loader;
-	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
-	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	
 	public class element_profile_picture extends Sprite
 	{
 		private var picture:ui_profile_picture;
-		private var profileID:String;
+		public var profileID:String;
 		
 		private var imageLoader:Loader;
 		private var imageURLRequest:URLRequest;
@@ -27,6 +25,7 @@ package com.edgington.view.huds.elements
 		public function element_profile_picture(profilePicture:ui_profile_picture = null, profileID:String = "")
 		{
 			super();
+			
 			
 			this.profileID = profileID;
 			
@@ -38,14 +37,34 @@ package com.edgington.view.huds.elements
 				this.addChild(picture);
 			}
 			
-			var urlRequest:URLRequest = new URLRequest("http://graph.facebook.com/"+profileID+"/picture?type=large");
-			imageLoader = new Loader();
-			imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded);
-			imageLoader.load(urlRequest);
+			if(profileID != ""){
+				var urlRequest:URLRequest = new URLRequest("http://graph.facebook.com/"+profileID+"/picture?width=200&height=200");
+				imageLoader = new Loader();
+				imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded);
+				imageLoader.load(urlRequest);
+			}
 			
 			this.cacheAsBitmap = true;
 			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
+		}
+		
+		public function changeImage(profileID:String = ""):void{
+			this.profileID = profileID;
+			
+			if(!picture.img.holder.visible){
+				
+				removeAnyExistingImages();
+				
+				picture.img.holder.visible = true;
+			}
+			
+			if(profileID != ""){
+				var urlRequest:URLRequest = new URLRequest("http://graph.facebook.com/"+profileID+"/picture?width=200&height=200");
+				imageLoader = new Loader();
+				imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded);
+				imageLoader.load(urlRequest);
+			}
 		}
 		
 		private function facebookPicDownloaded(e:Event):void{
@@ -76,16 +95,28 @@ package com.edgington.view.huds.elements
 			if(picture != null){
 				profileBitmap.width = picture.img.width;
 				profileBitmap.height = picture.img.height;
-				while(picture.img.numChildren > 0){
-					picture.img.removeChildAt(0);
-				}
+				
+				removeAnyExistingImages();
+				
+				picture.img.holder.visible = false;
 				picture.img.addChild(profileBitmap);
 			}
+			imageLoader.unload();
+			imageLoader = null;
 		}
 		
 		private function checkFailureResponce(e:GVFacebookEvent):void{
 			GoViral.goViral.removeEventListener(GVFacebookEvent.FB_REQUEST_FAILED, checkFailureResponce);
 			GoViral.goViral.removeEventListener(GVFacebookEvent.FB_REQUEST_RESPONSE, checkResponce);
+		}
+		
+		private function removeAnyExistingImages():void{
+			var i:int = picture.img.numChildren
+			while(i--){
+				if(picture.img.getChildAt(i) != picture.img.holder){
+					picture.img.removeChildAt(i);
+				}
+			}
 		}
 		
 		private function destroy(e:Event):void{

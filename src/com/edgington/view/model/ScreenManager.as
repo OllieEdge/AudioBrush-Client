@@ -19,6 +19,7 @@ package com.edgington.view.model
 			DynamicConstants.MESSAGE_SCALE = setMessageScale();
 			DynamicConstants.BUTTON_PURCHASE_SCALE = setPurchaseButtonScale();
 			DynamicConstants.BUTTON_MINI_SCALE = DynamicConstants.MESSAGE_SCALE*0.68;
+			DynamicConstants.DEVICE_SCALE = setDeviceScale();
 		}
 			
 			
@@ -68,6 +69,39 @@ package com.edgington.view.model
 				return Constants.UNKNOWN_SMALL;
 			}
 			return Constants.UNKNOWN;
+		}
+		
+		public static function setDeviceScale():Number{
+			switch(getDevice()){
+				case Constants.IPHONE_5PLUS:
+					return 1;
+					break;
+				case Constants.IPHONE_4S:
+					return 1;
+					break;
+				case Constants.IPHONE_3GS:
+					return 0.5;
+					break;
+				case Constants.IPAD_2:
+					return 1;
+					break;
+				case Constants.IPAD_3:
+					return 2;
+					break;
+				case Constants.IPAD_4PLUS:
+					return 2;
+					break;
+				default:
+					if(getDevice() == Constants.UNKNOWN_LARGE){
+						DynamicConstants.BUTTON_SPACING *= 2;
+						return 2;
+					}
+					else{
+						return 1;
+					}
+					break;
+			}
+			return 1;
 		}
 		
 		public static function setMessageScale():Number{

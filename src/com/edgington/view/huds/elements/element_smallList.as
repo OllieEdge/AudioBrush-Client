@@ -3,15 +3,17 @@ package com.edgington.view.huds.elements
 	import com.doitflash.consts.Easing;
 	import com.doitflash.consts.Orientation;
 	import com.doitflash.consts.ScrollConst;
-	import com.doitflash.events.ScrollEvent;
 	import com.doitflash.utils.scroll.TouchScroll;
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.util.TextFieldManager;
 	import com.edgington.view.huds.vo.SmallListItemVO;
 	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.ColorTransform;
@@ -38,7 +40,7 @@ package com.edgington.view.huds.elements
 		private var maximumItemsToShow:int;
 		private var itemHeight:int;
 		
-		private var itemList:Vector.<SmallListItemVO>;
+		public var itemList:Vector.<SmallListItemVO>;
 		
 		private var colors:Array;
 		
@@ -46,6 +48,8 @@ package com.edgington.view.huds.elements
 		
 		private var _scroller:TouchScroll;
 		private var isScrolling:Boolean;
+		
+		private var maximumItemsToLoadInView:int = 20;
 		
 		public function element_smallList(itemStrings:Vector.<SmallListItemVO>, maximumItemsToShow:int, itemHeight:int, _width:int, itemHandlerSignal:Signal)
 		{
@@ -99,6 +103,8 @@ package com.edgington.view.huds.elements
 			}
 			items = new Vector.<Object>;
 			for(var i:int = 0; i < itemList.length; i++){
+				var bm:Bitmap;
+				var bmd:BitmapData;
 				var clip:Sprite = new Sprite();
 				
 				var listing:ui_listItem = new ui_listItem();
@@ -125,17 +131,21 @@ package com.edgington.view.huds.elements
 				clip.addChild(txtLabel);
 				clip.addChild(tickBox);
 				
-				clip.cacheAsBitmap = true;
-				clip.y = itemHeight*items.length;
-				if(items.length >= maximumItemsToShow){
-					//clip.visible = false;
-				}
+				bmd = new BitmapData(clip.width, clip.height, false);
+				bmd.drawWithQuality(clip, null, null, null, null, null, StageQuality.BEST);
+				bm = new Bitmap(bmd);
+				bm.cacheAsBitmap = true;
+				bm.y = itemHeight*items.length;
+				
+				clip = new Sprite();
+				clip.addChild(bm);
 				
 				clip.addEventListener(MouseEvent.MOUSE_UP, itemSelected, false, 0, true);
 				
 				var obj:Object = new Object();
 				obj.clip = clip;
 				obj.item = itemList[i];
+				
 				items.push(obj);
 				itemContainer.addChild(clip);
 			}
@@ -255,6 +265,11 @@ package com.edgington.view.huds.elements
 			}
 			itemList = null;
 			background = null;
+			itemContainer = null;
+			_scroller = null;
+			itemHandlerSignal.removeAll();
+			itemHandlerSignal = null;
+			items = null;
 		}
 		
 		override public function get height():Number{

@@ -1,11 +1,13 @@
 package com.edgington.view.huds
 {
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.net.GiftData;
 	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.huds.base.AbstractHud;
 	import com.edgington.view.huds.base.IAbstractHud;
+	import com.edgington.view.huds.elements.element_inbox;
 	import com.edgington.view.huds.elements.element_mainButton;
 	import com.edgington.view.huds.elements.element_sendItemsScreen;
 	import com.edgington.view.huds.elements.element_tabContainer;
@@ -27,11 +29,15 @@ package com.edgington.view.huds
 		private var currentTab:int = 0;
 		private var tabChangedSignal:Signal;
 		
+		private var inboxItems:element_inbox;
 		private var sendItems:element_sendItemsScreen;
 		
 		private var tabContainer:element_tabContainer;
 		
 		private var backButton:element_mainButton;
+		
+		private var sendButton:element_mainButton;
+		private var sendButtonSignal:Signal;
 		
 		private var buttonOptions:Vector.<String> = new <String>["NAVIGATE_NEW_GAME", "TOURNAMENT", "LEADERBOARDS", "BETA_FEEDBACK", "PROFILE"];
 		
@@ -54,6 +60,9 @@ package com.edgington.view.huds
 			
 			tabChangedSignal = new Signal();
 			tabChangedSignal.add(handleTabChanged);
+			
+			sendButtonSignal = new Signal();
+			sendButtonSignal.add(sendButtonHandler);
 		}
 		
 		public function setupVisuals():void{
@@ -80,6 +89,8 @@ package com.edgington.view.huds
 			buttonSignal.add(handleInteraction);
 			
 			onScreenElements.push(tabContainer, backButton);
+			
+			handleTabChanged(TabContainerEvent.TAB_CHANGED, tabLabels[currentTab]);
 		}
 		
 		private function handleInteraction(buttonOption:String):void{
@@ -88,6 +99,24 @@ package com.edgington.view.huds
 					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_MAIN;
 					cleanButtons();
 					break;
+				case buttonOptions[1]:
+					var friends:Vector.<String> = new Vector.<String>;
+					for(var i:int = 0; i < sendItems.friendsSelectedList.itemList.length; i++){
+						friends.push(sendItems.friendsSelectedList.itemList[i].id);
+						GiftData.getInstance().postGifts(friends, 1);
+						GiftData.getInstance().giftDataSignal.addOnce(handleGiftsResponse);
+					}
+					sendButtonHandler(false);
+					break;
+			}
+		}
+		
+		private function handleGiftsResponse():void{
+			if(GiftData.getInstance().giftsSent){
+				tabContainer.overrideTabSelection(0);
+			}
+			else{
+				sendButtonHandler(true);
 			}
 		}
 		
@@ -101,22 +130,56 @@ package com.edgington.view.huds
 							if(sendItems != null){
 								removeSeperateElements(sendItems);
 								sendItems = null;
+								sendButtonHandler(false);
 							}
+							inboxItems = new element_inbox(tabContainer.tabDescription.width, tabContainer.getTabBodyHeight, 8);
+							inboxItems.x = tabContainer.x + tabContainer.tabDescription.x;
+							inboxItems.y = tabContainer.y + tabContainer.getTabBodyYOrigin;
+							addAdditionalElements(new <Sprite>[inboxItems]);
 							break;
 						case tabLabels[1]:
-							sendItems = new element_sendItemsScreen(tabContainer.width, tabContainer.getTabBodyHeight);
+							if(inboxItems != null){
+								inboxItems.readyForRemoval();
+								removeSeperateElements(inboxItems);
+								inboxItems = null;
+							}
+							sendItems = new element_sendItemsScreen(tabContainer.width, tabContainer.getTabBodyHeight, sendButtonSignal);
 							sendItems.x = tabContainer.x;
 							sendItems.y = tabContainer.y + tabContainer.getTabBodyYOrigin;
+							
 							addAdditionalElements(new <Sprite>[sendItems]);
 							break;
 						case tabLabels[2]:
+							if(inboxItems != null){
+								inboxItems.readyForRemoval();
+								removeSeperateElements(inboxItems);
+								inboxItems = null;
+							}
 							if(sendItems != null){
 								removeSeperateElements(sendItems);
 								sendItems = null;
+								sendButtonHandler(false);
 							}
 							break;
 					}
 				break;
+			}
+		}
+		
+		private function sendButtonHandler(showSendButton:Boolean):void{
+			if(showSendButton && sendButton == null){
+				sendButton = new element_mainButton(gettext("send_freinds_button_send"), buttonOptions[1]);
+				sendButton.x = tabContainer.x + tabContainer.width - sendButton.width;
+				sendButton.y = tabContainer.y + tabContainer.height + DynamicConstants.BUTTON_SPACING;
+				addButton(sendButton);
+				addAdditionalElements(new <Sprite>[sendButton]);
+			}
+			else{
+				if(sendButton != null){
+					removeButton(sendButton);
+					removeSeperateElements(sendButton);
+					sendButton = null;
+				}
 			}
 		}
 		
@@ -126,12 +189,19 @@ package com.edgington.view.huds
 		}
 		
 		private function destroy(e:Event):void{
+			tabChangedSignal.removeAll();
+			sendButtonSignal.removeAll();
+			tabChangedSignal = null;
+			sendButtonSignal = null;
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			while(this.numChildren > 0){
 				this.removeChildAt(0);
 			}
 			backButton = null;
 			tabContainer = null;
+			sendButton = null;
+			inboxItems = null;
+			sendItems = null;
 		}
 	}
 }

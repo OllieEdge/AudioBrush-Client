@@ -8,6 +8,7 @@ package
 		import com.edgington.net.NetManager;
 		import com.edgington.net.UserData;
 		import com.edgington.types.GameStateTypes;
+		import com.edgington.util.PushNotificationsManager;
 		import com.edgington.util.TextFieldManager;
 		import com.edgington.util.localisation.LOCALE_INSTANCE;
 		import com.edgington.util.localisation.Locale;
@@ -45,6 +46,9 @@ package
 			LOCALE_INSTANCE.addEventListener(Event.COMPLETE, setupGame);
 			
 			MobilePurchaseManager.INSTANCE;
+			PushNotificationsManager.getInstance();
+			PushNotificationsManager.getInstance().addEventListener(Event.COMPLETE, setupGame);
+			PushNotificationsManager.getInstance().setupPN();
 			
 			TextFieldManager.createCentrallyAllignedTextField("Warm-up fonts", FONT_audiobrush_content, 0xFFFFFF, 10);
 			
@@ -56,9 +60,10 @@ package
 		}
 		
 		private function setupGame(e:Event):void{
-			if(loadsComplete == 2){
+			if(loadsComplete == 3){
 				LOCALE_INSTANCE.removeEventListener(Event.COMPLETE, setupGame);
 				this.removeEventListener(Event.ADDED_TO_STAGE, setupGame);
+				PushNotificationsManager.getInstance().removeEventListener(Event.COMPLETE, setupGame);
 				// support autoOrients
 				stage.align = StageAlign.TOP_LEFT;
 				stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -91,6 +96,7 @@ package
 			else{
 				NetManager.CORE_URL = "http://192.168.33.10:3000/api/";
 				UserData.getInstance().getUser();
+				//GiftData.getInstance().postGifts(null, 1);
 				DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_MAIN;
 			}
 			

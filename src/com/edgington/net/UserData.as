@@ -5,13 +5,13 @@ package com.edgington.net
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.helpers.NetResponceHandler;
 	import com.edgington.types.ThemeTypes;
+	import com.edgington.util.PushNotificationsManager;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.valueobjects.net.ServerUserVO;
 	
-	import flash.net.NetConnection;
 	import flash.net.Responder;
 	import flash.net.SharedObject;
-	import flash.net.URLVariables;
+	import flash.system.Capabilities;
 	
 	import org.osflash.signals.Signal;
 
@@ -31,7 +31,7 @@ package com.edgington.net
 		public var userDataSignal:Signal;
 		
 		//Actual live user data;
-		private var userProfile:ServerUserVO;
+		public var userProfile:ServerUserVO;
 		
 		public var unlimited:Boolean = false;
 		
@@ -94,8 +94,29 @@ package com.edgington.net
 		private function onUserDataRecevied(e:Object = null):void{
 			if(e && e.length > 0){
 				userProfile = new ServerUserVO(e[0]);
-				saveProfile();
+				
+				
+				//If we need to update the user
+				if(DynamicConstants.isIOSPlatform()){
+					if(userProfile.username != FacebookManager.getInstance().currentLoggedInUser.rawFacebookData.name || userProfile.airship_token != PushNotificationsManager.getInstance().airshipToken){
+						if(userProfile.username != FacebookManager.getInstance().currentLoggedInUser.rawFacebookData.name){
+							userProfile.username = FacebookManager.getInstance().currentLoggedInUser.rawFacebookData.name
+						}
+						if(userProfile.airship_token != PushNotificationsManager.getInstance().airshipToken && PushNotificationsManager.getInstance().pushNotificationsEnabled){
+							userProfile.airship_token = PushNotificationsManager.getInstance().airshipToken;
+						}
+						updateProfile("", "", true);
+					}
+					if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
+						PushNotificationsManager.setUserTag(Capabilities.languages[0]);
+						PushNotificationsManager.setUserTag("facebook");
+						PushNotificationsManager.updateUserAlias(FacebookManager.getInstance().currentLoggedInUser.firstName);
+					}
+				}
+				
 				ProductsData.getInstance().getProducts();
+				//Save
+				saveProfile();
 				userDataSignal.dispatch();
 			}
 			else{
@@ -115,6 +136,9 @@ package com.edgington.net
 						
 						urlVariables.fb_id = FacebookManager.getInstance().currentLoggedInUser.profileID;
 						urlVariables.username = FacebookManager.getInstance().currentLoggedInUser.firstName;
+						if(PushNotificationsManager.getInstance().pushNotificationsEnabled){
+							urlVariables.airship_token = PushNotificationsManager.getInstance().airshipToken;
+						}
 						
 						PUT(new NetResponceHandler(onNewUserCreated, onNewUserCreatedFailed), FacebookManager.getInstance().currentLoggedInUser.profileID, urlVariables);
 					}
@@ -151,6 +175,26 @@ package com.edgington.net
 			LOG.error("Creating the user data failed");
 		}
 		
+		/**
+		 * If neither of the values are filled and the override is false, the request will not be sent.
+		 * However if neither are filled and override is true, the request will be sent.
+		*/
+		public function updateProfile(username:String = "", airshipToken:String = "", override:Boolean = false):void{
+			if(username != "" && airshipToken != ""){
+				override = true;
+				if(username != ""){
+					userProfile.username = username;
+				}
+				else if(airshipToken != ""){
+					userProfile.airship_token = airshipToken;
+				}
+			}
+			if(override){
+				if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+					POST(new NetResponceHandler(onCreditsUpdated, onCreditsUpdateFailed), userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
+				}
+			}
+		}
 		
 		/**
 		 * Update the credits

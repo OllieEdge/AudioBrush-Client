@@ -2,6 +2,7 @@ package com.edgington.net.helpers
 {
 	import com.edgington.types.ServerObjectTypes;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.valueobjects.net.ServerGiftVO;
 	import com.edgington.valueobjects.net.ServerProductsVO;
 	import com.edgington.valueobjects.net.ServerScoreVO;
 	import com.edgington.valueobjects.net.ServerTournamentDataVO;
@@ -43,6 +44,11 @@ package com.edgington.net.helpers
 						return ServerObjectTypes.TOURNAMENTS;
 					}
 					
+					//-------------------------------------------------------------------   GIFTS
+					if(ServerGiftVO.checkObject(responceObj[0])){
+						return ServerObjectTypes.GIFTS;
+					}
+					
 				}
 				else{
 					LOG.warning("Server response contains no data");
@@ -65,9 +71,13 @@ package com.edgington.net.helpers
 				else if(ServerTrackVO.checkObject(responceObj)){
 					return ServerObjectTypes.TRACK;
 				}
-				//-------------------------------------------------------------------   TRACK
+				//-------------------------------------------------------------------   TOURNAMENT
 				else if(ServerTournamentDataVO.checkObject(responceObj)){
 					return ServerObjectTypes.TOURNAMENT;
+				}
+					//-------------------------------------------------------------------   TOURNAMENT
+				else if(ServerGiftVO.checkObject(responceObj)){
+					return ServerObjectTypes.GIFT;
 				}
 			}
 			
