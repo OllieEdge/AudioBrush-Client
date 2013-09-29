@@ -13,6 +13,7 @@ package com.edgington.net
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.net.URLVariables;
+	import flash.system.Capabilities;
 
 	public class NetResponder
 	{
@@ -59,11 +60,13 @@ package com.edgington.net
 		 * On successful response from the server
 		 */
 		private function onServerResponceComplete(e:Event):void{
-			
 			var responceData:Object = JSON.parse(e.target.data as String);
 			var responceType:String = NetResponceTypeIdentifier.GET_RESPONCE_TYPE(responceData);
 			
 			LOG.server("Responce Type: " + responceType);
+			if(Capabilities.isDebugger){
+				LOG.server("JSON: " + e.target.data);
+			}
 			
 			for(var i:int = 0; i < NetRequestObjects.length; i++){
 				if(e.currentTarget == NetRequestObjects[i].urlLoader){

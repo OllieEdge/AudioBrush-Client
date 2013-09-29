@@ -34,6 +34,8 @@
 		
 		private var calculateBandsOctelist:Vector.<Number>;
 		
+		private  var byteArray:ByteArray = new ByteArray();
+		
 		
         public function MusicParser(param1:Sound)
         {
@@ -43,16 +45,19 @@
 
             this.rawBytes = new Vector.<Number>(this.sampleSize, true);
             this.FFTBytes = new Vector.<Number>(this.sampleSize / 2, true);
-            this.octaveList = new Array(6);
-            this.octaveList[0] = [0, 5];
-            this.octaveList[1] = [5, 50];
-            this.octaveList[2] = [50, 90];
-            this.octaveList[3] = [90, 512];
-            this.octaveList[4] = [300, 400];
-            this.octaveList[5] = [0, 512];
+            this.octaveList = new Array(1);
+            this.octaveList[0] = [0, 3];
+            this.octaveList[1] = [3, 7];
+            //this.octaveList[2] = [50, 90];
+            //this.octaveList[3] = [90, 512];
+            //this.octaveList[4] = [300, 400];
+            //this.octaveList[5] = [0, 512];
             this.frequencyBand = new Vector.<Number>(this.octaveList.length, true);
             this.spectralFlux = new Vector.<Number>(this.octaveList.length, true);
             this.fftWindows = new Vector.<Vector.<Number>>(this.totalSamples, true);
+			for(var i:int = 0; i < fftWindows.length; i++){
+				fftWindows[i] = new Vector.<Number>(sampleSize*.5);
+			}
             this.frequencyBandWindows = new Vector.<Vector.<Number>>(this.totalSamples, true);
             this.spectralFluxWindows = new Vector.<Vector.<Number>>(this.totalSamples, true);
             return;
@@ -65,7 +70,7 @@
         {
             if (this.parseSampleCount >= this.totalSamples)
             {
-                this.highestAmplitude = this.calculateHighestAmplitude(5);
+                this.highestAmplitude = this.calculateHighestAmplitude(0);
 				
                 return true;
             }
@@ -93,9 +98,12 @@
 
         private function parse(sampleCount:int) : void
         {
-            var _loc_2:int = sampleCount << 10;// this.sampleSize;
-            var byteArray:ByteArray = new ByteArray();
-            this.music.extract(byteArray, this.sampleSize, _loc_2);
+            //var _loc_2:int = sampleCount << 10;// this.sampleSize;
+			if(byteArray == null){
+				byteArray = new ByteArray();
+			}
+            byteArray.position = 0;
+            this.music.extract(byteArray, this.sampleSize, sampleCount << 10);
 			byteArray.position = 0;
 			for(var i:int = 0; i < byteArray.length >> 3; i++){
                 this.rawBytes[i] = byteArray.readFloat();
@@ -114,17 +122,22 @@
             }
         }// end function
 
+		private var iterator1:int = 0;
+		private var fftBytes:Vector.<Number>
+		
         private function runFFT() : Vector.<Number>
         {
-            var fftBytes:Vector.<Number> = new Vector.<Number>(rawBytes.length / 2);
+			if(fftBytes == null){
+				fftBytes = new Vector.<Number>(rawBytes.length / 2);	
+			}
 			FFTConcatVector = rawBytes.concat();
 			FFTOutputVector = new Vector.<Number>(rawBytes.length);
 			FFTHolder.init(logN);
 			FFTHolder.run(FFTConcatVector, FFTOutputVector, false);
             var rawBytesLength:int = rawBytes.length >> 1;
-			for(var i:int = 0; i < rawBytesLength; i++){
-				fftBytes[i] = (FFTConcatVector[i]*FFTConcatVector[i] + FFTOutputVector[i]*FFTOutputVector[i] + (FFTConcatVector[511 - i]*FFTConcatVector[511 - i] + FFTOutputVector[511 - i]*FFTOutputVector[511 - i])) / 2;
-            }
+			for(iterator1 = 0; iterator1 < rawBytesLength; iterator1++){
+				fftBytes[iterator1] = (FFTConcatVector[iterator1]*FFTConcatVector[iterator1] + FFTOutputVector[iterator1]*FFTOutputVector[iterator1] + (FFTConcatVector[511 - iterator1]*FFTConcatVector[511 - iterator1] + FFTOutputVector[511 - iterator1]*FFTOutputVector[511 - iterator1])) *.5;
+			}
             return fftBytes;
         }// end function
 
@@ -182,9 +195,12 @@
 
         private function addToWindows(param1:int, param2:Vector.<Number>, param3:Vector.<Number>, param4:Vector.<Number>) : void
         {
-            this.fftWindows[param1] = param2;
+            this.fftWindows[param1] = param2.concat();
             this.frequencyBandWindows[param1] = param3;
             this.spectralFluxWindows[param1] = param4;
+			param2 = null;
+			param3 = null;
+			param4 = null;
             return;
         }// end function
 
@@ -228,5 +244,36 @@
             return _loc_4;
         }// end function
 
+		public function destroy():void{
+			
+			rawBytes = new Vector.<Number>;
+			FFTBytes = new Vector.<Number>;
+			frequencyBand = new Vector.<Number>;
+			spectralFlux = new Vector.<Number>;
+			fftWindows = new Vector.<Vector.<Number>>;
+			frequencyBandWindows = new Vector.<Vector.<Number>>;
+			spectralFluxWindows = new Vector.<Vector.<Number>>;
+			FFTHolder = new FFT();
+			FFTConcatVector = new Vector.<Number>;
+			FFTOutputVector = new Vector.<Number>;
+			calculateBandsOctelist = new Vector.<Number>;
+			music = null;
+			
+			rawBytes = null;
+			FFTBytes = null;
+			frequencyBand = null;
+			spectralFlux = null
+			fftWindows = null;
+			frequencyBandWindows = null;
+			spectralFluxWindows = null;
+			FFTHolder = null;
+			FFTConcatVector = null;
+			FFTOutputVector = null;
+			calculateBandsOctelist = null;
+			music = null;
+		}
+		
     }
+	
+	
 }

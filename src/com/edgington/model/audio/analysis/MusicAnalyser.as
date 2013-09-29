@@ -28,12 +28,20 @@
 		private var thresholdTimeframe:Vector.<int>;
 		private var percentCompleted:int = 0;
 		
+		private var totalSamples:int = 0;
+		private var sampleSize:int = 1024;
+		private var lastSeen:int = 0;
+		
+		private var difficulty:int = 0;
+		
 		public function MusicAnalyser(param1:MusicParser)
 		{
 			sections = new Array();
 			sectionsAverage = new Array();
 			starSections = new Array();
 			musicParser = param1;
+			totalSamples = musicParser.totalSamples;
+			sampleSize = musicParser.sampleSize
 			beatsDetected = new Vector.<Number>(param1.octaveList.length, true);
 			fluxThresholds = new Vector.<Vector.<Number>>(param1.totalSamples, true);
 			var _loc_2:int = 0;
@@ -100,6 +108,9 @@
 			//BPM = calculateTempo(0);
 			
 			calculateStarSections();
+			
+			musicParser.destroy();
+			musicParser = null;
 		}
 		
 		/**
@@ -304,10 +315,7 @@
 					sections.push(_loc_7);
 					sectionsAverage.push(_loc_2);
 					_loc_3 = _loc_2;
-					if (debugMode)
-					{
-						;
-					}
+
 					_loc_2 = 0;
 				}
 				_loc_5 = _loc_5 + _loc_4;
@@ -463,6 +471,35 @@
 				_loc_4++;
 			}
 		}
+		
+		
+		//GET THE CURRENT WINDOW IN THE TRACK AT THE PLAY HEAD POSITION
+		public function getNextWindow(param1:Number, param2:Boolean = true) : int
+		{
+			var _loc_6:int = 0;
+			var _loc_3:int = Math.ceil(param1 * 44.1 / this.sampleSize);
+			var _loc_4:int = _loc_3;
+			if (_loc_3 > (this.totalSamples - 1))
+			{
+				return -1;
+			}
+			if (_loc_4 == this.lastSeen && param2)
+			{
+				return -1;
+			}
+			var _loc_5:* = _loc_4 - this.lastSeen;
+			if (_loc_4 - this.lastSeen > 1)
+			{
+				_loc_4 = this.lastSeen + 1;
+				_loc_6 = _loc_3 - _loc_4;
+				if (_loc_6 > 5)
+				{
+					_loc_4 = _loc_3;
+				}
+			}
+			this.lastSeen = _loc_4;
+			return _loc_4;
+		}// end function
 		
 	}
 }

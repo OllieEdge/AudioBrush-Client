@@ -6,6 +6,9 @@ package com.edgington.control
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
+	import flash.ui.Multitouch;
+	import flash.ui.MultitouchInputMode;
 	
 	import org.osflash.signals.Signal;
 
@@ -19,9 +22,15 @@ package com.edgington.control
 		private var MouseMoveSignal:Signal;
 		private var MouseOutSignal:Signal;
 		
+		private var TouchDownSignal:Signal;
+		private var TouchMoveSignal:Signal;
+		private var TouchUpSignal:Signal;
+		
 		private var UpdateSignal:Signal;
 		
 		private var mainStage:Sprite
+		
+		private var touchCoordsArray:Vector.<TouchEventVO>;
 		
 		public function Control(e:SingletonEnforcer)
 		{
@@ -33,6 +42,9 @@ package com.edgington.control
 		 */
 		public function init(stage:Sprite):void{
 			mainStage = stage;
+			touchCoordsArray = new Vector.<TouchEventVO>;
+			
+			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 			
 			initMouseSignals();
 			initEventSignals();
@@ -69,6 +81,10 @@ package com.edgington.control
 			MouseMoveSignal = new Signal();
 			MouseOutSignal = new Signal();
 			MouseUpSignal = new Signal();
+			
+			TouchDownSignal = new Signal();
+			TouchMoveSignal = new Signal();
+			TouchUpSignal = new Signal();
 		}
 		
 		/**
@@ -79,6 +95,10 @@ package com.edgington.control
 			mainStage.parent.addEventListener(MouseEvent.MOUSE_UP, handleMouseEvents);
 			mainStage.parent.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseEvents);
 			mainStage.parent.addEventListener(MouseEvent.MOUSE_OUT, handleMouseEvents);
+			
+			mainStage.parent.addEventListener(TouchEvent.TOUCH_BEGIN, handleTouchEvents);
+			mainStage.parent.addEventListener(TouchEvent.TOUCH_MOVE, handleTouchEvents);
+			mainStage.parent.addEventListener(TouchEvent.TOUCH_END, handleTouchEvents);
 		}
 		
 		/**
@@ -98,7 +118,7 @@ package com.edgington.control
 		{
 			switch(event.type){
 				case MouseEvent.MOUSE_DOWN:
-						MouseDownSignal.dispatch(event.stageX, event.stageY);
+					MouseDownSignal.dispatch(event.stageX, event.stageY);
 					break;
 				case MouseEvent.MOUSE_UP:
 					MouseUpSignal.dispatch(event.stageX, event.stageY);
@@ -113,6 +133,38 @@ package com.edgington.control
 		}
 		
 		/**
+		 * This handles all the touch events
+		 */
+		private function handleTouchEvents(event:TouchEvent):void{
+			switch(event.type){
+				case TouchEvent.TOUCH_BEGIN:
+					touchCoordsArray.push(new TouchEventVO(event.touchPointID, event.stageX, event.stageY));
+					TouchDownSignal.dispatch(touchCoordsArray);
+					break;
+				case TouchEvent.TOUCH_MOVE:
+					for(var i:int = 0; i < touchCoordsArray.length; i++){
+						if(touchCoordsArray[i].touchID == event.touchPointID){
+							touchCoordsArray[i].x = event.stageX;
+							touchCoordsArray[i].y = event.stageY;
+							break;
+						}
+					}
+					TouchMoveSignal.dispatch(touchCoordsArray);
+					break;
+				case TouchEvent.TOUCH_END:
+					//LOG.debug(event.touchPointID);
+					for(var e:int = 0; e < touchCoordsArray.length; e++){
+						if(touchCoordsArray[e].touchID == event.touchPointID){
+							touchCoordsArray.splice(e, 1);
+							break;
+						}
+					}
+					TouchUpSignal.dispatch(touchCoordsArray);
+					break;
+			}
+		}
+		
+		/**
 		 * Returns all the signals so that they can be used where-ever needed.
 		 */
 		public static function getMouseSignals():MouseSignalsVO{
@@ -121,6 +173,9 @@ package com.edgington.control
 			mouseSignals.MOVE_Signal = INSTANCE.MouseMoveSignal;
 			mouseSignals.OUT_Signal = INSTANCE.MouseOutSignal;
 			mouseSignals.UP_Signal = INSTANCE.MouseUpSignal;
+			mouseSignals.DOWN_Touch_Signal = INSTANCE.TouchDownSignal;
+			mouseSignals.UP_Touch_Signal = INSTANCE.TouchUpSignal;
+			mouseSignals.MOVE_Touch_Signal = INSTANCE.TouchMoveSignal;
 			return mouseSignals;
 		}
 		

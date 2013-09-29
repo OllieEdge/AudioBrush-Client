@@ -10,6 +10,7 @@ package com.edgington.view.game.draw
 	import com.edgington.view.game.Canvas;
 	import com.greensock.TweenLite;
 	
+	import flash.display.BlendMode;
 	import flash.display.Sprite;
 	import flash.text.TextField;
 	
@@ -47,11 +48,16 @@ package com.edgington.view.game.draw
 		private var starPowerFailedSignal:Signal;
 		
 		private var currentThemeID:String;
+		private var isRogue:Boolean;
 		
-		public function CircleBeat(beatID:int)
+		public function CircleBeat(beatID:int, isRogue:Boolean = false)
 		{
 			super();
 			this.beatID = beatID;
+			if(isRogue){
+				this.isRogue = isRogue;		
+			}
+		
 			
 			if(DynamicConstants.DEVICE_NAME == Constants.IPAD_4PLUS || DynamicConstants.DEVICE_NAME == Constants.UNKNOWN_LARGE){
 				circleBeatScale = 40;
@@ -61,7 +67,7 @@ package com.edgington.view.game.draw
 				scaleReductionSpeed = 0.05;
 			}
 			
-			currentThemeID = SettingsProxy.getInstance().currentTheme;
+			currentThemeID = SettingsProxy.getInstance().currentTheme;	
 			
 			if(GameProxy.INSTANCE.starPowerBeatsRemainingBeforeActivation >  0){
 				starBeat = true;
@@ -70,20 +76,30 @@ package com.edgington.view.game.draw
 			
 			
 			if(!starBeat){
-				if(GameProxy.INSTANCE.starPowerActive){
-					circle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLOR_STAR_POWER_SECONDARY"][0]);
+				if(isRogue){
+					circle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_ROGUE_BEAT_COLOR"][0]);
 				}
 				else{
-					circle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLORS"][Canvas.currentColourIndex]);	
+					if(GameProxy.INSTANCE.starPowerActive){
+						circle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLOR_STAR_POWER_SECONDARY"][0]);
+					}
+					else{
+						circle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLORS"][Canvas.currentColourIndex]);	
+					}
 				}
 				circle.graphics.drawEllipse(circlePositionOffset, circlePositionOffset, circleBeatScale, circleBeatScale);
 				circle.graphics.endFill();
 				
-				if(GameProxy.INSTANCE.starPowerActive){
-					circle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLOR_STAR_POWER"][0]);
+				if(isRogue){
+					constCircle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_ROGUE_BEAT_COLOR"][1]);
 				}
 				else{
-					constCircle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLORS_SECONDARY"][Canvas.currentColourIndex]);
+					if(GameProxy.INSTANCE.starPowerActive){
+						constCircle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLOR_STAR_POWER"][0]);
+					}
+					else{
+						constCircle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLORS_SECONDARY"][Canvas.currentColourIndex]);
+					}
 				}
 				constCircle.graphics.drawEllipse(circlePositionOffset, circlePositionOffset, circleBeatScale, circleBeatScale);
 				constCircle.graphics.endFill();
@@ -100,6 +116,8 @@ package com.edgington.view.game.draw
 				DrawingShapes.drawStar(constCircle.graphics, 0, 0, 5, starBeatScale, starOuterBeatScale);
 				constCircle.graphics.endFill();
 			}
+			
+			circle.blendMode = BlendMode.ADD;
 			
 			constCircle.cacheAsBitmap = true;
 			
@@ -130,11 +148,16 @@ package com.edgington.view.game.draw
 			hit = true;
 			
 			if(!starBeat){
-				if(GameProxy.INSTANCE.starPowerActive){
-					constCircle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLOR_STAR_POWER_SECONDARY"][0]);
+				if(isRogue){
+					constCircle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_ROGUE_BEAT_COLOR"][0]);
 				}
 				else{
-					constCircle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLORS"][Canvas.currentColourIndex]);
+					if(GameProxy.INSTANCE.starPowerActive){
+						constCircle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLOR_STAR_POWER_SECONDARY"][0]);
+					}
+					else{
+						constCircle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLORS"][Canvas.currentColourIndex]);
+					}
 				}
 				constCircle.graphics.drawEllipse(circlePositionOffset, circlePositionOffset, circleBeatScale, circleBeatScale);
 				constCircle.graphics.endFill();
@@ -142,17 +165,17 @@ package com.edgington.view.game.draw
 			else{
 				constCircle.graphics.beginFill(CanvasConstants[currentThemeID.toUpperCase()+"_COLORS"][Canvas.currentColourIndex]);
 				DrawingShapes.drawStar(constCircle.graphics, 0, 0, 5, starBeatScale, starOuterBeatScale);
-				constCircle.graphics.endFill();
+				constCircle.graphics.endFill();	
 			}
 			
 			if(hasBeat && circle.scaleX >= GameConstants.GOOD_THRESHOLD){
-				GameProxy.INSTANCE.beatCollected(circle.scaleX, starBeat, beatID);
+				GameProxy.INSTANCE.beatCollected(circle.scaleX, starBeat, beatID, isRogue);
 			}
 			else if(frameCount >= GameConstants.EARLY_OK_THRESHOLD){
-				GameProxy.INSTANCE.beatCollected(Math.min(25, frameCount)/5, starBeat, beatID);
+				GameProxy.INSTANCE.beatCollected(Math.min(25, frameCount)/5, starBeat, beatID, isRogue);
 			}
 			else{
-				GameProxy.INSTANCE.beatCollected(-1, starBeat, beatID);
+				GameProxy.INSTANCE.beatCollected(-1, starBeat, beatID, isRogue);
 			}
 			
 		}
@@ -192,7 +215,7 @@ package com.edgington.view.game.draw
 				starPowerFailedSignal.remove(starPowerFailed);
 			}
 			if(!hit){
-				GameProxy.INSTANCE.beatCollected(-2, starBeat, beatID);
+				GameProxy.INSTANCE.beatCollected(-2, starBeat, beatID, isRogue);
 			}
 			TweenLite.killTweensOf(superlativeText);
 			TweenLite.killDelayedCallsTo(this.removeChild);

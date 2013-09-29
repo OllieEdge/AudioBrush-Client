@@ -93,12 +93,17 @@ package com.edgington.view.huds.base
 		
 		protected function removeElements():void{
 			cleanTweens();
-			for(var i:int = 0; i < onScreenElements.length; i++){
-				onScreenElements[i].alpha = 1;
-				onScreenTweens.push(TweenMax.to(onScreenElements[i], 0.1, {alpha:0, ease:Linear.easeNone}));
+			if(onScreenElements){
+				for(var i:int = 0; i < onScreenElements.length; i++){
+					onScreenElements[i].alpha = 1;
+					onScreenTweens.push(TweenMax.to(onScreenElements[i], 0.1, {alpha:0, ease:Linear.easeNone}));
+				}
+				if(onScreenElements.length > 0){
+					onScreenTweens[onScreenTweens.length-1].addEventListener(TweenEvent.COMPLETE, removeAllOnScreenElements);
+				}
 			}
-			if(onScreenElements.length > 0){
-				onScreenTweens[onScreenTweens.length-1].addEventListener(TweenEvent.COMPLETE, removeAllOnScreenElements);
+			else{
+				LOG.fatal("There was something that went wrong with the removal of the hud.");
 			}
 		}
 		

@@ -158,6 +158,8 @@ package com.edgington.view.game.analysis
 					progress.ui_progressbar.bar.scaleX = progressPercentage;
 					break;
 				case AudioEvent.TRACK_ANALYSIS_COMPLETE:
+					audioManager.parser.destroy();
+					audioManager.parser = null;
 					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.GAME_ANALYSIS;
 					removeElements();
 					break;

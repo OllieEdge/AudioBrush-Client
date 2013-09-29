@@ -90,7 +90,7 @@ package com.edgington.view
 			while(this.numChildren > 0){
 				this.removeChildAt(0);
 			}
-			gameProxy.beatCollected(-5, false, -1);
+			gameProxy.beatCollected(-5, false, -1, false);
 			gameProxy = null;
 			if(killEarly){
 				GameProxy.deleteInstance();

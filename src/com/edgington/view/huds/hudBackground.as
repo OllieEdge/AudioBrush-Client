@@ -68,7 +68,7 @@ package com.edgington.view.huds
 			for(var r:int = 0; r < rowsToCreate; r++){
 				for(var c:int = 0; c < columnsToCreate; c++){
 					var bitmapData:BitmapData = new BitmapData(BITMAP_SIZE, BITMAP_SIZE, false, 0x00);
-					bitmapData.copyPixels(AssetLoader.imageDictionary["normal_gameBackground"], bitmapData.rect, new Point(0, 0));
+					bitmapData.copyPixels(AssetLoader.imageDictionary["theme_normal_gameBackground"], bitmapData.rect, new Point(0, 0));
 					bitmapDatas.push(bitmapData);
 					var bitmap:Bitmap = new Bitmap(bitmapData, "never", false);
 					bitmap.x = BITMAP_SIZE*c;

@@ -3,32 +3,42 @@
 
 	<bitmap>
 		<url>assets/images/ink/background.png</url>
-		<assetID>normal_gameBackground</assetID>
+		<assetID>theme_normal_gameBackground</assetID>
 	</bitmap>
 	
 	<bitmap>
 		<url>assets/images/ink/originalBackground.png</url>
-		<assetID>normal_gameStarBackground</assetID>
+		<assetID>theme_normal_gameStarBackground</assetID>
 	</bitmap>
 	
 	<bitmap>
 		<url>assets/images/ink/swirlyNormal.png</url>
-		<assetID>swirly_gameBackground</assetID>
+		<assetID>theme_swirly_gameBackground</assetID>
 	</bitmap>
 	
 	<bitmap>
 		<url>assets/images/ink/swirlyStar.png</url>
-		<assetID>swirly_gameStarBackground</assetID>
+		<assetID>theme_swirly_gameStarBackground</assetID>
 	</bitmap>
 	
 	<bitmap>
 		<url>assets/images/ink/fireNormal.png</url>
-		<assetID>fire_gameBackground</assetID>
+		<assetID>theme_fire_gameBackground</assetID>
 	</bitmap>
 	
 	<bitmap>
 		<url>assets/images/ink/fireStar.png</url>
-		<assetID>fire_gameStarBackground</assetID>
+		<assetID>theme_fire_gameStarBackground</assetID>
+	</bitmap>
+	
+	<bitmap>
+		<url>assets/images/ink/iceNormal.png</url>
+		<assetID>theme_ice_gameBackground</assetID>
+	</bitmap>
+	
+	<bitmap>
+		<url>assets/images/ink/iceStar.png</url>
+		<assetID>theme_ice_gameStarBackground</assetID>
 	</bitmap>
 	
 </bitmaps>

@@ -3,8 +3,10 @@ package com.edgington.view.game
 	import com.edgington.constants.CanvasConstants;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.GameConstants;
+	import com.edgington.constants.SoundConstants;
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.SettingsProxy;
+	import com.edgington.model.SoundManager;
 	import com.edgington.types.HandDirectionType;
 	import com.edgington.util.TextFieldManager;
 	import com.edgington.util.localisation.gettext;
@@ -70,6 +72,7 @@ package com.edgington.view.game
 		private function addListeners():void{
 			GameProxy.INSTANCE.beatCollectSignal.add(beatCollected);
 			GameProxy.INSTANCE.activeStarPowerSignal.add(changeColor);
+			GameProxy.INSTANCE.notificationSignal.add(displayNote);
 		}
 		
 		private function changeColor():void{
@@ -117,6 +120,7 @@ package com.edgington.view.game
 		}
 		
 		private function addField(field:TextField):void{
+			SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_ON_SCREEN_DETAILS), "", 0.25);
 			switch(field){
 				case normalChainTextfield:
 					cleanTween(normalChainTween);
@@ -146,6 +150,7 @@ package com.edgington.view.game
 		}
 		
 		private function displayNote(str:String):void{
+			SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_ON_SCREEN_DETAILS), "", 0.25);
 			normalChainTextfield.text = str;
 			normalChainTextfield.y = DynamicConstants.SCREEN_HEIGHT*.5 + normalChainTextfield.height + DynamicConstants.BUTTON_SPACING*.5;
 			TweenLite.killDelayedCallsTo(removeField);

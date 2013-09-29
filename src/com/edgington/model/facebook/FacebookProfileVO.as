@@ -24,6 +24,7 @@ package com.edgington.model.facebook
 				lastName = facebookProfile.properties.last_name;
 			}
 			else if(rawData != null){
+				rawFacebookData =  new GVFacebookFriend(rawData.name, rawData.id, rawData);
 				profileID = rawData.id;
 				gender = rawData.gender;
 				installed = true;

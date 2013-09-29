@@ -3,11 +3,13 @@ package
 		import com.edgington.constants.DynamicConstants;
 		import com.edgington.constants.FacebookConstants;
 		import com.edgington.control.Control;
+		import com.edgington.model.SoundManager;
 		import com.edgington.model.facebook.FacebookManager;
 		import com.edgington.model.payments.MobilePurchaseManager;
 		import com.edgington.net.NetManager;
 		import com.edgington.net.UserData;
 		import com.edgington.types.GameStateTypes;
+		import com.edgington.types.ThemeTypes;
 		import com.edgington.util.PushNotificationsManager;
 		import com.edgington.util.TextFieldManager;
 		import com.edgington.util.localisation.LOCALE_INSTANCE;
@@ -50,6 +52,8 @@ package
 			PushNotificationsManager.getInstance().addEventListener(Event.COMPLETE, setupGame);
 			PushNotificationsManager.getInstance().setupPN();
 			
+			SoundManager.getInstance();
+			
 			TextFieldManager.createCentrallyAllignedTextField("Warm-up fonts", FONT_audiobrush_content, 0xFFFFFF, 10);
 			
 			FacebookManager.getInstance();
@@ -87,6 +91,9 @@ package
 		}
 		
 		private function loadGame():void{
+			//Make sure that we populate the themes before the background is loaded.
+			ThemeTypes.populateThemes();
+			
 			if(DynamicConstants.isMobileOS()){
 				//If this is being run on mobile lets make sure that we use the proper facebook.
 				FacebookConstants.DEBUG_FACEBOOK_ALLOWED = false;
@@ -94,7 +101,7 @@ package
 				DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MESSAGE_FACEBOOK_LOGIN;
 			}
 			else{
-				NetManager.CORE_URL = "http://192.168.33.10:3000/api/";
+				//NetManager.CORE_URL = "http://192.168.33.10:3000/api/";
 				UserData.getInstance().getUser();
 				//GiftData.getInstance().postGifts(null, 1);
 				DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_MAIN;

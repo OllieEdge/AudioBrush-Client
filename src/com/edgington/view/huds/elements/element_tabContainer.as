@@ -199,7 +199,7 @@ package com.edgington.view.huds.elements
 		
 		public function get getTabBodyHeight():int{
 			if(tabDescription != null && tabDescription.visible){
-				return body.height - tabDescription.y + tabDescription.height;
+				return body.height - ((tabDescription.y-body.y) + tabDescription.height);
 			}
 			else{
 				return body.height;

@@ -63,6 +63,7 @@ package com.edgington.net
 			if(highscores[artist + "_" + track + "_" + difficulty] == null){
 				localHighscore.score = score;
 				localHighscore.requiresSyncWithServer = true;
+				localHighscore.newHighscore = true;
 				highscores[artist + "_" + track + "_" + difficulty] = localHighscore;
 				saveHighscore();
 			}
@@ -85,16 +86,16 @@ package com.edgington.net
 				obj.trackkey = artist+"_"+track;
 				obj.fb_id = facebookID;
 				obj.score = score;
-				obj.trackname = track;
-				obj.artist = artist;
+				obj.trackname = GameProxy.INSTANCE.currentTrackDetails.trackTitle;
+				obj.artist = GameProxy.INSTANCE.currentTrackDetails.artistName;
 				
 				PUT(new NetResponceHandler(onHighscorePosted, onHighscorePostFailed), obj.trackkey, obj);
 			}
 			else if(shouldPostScoreToServer){
 				localHighscore.score = score;
 				localHighscore.requiresSyncWithServer = true;
-				localHighscore.artist = artist;
-				localHighscore.track = track;
+				localHighscore.artist = GameProxy.INSTANCE.currentTrackDetails.artistName;
+				localHighscore.track = GameProxy.INSTANCE.currentTrackDetails.trackTitle;
 				localHighscore.newHighscore = true;
 				localHighscore.rank = -1;
 				localHighscore.score = score;
@@ -149,8 +150,8 @@ package com.edgington.net
 				var localHighscore:HighscoreServerVO = new HighscoreServerVO();
 				localHighscore.score = score;
 				localHighscore.requiresSyncWithServer = true;
-				localHighscore.artist = artist;
-				localHighscore.track = track;
+				localHighscore.artist = GameProxy.INSTANCE.currentTrackDetails.artistName;
+				localHighscore.track = GameProxy.INSTANCE.currentTrackDetails.trackTitle;
 				localHighscore.newHighscore = true;
 				localHighscore.rank = -1;
 				localHighscore.score = score;
@@ -175,7 +176,9 @@ package com.edgington.net
 			var localHighscore:HighscoreServerVO = new HighscoreServerVO();
 			localHighscore.artist = highscores[serverVO.trackkey + "_" + 0].artist;
 			localHighscore.track = highscores[serverVO.trackkey + "_" + 0].track;
-			localHighscore.newHighscore = (highscores[serverVO.trackkey + "_" + 0].score != serverVO.score);
+			if(!localHighscore.newHighscore){
+				localHighscore.newHighscore = (highscores[serverVO.trackkey + "_" + 0].score != serverVO.score);
+			}
 			localHighscore.rank = serverVO.rank;
 			localHighscore.score = serverVO.score;
 			localHighscore.difficulty = 0;

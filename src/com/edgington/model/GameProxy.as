@@ -2,8 +2,12 @@ package com.edgington.model
 {
 	import com.edgington.NativeMediaManager.NativeMediaVO;
 	import com.edgington.constants.GameConstants;
+	import com.edgington.constants.SoundConstants;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.net.HighscoreServerVO;
+	
+	import flash.media.Sound;
 	
 	import org.osflash.signals.Signal;
 
@@ -16,6 +20,10 @@ package com.edgington.model
 		
 		public var pauseSignal:Signal;
 		public var killGameEarlySignal:Signal;
+		
+		//If there is a event to report to the user dispatch this with a string
+		public var notificationSignal:Signal;
+		public var notificationString:String = "";
 		
 		//When star power beats are going to appear this star power signal will dispatch
 		public var starPowerSignal:Signal;
@@ -103,6 +111,7 @@ package com.edgington.model
 			killGameEarlySignal = new Signal();
 			multiplierSignal = new Signal();
 			colourChange = new Signal();
+			notificationSignal = new Signal();
 		}
 		
 		private function removeListeners():void{
@@ -114,6 +123,7 @@ package com.edgington.model
 			pauseSignal.removeAll();
 			multiplierSignal.removeAll();
 			colourChange.removeAll();
+			notificationSignal.removeAll();
 		}
 		
 		public function addAdditonalListeners(colourSignal:Signal, starPowerSignal:Signal, addBeatSignal:Signal):void{
@@ -126,18 +136,25 @@ package com.edgington.model
 			totalBeats++;
 		}
 		
-		public function beatCollected(beatScale:Number, starBeat:Boolean, beatID:int):void{
+		public function beatCollected(beatScale:Number, starBeat:Boolean, beatID:int, rogueBeat:Boolean):void{
+			if(beatScale == -2){
+				return;
+			}
 			var thisBeatScore:int = 0;
 			currentBeatID = beatID;
+			notificationString = "";
 			
 			if(starBeat){
 				lastStarBeatID = beatID;
 			}
+			else{
+				SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_COLLECT_BEAT_1), "", 1);
+			}
 			
 			//Generic scoring (without multipliers);
 			thisBeatScore += addBeatScore(beatScale);
-			thisBeatScore += checkPerfectStreak(beatScale);			
 			thisBeatScore += checkStreak(beatScale);
+			thisBeatScore += checkPerfectStreak(beatScale);			
 			
 			//Checks if there are stars on screen and handles.
 			if(starPowerBeatsAreOnScreen){
@@ -148,6 +165,7 @@ package com.edgington.model
 			if(starPowerActive){
 				beatsHitDuringStarPower++;
 				if(beatsHitDuringStarPower == 0){
+					SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_STAR_POWER_OFF), "", 1);
 					starPowerActive = false;
 					activeStarPowerSignal.dispatch()
 				}
@@ -162,6 +180,10 @@ package com.edgington.model
 			//Dispatch appropriate events
 			scoreUpdateSignal.dispatch();
 			beatCollectSignal.dispatch(beatScale);
+			
+			if(notificationString != ""){
+				notificationSignal.dispatch(notificationString);
+			}
 		}
 		
 		/**
@@ -206,6 +228,7 @@ package com.edgington.model
 			}
 			if(starBeat){
 				starPowerStarBeatsCollected++;
+				SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants["SFX_STAR_"+starPowerStarBeatsCollected]), "", 1);
 				if(starPowerStarBeatsCollected == GameConstants.STAR_POWER_BEATS_TO_COLLECT){
 					activeStarPower();
 				}
@@ -224,6 +247,7 @@ package com.edgington.model
 				currentNormalHitStreak = 0;
 				scoreNormalStreaks += streakBonus*multiplier;
 				streaksNormal++;
+				notificationString = gettext("game_streak_bonus_notification", {points:streakBonus*multiplier});
 				return streakBonus;
 			}
 			return 0;
@@ -238,10 +262,14 @@ package com.edgington.model
 			}
 			if(currentPerfectHitStreak > 0 && beatScale < GameConstants.PERFECT_THRESHOLD){
 				var perfectStreakBonus:int = Math.floor(currentPerfectHitStreak/GameConstants.PERFECT_CHAIN_MULTIPLE_BONUS)*GameConstants.PERFECT_CHAIN_BONUS_AMOUNT;
+				if(currentPerfectHitStreak > 1){
+					scorePerfectStreaks += perfectStreakBonus*multiplier;
+					streaksPerfect++;
+					notificationString = gettext("game_perfect_streak_bonus_notification", {points:perfectStreakBonus*multiplier});
+					currentPerfectHitStreak = 0;
+					return perfectStreakBonus;
+				}
 				currentPerfectHitStreak = 0;
-				scorePerfectStreaks += perfectStreakBonus*multiplier;
-				streaksPerfect++;
-				return perfectStreakBonus;
 			}
 			return 0;
 		}
@@ -285,6 +313,7 @@ package com.edgington.model
 			starPowerBeatsAreOnScreen = false;
 			beatsHitDuringStarPower -= Math.max(GameConstants.STAR_POWER_ACTIVE_FOR_X_BEATS, -GameConstants.STAR_POWER_MAXIMUM_ALLOWED);
 			starPowerActive = true;
+			SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_STAR_POWER_ON), "", 1);
 			activeStarPowerSignal.dispatch();
 			checkMultiplier();
 		}

@@ -16,5 +16,10 @@ package com.edgington.model.audio
 			peaks = AudioMainModel.getInstance().getSoundChannelPeaks()
 			return (peaks.left + peaks.right) *.5
 		}
+		
+		public static function trackVolume():Number{
+			var peaks:SoundChannelPeaksVO = AudioMainModel.getInstance().getSoundChannelPeaks()
+			return (peaks.left + peaks.right) *.5
+		}
 	}
 }

@@ -188,7 +188,7 @@ package com.edgington.net
 		private function onGiftsSentSuccess(e:Object = null):void{
 			giftsSent = true;
 			if(e && e.length > 0){
-				
+				giftDataSignal.dispatch();
 			}
 			else{
 				if(e && e.length == 0){
@@ -201,6 +201,7 @@ package com.edgington.net
 		}
 		private function onGiftsSentFailed():void{
 			giftsSent = false;
+			giftDataSignal.dispatch();
 			LOG.error("There was a problem sending gifts to the receiptients");
 		}
 		

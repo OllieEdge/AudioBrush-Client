@@ -14,6 +14,7 @@ package com.edgington.view.huds.elements
 	{
 		
 		private var ipadSendItemSurround:ui_sendItemScreenIpad;
+		private var iphoneSendItemSurround:ui_sendItemScreenIphone;
 		
 		private var items:Vector.<SmallListItemVO>;
 		
@@ -45,7 +46,12 @@ package com.edgington.view.huds.elements
 		}
 		
 		private function setupVisuals():void{
-			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
+			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+				iphoneSendItemSurround = new ui_sendItemScreenIphone();
+				iphoneSendItemSurround.y += 50;
+				this.addChild(iphoneSendItemSurround);
+			}
+			else{
 				ipadSendItemSurround = new ui_sendItemScreenIpad();
 				userProfilePicture = ipadSendItemSurround.img_you;
 				friendProfilePic = new Vector.<ui_profile_picture>;
@@ -77,18 +83,23 @@ package com.edgington.view.huds.elements
 			if(ipadSendItemSurround != null){
 				ipadSendItemSurround.txt_number_friends.text = gettext("send_freinds_count", {selected:selectedUsers, maximum:maximumUsers});
 			}
+			else if(iphoneSendItemSurround != null){
+				iphoneSendItemSurround.txt_num_friends.text = gettext("send_freinds_count", {selected:selectedUsers, maximum:maximumUsers});
+			}
 		}
 		
 		public function addItem(item:SmallListItemVO):void{
 			items.push(item);
-			if(currentFriendsLoadedInPictures.length < friendsProfilePicElement.length){
-				for(var i:int = 0; i < friendsProfilePicElement.length; i++){
-					if(friendsProfilePicElement[i].profileID == ""){
-						friendsProfilePicElement[i].changeImage(item.id);
-						break;
+			if(DynamicConstants.DEVICE_TYPE != DeviceTypes.IPHONE){
+				if(currentFriendsLoadedInPictures.length < friendsProfilePicElement.length){
+					for(var i:int = 0; i < friendsProfilePicElement.length; i++){
+						if(friendsProfilePicElement[i].profileID == ""){
+							friendsProfilePicElement[i].changeImage(item.id);
+							break;
+						}
 					}
+					currentFriendsLoadedInPictures.push(item.id);
 				}
-				currentFriendsLoadedInPictures.push(item.id);
 			}
 			selectedUsers = items.length;
 			updateUserCountText();
@@ -97,16 +108,18 @@ package com.edgington.view.huds.elements
 		public function removeItem(item:SmallListItemVO):void{
 			for(var i:int = 0; i < items.length; i++){
 				if(items[i].id == item.id){
-					for(var p:int = 0; p < friendsProfilePicElement.length; p++){
-						if(friendsProfilePicElement[p].profileID == item.id){
-							friendsProfilePicElement[p].changeImage("");
-							break;
+					if(DynamicConstants.DEVICE_TYPE != DeviceTypes.IPHONE){
+						for(var p:int = 0; p < friendsProfilePicElement.length; p++){
+							if(friendsProfilePicElement[p].profileID == item.id){
+								friendsProfilePicElement[p].changeImage("");
+								break;
+							}
 						}
-					}
-					for(var c:int = 0; c < currentFriendsLoadedInPictures.length; c++){
-						if(currentFriendsLoadedInPictures[c] == item.id){
-							currentFriendsLoadedInPictures.splice(c, 1);
-							break;
+						for(var c:int = 0; c < currentFriendsLoadedInPictures.length; c++){
+							if(currentFriendsLoadedInPictures[c] == item.id){
+								currentFriendsLoadedInPictures.splice(c, 1);
+								break;
+							}
 						}
 					}
 					items.splice(i, 1);
@@ -121,8 +134,10 @@ package com.edgington.view.huds.elements
 			
 			selectedUsers = 0;
 			
-			for(var i:int = 0; i < friendProfilePic.length; i++){
-				friendsProfilePicElement[i].changeImage("");
+			if(DynamicConstants.DEVICE_TYPE != DeviceTypes.IPHONE){
+				for(var i:int = 0; i < friendProfilePic.length; i++){
+					friendsProfilePicElement[i].changeImage("");
+				}
 			}
 			
 			currentFriendsLoadedInPictures = new Vector.<String>;

@@ -21,7 +21,7 @@ package com.edgington.model
 				handSelection = settingsStore.data.handSelected;
 			}
 			if(settingsStore.data.theme == null){
-				currentTheme = ThemeTypes.NORMAL_THEME;
+				currentTheme = ThemeTypes.NORMAL_THEME.themeID;
 				settingsStore.data.theme = currentTheme;
 				saveSettings();
 			}

@@ -7,7 +7,7 @@ package com.edgington.valueobjects.net
 		public var artist:String;
 		public var difficulty:int;
 		public var score:int;
-		public var newHighscore:Boolean;
+		public var newHighscore:Boolean = false;
 		public var requiresSyncWithServer:Boolean
 	}
 }

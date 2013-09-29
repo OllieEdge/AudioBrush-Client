@@ -3,8 +3,10 @@ package com.edgington.view.huds.elements
 	
 	import com.edgington.constants.CanvasConstants;
 	import com.edgington.constants.GameConstants;
+	import com.edgington.constants.SoundConstants;
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.SettingsProxy;
+	import com.edgington.model.SoundManager;
 	import com.edgington.types.HandDirectionType;
 	import com.edgington.util.TextFieldManager;
 	import com.edgington.view.game.Canvas;
@@ -67,6 +69,13 @@ package com.edgington.view.huds.elements
 		}
 		
 		public function addNewBeat():void{
+			//Check if the multiplier has changed since the last beat.
+			if(currentMultiplier < gameProxy.multiplier){
+				SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants["SFX_MULTIPLIER_" + gameProxy.multiplier]), "", 1);
+			}
+			else if(currentMultiplier > gameProxy.multiplier){
+				SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_MULTIPLIER_LOST), "", 1);
+			}
 			currentMultiplier = gameProxy.multiplier;
 			if(gameProxy.starPowerActive){
 				if(currentMultiplier == GameConstants.MAXIMUM_MULTIPLIER*2){

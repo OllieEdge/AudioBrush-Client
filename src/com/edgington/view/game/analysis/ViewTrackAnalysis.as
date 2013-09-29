@@ -59,6 +59,8 @@ package com.edgington.view.game.analysis
 		
 		private var buttonOptions:Vector.<String> = new <String>["BACK", "PLAY"]; 
 		
+		private var allValues:Number = 0;
+		
 		public function ViewTrackAnalysis(removeSignal:Signal)
 		{
 			super();
@@ -177,6 +179,7 @@ package com.edgington.view.game.analysis
 				normalised += (fluxThresholds[stepAmount*i][0] - lastValue)*.02;
 				lastValue = normalised;
 				var param1:Number = graphHeight+(normalised*scale)*-1;
+				allValues += param1;
 				hecticnessLineGraph.graphics.lineStyle(2, hecticnessLineColour);
 				hecticnessLineGraph.graphics.beginFill(hecticnessLineColour);
 				hecticnessLineGraph.graphics.lineTo(i, param1);
@@ -196,6 +199,8 @@ package com.edgington.view.game.analysis
 					currentSection++;
 				}
 			}
+			
+			allValues = (allValues / graphWidth)*-1;
 			
 			if(hecticnessLineGraph.height > graphHeight){
 				var mc:MovieClip = new MovieClip();

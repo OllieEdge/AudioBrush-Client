@@ -11,6 +11,11 @@
 		private var m_invN:Number;              // Inverse of FFT length
 		
 		private var m_X:Vector.<FFTElement>;  // Vector of linked list elements
+		private var copyVector:Vector.<FFTElement>;  // Vector of linked list elements
+		
+		
+		private var t:uint = 0;
+		private var i:uint = 0;
 		
 		/**
 		 *
@@ -31,18 +36,28 @@
 			m_N = 1 << m_logN;
 			m_invN = 1.0/m_N;
 			
+			if(copyVector == null){
+				copyVector = new Vector.<FFTElement>(m_N);
+				for ( t = 0; t < m_N; t++ ){
+					copyVector[t] = new FFTElement;
+				}
+			}
+			
 			// Allocate elements for linked list of complex numbers.
-			m_X = new Vector.<FFTElement>(m_N);
-			for ( var k:uint = 0; k < m_N; k++ )
-				m_X[k] = new FFTElement;
+			m_X = copyVector.concat();
+			
+			
+			//			m_X = new Vector.<FFTElement>(m_N);
+			//			for ( t = 0; t < m_N; t++ )
+			//				m_X[t] = new FFTElement;
 			
 			// Set up "next" pointers.
-			for ( k = 0; k < m_N-1; k++ )
-				m_X[k].next = m_X[k+1];
+			for ( t = 0; t < m_N-1; t++ )
+				m_X[t].next = m_X[t+1];
 			
 			// Specify target for bit reversal re-ordering.
-			for ( k = 0; k < m_N; k++ )
-				m_X[k].revTgt = BitReverse(k,logN);
+			for ( t = 0; t < m_N; t++ )
+				m_X[t].revTgt = BitReverse(t,logN);
 		}
 		
 		/**
@@ -52,21 +67,53 @@
 		 * @param   xIm     Imaginary part of input/output
 		 * @param   inverse If true (INVERSE), do an inverse FFT
 		 */
+		
+		
+		private var numFlies:uint = 0; // Number of butterflies per sub-FFT
+		private var span:uint = 0;     // Width of the butterfly
+		private var spacing:uint = 0;         // Distance between start of sub-FFTs
+		private var wIndexStep:uint = 0;        // Increment for twiddle table index
+		
+		private var x:FFTElement;
+		private var k:uint = 0;
+		private var scale:Number = 0;
+		
+		private var stage:uint = 0;
+		private var start:uint = 0;
+		private var flyCount:uint = 0;
+		
+		private var wAngleInc:Number = 0;
+		private var wMulRe:Number = 0;
+		private var wMulIm:Number = 0;
+		
+		private var xTop:FFTElement;
+		private var xBot:FFTElement;
+		
+		private var wRe:Number = 1.0;
+		private var wIm:Number = 0.0;
+		
+		private var xTopRe:Number = 0;
+		private var xTopIm:Number = 0;
+		private var xBotRe:Number = 0;
+		private var xBotIm:Number = 0;
+		
+		private var target:uint = 0;
+		
 		public function run(
 			xRe:Vector.<Number>,
 			xIm:Vector.<Number>,
 			inverse:Boolean = false ):void
 		{
-			var numFlies:uint = m_N >> 1; // Number of butterflies per sub-FFT
-			var span:uint = m_N >> 1;     // Width of the butterfly
-			var spacing:uint = m_N;         // Distance between start of sub-FFTs
-			var wIndexStep:uint = 1;        // Increment for twiddle table index
+			numFlies = m_N >> 1; // Number of butterflies per sub-FFT
+			span = m_N >> 1;     // Width of the butterfly
+			spacing = m_N;         // Distance between start of sub-FFTs
+			wIndexStep = 1;        // Increment for twiddle table index
 			
 			// Copy data into linked complex number objects
 			// If it's an IFFT, we divide by N while we're at it
-			var x:FFTElement = m_X[0];
-			var k:uint = 0;
-			var scale:Number = inverse ? m_invN : 1.0;
+			x = m_X[0];
+			k = 0;
+			scale = inverse ? m_invN : 1.0;
 			while (x)
 			{
 				x.re = scale*xRe[k];
@@ -76,7 +123,7 @@
 			}
 			
 			// For each stage of the FFT
-			for ( var stage:uint = 0; stage < m_logN; ++stage )
+			for (stage = 0; stage < m_logN; ++stage )
 			{
 				// Compute a multiplier factor for the "twiddle factors".
 				// The twiddle factors are complex unit vectors spaced at
@@ -85,28 +132,28 @@
 				// implementations the twiddle factors are cached, but because
 				// vector lookup is relatively slow in ActionScript, it's just
 				// as fast to compute them on the fly.
-				var wAngleInc:Number = wIndexStep * 2.0*Math.PI/m_N;
+				wAngleInc = wIndexStep * 2.0*Math.PI/m_N;
 				if ( inverse == false ) // Corrected 3 Aug 2011. Had this condition backwards before, so FFT was IFFT, and vice-versa!
 					wAngleInc *= -1;
-				var wMulRe:Number = Math.cos(wAngleInc);
-				var wMulIm:Number = Math.sin(wAngleInc);
+				wMulRe = Math.cos(wAngleInc);
+				wMulIm = Math.sin(wAngleInc);
 				
-				for ( var start:uint = 0; start < m_N; start += spacing )
+				for ( start = 0; start < m_N; start += spacing )
 				{
-					var xTop:FFTElement = m_X[start];
-					var xBot:FFTElement = m_X[start+span];
+					xTop = m_X[start];
+					xBot = m_X[start+span];
 					
-					var wRe:Number = 1.0;
-					var wIm:Number = 0.0;
+					wRe = 1.0;
+					wIm = 0.0;
 					
 					// For each butterfly in this stage
-					for ( var flyCount:uint = 0; flyCount < numFlies; ++flyCount )
+					for ( flyCount = 0; flyCount < numFlies; ++flyCount )
 					{
 						// Get the top & bottom values
-						var xTopRe:Number = xTop.re;
-						var xTopIm:Number = xTop.im;
-						var xBotRe:Number = xBot.re;
-						var xBotIm:Number = xBot.im;
+						xTopRe = xTop.re;
+						xTopIm = xTop.im;
+						xBotRe = xBot.re;
+						xBotIm = xBot.im;
 						
 						// Top branch of butterfly has addition
 						xTop.re = xTopRe + xBotRe;
@@ -144,7 +191,7 @@
 			x = m_X[0];
 			while (x)
 			{
-				var target:uint = x.revTgt;
+				target = x.revTgt;
 				xRe[target] = x.re;
 				xIm[target] = x.im;
 				x = x.next;
@@ -158,12 +205,14 @@
 		 * @param   x       Number to be bit-reverse.
 		 * @param   numBits Number of bits in the number.
 		 */
+		private var y:uint = 0;
+		
 		private function BitReverse(
 			x:uint,
 			numBits:uint):uint
 		{
-			var y:uint = 0;
-			for ( var i:uint = 0; i < numBits; i++)
+			y = 0;
+			for ( i = 0; i < numBits; i++)
 			{
 				y <<= 1;
 				y |= x & 0x0001;

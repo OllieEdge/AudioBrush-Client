@@ -2,6 +2,7 @@ package com.edgington.util
 {
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.PushNotificationsConstants;
+	import com.edgington.net.GiftData;
 	import com.edgington.util.debug.LOG;
 	import com.milkmangames.nativeextensions.EasyPush;
 	import com.milkmangames.nativeextensions.events.PNAEvent;
@@ -43,14 +44,18 @@ package com.edgington.util
 		public function setupPN():void{
 			if(EasyPush.isSupported() && EasyPush.areNotificationsAvailable()){
 				if(DynamicConstants.isDebug()){
-					EasyPush.initAirship(PushNotificationsConstants.DEV_AIRSHIP_KEY, PushNotificationsConstants.DEV_AIRSHIP_SECRET, "airship", true, true, true);	
+					EasyPush.initAirship(PushNotificationsConstants.DEV_AIRSHIP_KEY, PushNotificationsConstants.DEV_AIRSHIP_SECRET, "airship", true, true, false);	
 				}
 				else{
-					EasyPush.initAirship(PushNotificationsConstants.PROD_AIRSHIP_KEY, PushNotificationsConstants.PROD_AIRSHIP_SECRET, "airship", false, true, true);
+					EasyPush.initAirship(PushNotificationsConstants.PROD_AIRSHIP_KEY, PushNotificationsConstants.PROD_AIRSHIP_SECRET, "airship", false, true, false);
 				}
 				EasyPush.airship.addEventListener(PNAEvent.TOKEN_REGISTERED,onTokenRegistered);
 				EasyPush.airship.addEventListener(PNAEvent.TOKEN_REGISTRATION_FAILED,onRegFailed);
 				EasyPush.airship.addEventListener(PNAEvent.TYPES_DISABLED,onTokenTypesDisabled);
+				
+				EasyPush.airship.addEventListener(PNAEvent.ALERT_DISMISSED,onAlertDismissed);
+				EasyPush.airship.addEventListener(PNAEvent.FOREGROUND_NOTIFICATION,onNotification);
+				EasyPush.airship.addEventListener(PNAEvent.RESUMED_FROM_NOTIFICATION,onNotification);
 			}
 			else{
 				complete();
@@ -69,7 +74,8 @@ package com.edgington.util
 		{
 			complete();
 			pushNotificationsEnabled = true;
-			airshipToken = e.token;
+			var regExp:RegExp=new RegExp(/[^a-zA-Z 0-9]+|\s/g);
+			airshipToken = e.token.replace(regExp, "").toUpperCase()
 			LOG.debug("EasyPush Token was registered: "+e.token);
 		}
 		
@@ -83,6 +89,16 @@ package com.edgington.util
 		{
 			complete();
 			LOG.debug("EasyPush some types disabled: "+e.disabledTypes);
+		}
+		
+		private function onNotification(e:PNAEvent):void
+		{
+			GiftData.getInstance().getGifts();
+			LOG.info("Push Notification: "+e.rawPayload);
+		}
+		private function onAlertDismissed(e:PNAEvent):void
+		{
+			LOG.info("Resumed or Dismissed Push Notification: "+e.rawPayload);
 		}
 		
 		private function complete():void{

@@ -11,7 +11,9 @@ package com.edgington.model.audio
 		private var preColourSignal:Signal;
 		private var starPowerSignal:Signal;
 		private var beatSignal:Signal;
+		private var rogueBeatSignal:Signal;
 		private var addBeatSignal:Signal;
+		private var addRogueBeatSignal:Signal;
 		
 		private var trackPosition:int;
 		private var preColourWarningTime:int = 10; //warning before colour change time FPS
@@ -23,8 +25,11 @@ package com.edgington.model.audio
 		
 		private var lastCheckPosition_AddBeat:int = 20;
 		private var lastCheckPosition_Beat:int = 5;
+		
+		private var band:int = 0;
+		private var trackHeading:int = 15;
 				
-		public function AudioEventDispatcher(colourSignal:Signal, starPowerSignal:Signal, preColourSignal:Signal, beatSignal:Signal, addBeatSignal:Signal)
+		public function AudioEventDispatcher(colourSignal:Signal, starPowerSignal:Signal, preColourSignal:Signal, beatSignal:Signal, addBeatSignal:Signal, rogueBeatSignal:Signal, addRogueBeatSignal:Signal)
 		{
 			
 			audioModel = AudioMainModel.getInstance();
@@ -34,6 +39,8 @@ package com.edgington.model.audio
 			this.preColourSignal = preColourSignal;
 			this.beatSignal = beatSignal;
 			this.addBeatSignal = addBeatSignal;
+			this.addRogueBeatSignal = addRogueBeatSignal;
+			this.rogueBeatSignal = rogueBeatSignal;
 		}
 		
 		/**
@@ -41,7 +48,7 @@ package com.edgington.model.audio
 		 * It will also dispatch the appropiate events whenn needed
 		 */
 		public function playHeadPositon():void{
-			trackPosition = audioModel.parser.getNextWindow(audioModel.soundChannel.position);
+			trackPosition = audioModel.analyser.getNextWindow(audioModel.soundChannel.position);
 			
 			if(trackPosition != -1){
 				if(audioModel.analyser.sections.length > preColourSection && audioModel.analyser.sections[preColourSection] < trackPosition+preColourWarningTime){
@@ -83,14 +90,20 @@ package com.edgington.model.audio
 //				}
 				
 				//Dispatches the beats
-				if(trackPosition+20 < audioModel.analyser.beats.length){
-					if(audioModel.analyser.beats[trackPosition+20][0] != 0){
-						lastCheckPosition_AddBeat = trackPosition+20;
-						addBeatSignal.dispatch(trackPosition+20);
+				if(trackPosition+trackHeading < audioModel.analyser.beats.length){
+					if(audioModel.analyser.beats[trackPosition+trackHeading][band] != 0){
+						lastCheckPosition_AddBeat = trackPosition+trackHeading;
+						addBeatSignal.dispatch(trackPosition+trackHeading);
 					}
-					if(audioModel.analyser.beats[trackPosition][0] != 0){
+					else if(audioModel.analyser.beats[trackPosition+30][band+1] != 0){
+						addRogueBeatSignal.dispatch(trackPosition+30);
+					}
+					if(audioModel.analyser.beats[trackPosition][band] != 0){
 						lastCheckPosition_Beat = trackPosition;
 						beatSignal.dispatch(trackPosition);
+					}
+					else if(audioModel.analyser.beats[trackPosition][band+1] != 0){
+						rogueBeatSignal.dispatch(trackPosition);
 					}
 				}
 			}

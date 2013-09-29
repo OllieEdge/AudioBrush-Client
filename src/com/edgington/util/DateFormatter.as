@@ -69,5 +69,31 @@ package com.edgington.util
 			}
 			return new Date( Date.UTC( year, month, day, hour, minute, second) + offsetUTC );
 		}
+		
+		
+		public static function CreateRFC3339FromDate(date:Date):String{
+			date = date ? date : new Date();
+			var offset:Number = date.getTimezoneOffset();
+			
+			return pad(date.getFullYear(), 4 )
+			+ "-" + pad( date.getMonth() + 1, 2 )
+				+ "-" + pad( date.getDate(), 2 )
+				+ "T" + pad( date.getHours(), 2 )
+				+ ":" + pad( date.getMinutes(), 2 )
+				+ ":" + pad( date.getSeconds(), 2 )
+				+ "." + pad( date.getMilliseconds(), 3 )
+				+ ( offset > 0 ? "-" : "+" )
+				+ pad( Math.floor( Math.abs( offset ) / 60 ), 2 )
+				+ ":" + pad( Math.abs( offset ) % 60, 2 );
+		}
+		public static function pad(amount, width):String
+		{
+			var padding:String = "";
+			while (padding.length < width - 1 && amount < Math.pow(10, width - padding.length - 1))
+			{
+				padding +=  "0";
+			}
+			return padding + amount.toString();
+		}
 	}
 }

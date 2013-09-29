@@ -43,8 +43,8 @@ package com.edgington.view.huds
 		
 		public function setupVisuals():void{
 			playButton = new element_mainButton("Canvas Direction", buttonOptions[1]);
-			playButton.x = 100;
-			playButton.y = 100;
+			playButton.x = DynamicConstants.SCREEN_MARGIN;
+			playButton.y = DynamicConstants.SCREEN_MARGIN;
 			
 			themesButton = new element_mainButton("Themes", buttonOptions[2]);
 			themesButton.x = playButton.x;

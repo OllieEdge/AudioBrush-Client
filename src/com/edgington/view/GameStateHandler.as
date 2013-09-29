@@ -21,6 +21,7 @@ package com.edgington.view
 	import com.edgington.view.huds.miniHudSummaryMenuDetails;
 	import com.edgington.view.huds.miniHudTrackScores;
 	import com.edgington.view.huds.miniHudiPhoneSearch;
+	import com.edgington.view.huds.elements.element_user_hud;
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Quad;
@@ -40,6 +41,7 @@ package com.edgington.view
 		private var removeInterfaceSignal:Signal;
 		
 		private var background:hudBackground;
+		private var userHud:element_user_hud;
 		
 		public function GameStateHandler(_appRoot:Sprite)
 		{
@@ -63,6 +65,8 @@ package com.edgington.view
 					background.newHudActive(onScreenState);
 					break;
 				case GameStateTypes.MENU_MAIN:
+					checkMainHud();
+					userHud.animate(true);
 					onScreenState = new hudMainMenu(removeInterfaceSignal);
 					positionHudAtRandom();
 					background.newHudActive(onScreenState);
@@ -73,11 +77,13 @@ package com.edgington.view
 					background.newHudActive(onScreenState);
 					break;
 				case GameStateTypes.GAME_LOADING:
+					removeUserHud();
 					onScreenState = new ViewLoadAndAnalysisProgress(removeInterfaceSignal);
 					positionHudAtRandom();
 					background.newHudActive(onScreenState);
 					break;
 				case GameStateTypes.GAME_ANALYSIS:
+					removeUserHud();
 					onScreenState = new ViewTrackAnalysis(removeInterfaceSignal);
 					positionHudAtRandom();
 					background.newHudActive(onScreenState);
@@ -149,9 +155,33 @@ package com.edgington.view
 			}
 			if(onScreenState != null){
 				appRoot.addChild(onScreenState);
+				if(userHud != null){
+					if(DynamicConstants.CURRENT_GAME_STATE != GameStateTypes.MENU_MAIN){
+						userHud.animate(false);
+					}
+					else{
+						userHud.animate(true);
+					}
+					appRoot.setChildIndex(userHud, appRoot.numChildren-1);
+				}
 			}
 			else{
 				LOG.fatal("No hud for GameStateHandle to load");
+			}
+		}
+		
+		private function checkMainHud():void{
+			if(userHud == null){
+				userHud = new element_user_hud();
+				userHud.currentHudSignal = removeInterfaceSignal;
+				appRoot.addChild(userHud);
+			}
+		}
+		
+		private function removeUserHud():void{
+			if(userHud != null){
+				appRoot.removeChild(userHud);
+				userHud = null;
 			}
 		}
 		

@@ -4,7 +4,6 @@ package com.edgington.view.huds
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.net.TournamentData;
 	import com.edgington.net.UserData;
-	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.view.huds.base.AbstractHud;
@@ -13,8 +12,8 @@ package com.edgington.view.huds
 	import com.edgington.view.huds.elements.element_mainMenuProfileIphone;
 	import com.edgington.view.huds.elements.element_mainMenuProfileiPad;
 	import com.edgington.view.huds.elements.element_mainMiniButton;
+	import com.edgington.view.huds.elements.element_user_hud;
 	
-	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
@@ -60,7 +59,7 @@ package com.edgington.view.huds
 		public function setupVisuals():void{
 			playButton = new element_mainButton("Play", buttonOptions[0]);
 			playButton.x = DynamicConstants.SCREEN_MARGIN;
-			playButton.y = DynamicConstants.SCREEN_MARGIN;
+			playButton.y = element_user_hud.HEIGHT + DynamicConstants.BUTTON_SPACING;
 			
 			howToPlayButton = new element_mainButton("Tournament", buttonOptions[1]);
 			howToPlayButton.x = playButton.x
@@ -82,36 +81,36 @@ package com.edgington.view.huds
 			inboxButton.x = playButton.x;
 			inboxButton.y = feedbackButton.y + feedbackButton.height  + DynamicConstants.BUTTON_SPACING;
 			
-			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
-				ipadProfileInfo = new element_mainMenuProfileiPad();
-				ipadProfileInfo.x = DynamicConstants.SCREEN_WIDTH - ipadProfileInfo.width - DynamicConstants.SCREEN_MARGIN;
-				ipadProfileInfo.y = DynamicConstants.SCREEN_MARGIN;
-				ipadProfileInfo.addEventListener(MouseEvent.MOUSE_UP, purchasesClicked);
-			}
-			else{
-				iphoneProfileInfo = new element_mainMenuProfileIphone();
-				iphoneProfileInfo.scaleX = iphoneProfileInfo.scaleY = DynamicConstants.MESSAGE_SCALE;
-				iphoneProfileInfo.x = DynamicConstants.SCREEN_WIDTH - iphoneProfileInfo.width - DynamicConstants.SCREEN_MARGIN;
-				iphoneProfileInfo.y = DynamicConstants.SCREEN_MARGIN;
-				iphoneProfileInfo.addEventListener(MouseEvent.MOUSE_UP, purchasesClicked);
-			}
+//			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
+//				ipadProfileInfo = new element_mainMenuProfileiPad();
+//				ipadProfileInfo.x = DynamicConstants.SCREEN_WIDTH - ipadProfileInfo.width - DynamicConstants.SCREEN_MARGIN;
+//				ipadProfileInfo.y = DynamicConstants.SCREEN_MARGIN;
+//				ipadProfileInfo.addEventListener(MouseEvent.MOUSE_UP, purchasesClicked);
+//			}
+//			else{
+//				iphoneProfileInfo = new element_mainMenuProfileIphone();
+//				iphoneProfileInfo.scaleX = iphoneProfileInfo.scaleY = DynamicConstants.MESSAGE_SCALE;
+//				iphoneProfileInfo.x = DynamicConstants.SCREEN_WIDTH - iphoneProfileInfo.width - DynamicConstants.SCREEN_MARGIN;
+//				iphoneProfileInfo.y = DynamicConstants.SCREEN_MARGIN;
+//				iphoneProfileInfo.addEventListener(MouseEvent.MOUSE_UP, purchasesClicked);
+//			}
 			
 			addButton(playButton);
 			addButton(howToPlayButton);
 			addButton(settingsButton);
-			addButton(profileButton);
-			addButton(feedbackButton);
-			addButton(inboxButton);
+			//addButton(profileButton);
+			//addButton(feedbackButton);
+			//addButton(inboxButton);
 			
 			buttonSignal.add(handleInteraction);
 			
-			onScreenElements.push(playButton, howToPlayButton, settingsButton, profileButton, feedbackButton, inboxButton);
-			if(ipadProfileInfo){
-				onScreenElements.push(ipadProfileInfo);
-			}
-			else if(iphoneProfileInfo){
-				onScreenElements.push(iphoneProfileInfo);
-			}
+			onScreenElements.push(playButton, howToPlayButton, settingsButton);
+//			if(ipadProfileInfo){
+//				onScreenElements.push(ipadProfileInfo);
+//			}
+//			else if(iphoneProfileInfo){
+//				onScreenElements.push(iphoneProfileInfo);
+//			}
 		}
 		
 		private function handleInteraction(buttonOption:String):void{

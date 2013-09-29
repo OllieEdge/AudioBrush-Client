@@ -103,9 +103,9 @@ package com.edgington.view.huds
 					var friends:Vector.<String> = new Vector.<String>;
 					for(var i:int = 0; i < sendItems.friendsSelectedList.itemList.length; i++){
 						friends.push(sendItems.friendsSelectedList.itemList[i].id);
-						GiftData.getInstance().postGifts(friends, 1);
-						GiftData.getInstance().giftDataSignal.addOnce(handleGiftsResponse);
 					}
+					GiftData.getInstance().giftDataSignal.addOnce(handleGiftsResponse);
+					GiftData.getInstance().postGifts(friends, 1);
 					sendButtonHandler(false);
 					break;
 			}
@@ -132,7 +132,12 @@ package com.edgington.view.huds
 								sendItems = null;
 								sendButtonHandler(false);
 							}
-							inboxItems = new element_inbox(tabContainer.tabDescription.width, tabContainer.getTabBodyHeight, 8);
+							if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+								inboxItems = new element_inbox(tabContainer.tabDescription.width, tabContainer.getTabBodyHeight, 4);	
+							}
+							else{
+								inboxItems = new element_inbox(tabContainer.tabDescription.width, tabContainer.getTabBodyHeight, 8);	
+							}
 							inboxItems.x = tabContainer.x + tabContainer.tabDescription.x;
 							inboxItems.y = tabContainer.y + tabContainer.getTabBodyYOrigin;
 							addAdditionalElements(new <Sprite>[inboxItems]);

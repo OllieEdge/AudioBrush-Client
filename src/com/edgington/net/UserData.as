@@ -215,8 +215,8 @@ package com.edgington.net
 		}
 		
 		private function onCreditsUpdated(e:Object = null):void{
-			if(e && e.length > 0){
-				userProfile = new ServerUserVO(e[0]);
+			if(e && ServerUserVO.checkObject(e)){
+				userProfile = new ServerUserVO(e);
 				saveProfile();
 				userDataSignal.dispatch();
 			}

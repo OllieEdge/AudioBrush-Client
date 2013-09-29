@@ -204,7 +204,9 @@ package com.edgington.view.huds.elements
 			cleanTween(scalerTween);
 			cleanTween(textTween);
 			cleanTween(rotaterTween);
-			buttonTween = TweenLite.to(button, 0.2, {alpha:0, onComplete:dispatchButtonPress});
+			if(button){
+				buttonTween = TweenLite.to(button, 0.2, {alpha:0, onComplete:dispatchButtonPress});
+			}
 			//button.ro
 		}
 		

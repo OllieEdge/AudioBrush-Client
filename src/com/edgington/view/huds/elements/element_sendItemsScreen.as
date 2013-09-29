@@ -90,11 +90,21 @@ package com.edgington.view.huds.elements
 		}
 		
 		private function setupVisuals():void{
-			friendsList = new element_smallList(friends, 8, 23, 326, nonSelectedFriendsSignal);
+			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+				friendsList = new element_smallList(friends, 8, 30, 326, nonSelectedFriendsSignal);
+			}
+			else{
+				friendsList = new element_smallList(friends, 8, 23, 326, nonSelectedFriendsSignal);
+			}
 			friendsList.x = DynamicConstants.BUTTON_SPACING;
 			friendsList.y = _height - DynamicConstants.BUTTON_SPACING - friendsList.height;
 			
-			friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 23, 326, selectedFriendsSignal);
+			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 30, 326, selectedFriendsSignal);;
+			}
+			else{
+				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 23, 326, selectedFriendsSignal);
+			}
 			friendsSelectedList.x = _width - DynamicConstants.BUTTON_SPACING - friendsSelectedList.width;
 			friendsSelectedList.y = friendsList.y;
 			
@@ -198,11 +208,21 @@ package com.edgington.view.huds.elements
 			selectedFriendsSignal = new Signal();
 			selectedFriendsSignal.add(handleSelectedFriendSelected);
 			
-			friendsList = new element_smallList(friends, 8, 23, 326, nonSelectedFriendsSignal);
+			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+				friendsList = new element_smallList(friends, 8, 30, 326, nonSelectedFriendsSignal);
+			}
+			else{
+				friendsList = new element_smallList(friends, 8, 23, 326, nonSelectedFriendsSignal);
+			}
 			friendsList.x = DynamicConstants.BUTTON_SPACING;
 			friendsList.y = _height - DynamicConstants.BUTTON_SPACING - friendsList.height;
 			
-			friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 23, 326, selectedFriendsSignal);
+			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 30, 326, selectedFriendsSignal);;
+			}
+			else{
+				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 23, 326, selectedFriendsSignal);
+			}
 			friendsSelectedList.x = _width - DynamicConstants.BUTTON_SPACING - friendsSelectedList.width;
 			friendsSelectedList.y = friendsList.y;
 			

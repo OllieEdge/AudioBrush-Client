@@ -10,6 +10,7 @@
     import com.edgington.view.game.draw.Sketcher;
     import com.edgington.view.game.draw.events.curvaEvent;
     import com.edgington.view.game.draw.interfaces.BrushManager;
+    import com.edgington.view.game.draw.pinceles.pincelPrincipal2;
     
     import flash.display.BitmapData;
     import flash.display.Shape;
@@ -407,7 +408,13 @@
 					param1.graphics.beginFill(CanvasConstants[Sketcher.currentThemeID.toUpperCase()+"_COLOR_STAR_POWER_SECONDARY"][0], 1);//(this.tinta1, this.transformTinta, this.tinta1 == dibujante.imageInk1, this.tinta1 != dibujante.imageInk1);
 				}
 				else{
-                	param1.graphics.beginFill(CanvasConstants[Sketcher.currentThemeID.toUpperCase()+"_COLORS"][Canvas.currentColourIndex], 1);//(this.tinta1, this.transformTinta, this.tinta1 == dibujante.imageInk1, this.tinta1 != dibujante.imageInk1);
+//					if( brushManager is pincelPrincipal2){
+//						param1.graphics.beginFill(CanvasConstants[Sketcher.currentThemeID.toUpperCase()+"_COLORS_SECONDARY"][Canvas.currentColourIndex], 1);//this.tinta2, this.transformTinta, this.tinta2 == dibujante.imageInk2, this.tinta2 != dibujante.imageInk2);
+//					}
+//					else{
+						param1.graphics.beginFill(CanvasConstants[Sketcher.currentThemeID.toUpperCase()+"_COLORS"][Canvas.currentColourIndex], 1);//this.tinta2, this.transformTinta, this.tinta2 == dibujante.imageInk2, this.tinta2 != dibujante.imageInk2);
+//					}
+                	//param1.graphics.beginFill(CanvasConstants[Sketcher.currentThemeID.toUpperCase()+"_COLORS"][Canvas.currentColourIndex], 1);//(this.tinta1, this.transformTinta, this.tinta1 == dibujante.imageInk1, this.tinta1 != dibujante.imageInk1);
 				}
                 param1.graphics.moveTo(this.ultimoX1_A, this.ultimoY1_A);
                 param1.graphics.curveTo(this.xAnterior1_A, this.yAnterior1_A, this.ultimoX1, this.ultimoY1);
@@ -421,7 +428,12 @@
 					param1.graphics.beginFill(CanvasConstants[Sketcher.currentThemeID.toUpperCase()+"_COLOR_STAR_POWER_SECONDARY"][0], 1);//this.tinta2, this.transformTinta, this.tinta2 == dibujante.imageInk2, this.tinta2 != dibujante.imageInk2);
 				}
 				else{
-					param1.graphics.beginFill(CanvasConstants[Sketcher.currentThemeID.toUpperCase()+"_COLORS_SECONDARY"][Canvas.currentColourIndex], 1);//this.tinta2, this.transformTinta, this.tinta2 == dibujante.imageInk2, this.tinta2 != dibujante.imageInk2);
+//					if( brushManager is pincelPrincipal2){
+						param1.graphics.beginFill(CanvasConstants[Sketcher.currentThemeID.toUpperCase()+"_COLORS_SECONDARY"][Canvas.currentColourIndex], 1);//this.tinta2, this.transformTinta, this.tinta2 == dibujante.imageInk2, this.tinta2 != dibujante.imageInk2);
+//					}
+//					else{
+//						param1.graphics.beginFill(CanvasConstants[Sketcher.currentThemeID.toUpperCase()+"_COLORS"][Canvas.currentColourIndex], 1);//this.tinta2, this.transformTinta, this.tinta2 == dibujante.imageInk2, this.tinta2 != dibujante.imageInk2);
+//					}
 				}
                 param1.graphics.moveTo(this.ultimoX2_A, this.ultimoY2_A);
                 param1.graphics.curveTo(this.xAnterior2_A, this.yAnterior2_A, this.ultimoX2, this.ultimoY2);

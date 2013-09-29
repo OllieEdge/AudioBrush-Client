@@ -220,7 +220,7 @@ package com.edgington.model.audio
 		}
 		
 		public function resume():void{
-			soundChannel = parser.music.play(pausedTrackPosition, 0);
+			soundChannel = soundObject.play(pausedTrackPosition, 0);
 			soundChannel.addEventListener(Event.SOUND_COMPLETE, trackFinishedPlaying);
 		}
 		

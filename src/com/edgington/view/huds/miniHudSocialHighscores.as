@@ -176,7 +176,7 @@ package com.edgington.view.huds
 						clip.addChild(listing);
 					}
 					
-					var profilePicture:element_profile_picture = new element_profile_picture(null, highscores[i].facebookID);
+					var profilePicture:element_profile_picture = new element_profile_picture(null, highscores[i].userId.fb_id);
 					profilePicture.width = 44;
 					profilePicture.height = 44;
 					profilePicture.x = 3;
@@ -237,7 +237,7 @@ package com.edgington.view.huds
 						clip.addChild(listing);
 					}
 					
-					var profilePicture:element_profile_picture = new element_profile_picture(null, highscores[i].facebookID);
+					var profilePicture:element_profile_picture = new element_profile_picture(null, highscores[i].userId.fb_id);
 					profilePicture.width = 44;
 					profilePicture.height = 44;
 					profilePicture.x = 3;
