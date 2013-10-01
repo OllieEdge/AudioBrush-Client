@@ -2,6 +2,7 @@ package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.GameProxy;
+	import com.edgington.net.TrackData;
 	import com.edgington.util.NumberFormat;
 	
 	import flash.display.Sprite;
@@ -11,6 +12,7 @@ package com.edgington.view.huds.elements
 	{
 		
 		private var title:ui_summaryOutcomeTitle
+		private var trackImage:TrackData;
 		
 		public function element_summaryDetailsTitle()
 		{
@@ -20,6 +22,8 @@ package com.edgington.view.huds.elements
 			title.txt_artist.text = GameProxy.INSTANCE.currentTrackDetails.artistName;
 			title.txt_trackTitle.text = GameProxy.INSTANCE.currentTrackDetails.trackTitle;
 			title.txt_score.text = NumberFormat.addThreeDigitCommaSeperator(GameProxy.INSTANCE.score);
+			
+			trackImage = new TrackData(new <String>[title.txt_trackTitle.text, title.txt_artist.text], title.background.picture);
 			
 			this.scaleX = this.scaleY = DynamicConstants.MESSAGE_SCALE;
 			

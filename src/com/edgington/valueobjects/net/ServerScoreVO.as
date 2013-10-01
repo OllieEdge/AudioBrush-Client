@@ -10,12 +10,17 @@ package com.edgington.valueobjects.net
 		public var trackId:ServerTrackVO;
 		public var score:Number;
 		public var trackkey:String;
+		public var starrating:int;
 		
 		public var userIdSTRING:String;
 		public var trackIdSTRING:String;
 		
 		//This value is populated after obtaining from the server
 		public var rank:int;
+		
+		//This value is populated after obtaining from the server
+		//This WILL ONLY be returned when saving a new score
+		public var xpRewarded:uint;
 		
 		public function ServerScoreVO(rawObject:Object = null)
 		{

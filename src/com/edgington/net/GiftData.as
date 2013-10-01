@@ -86,7 +86,7 @@ package com.edgington.net
 					var actualFriendsWithInstall:Vector.<FacebookProfileVO> = new Vector.<FacebookProfileVO>;
 					actualFriendsWithInstall = FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.concat();
 					var hasAccount:Boolean;
-					facebookID = FacebookManager.getInstance().currentLoggedInUser.profileID;
+					facebookID = FacebookManager.getInstance().currentLoggedInUser.id;
 					for(var i:int = 0; i < friends.length; i++){
 						for(var f:int = 0; f < actualFriendsWithInstall.length; f++){
 							hasAccount = false;

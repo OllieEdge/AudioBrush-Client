@@ -46,7 +46,7 @@ package com.edgington.net
 			
 			var facebookID:String
 			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
-				facebookID = FacebookManager.getInstance().currentLoggedInUser.profileID;
+				facebookID = FacebookManager.getInstance().currentLoggedInUser.id;
 			}
 			if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				facebookID = FacebookConstants.DEBUG_USER_ID;
@@ -60,22 +60,22 @@ package com.edgington.net
 			
 			var localHighscore:HighscoreServerVO = new HighscoreServerVO();
 			var shouldPostScoreToServer:Boolean = true;
-			if(highscores[artist + "_" + track + "_" + difficulty] == null){
+			if(highscores[artist + "_" + track] == null){
 				localHighscore.score = score;
 				localHighscore.requiresSyncWithServer = true;
 				localHighscore.newHighscore = true;
-				highscores[artist + "_" + track + "_" + difficulty] = localHighscore;
+				highscores[artist + "_" + track] = localHighscore;
 				saveHighscore();
 			}
-			else if(highscores[artist + "_" + track + "_" + difficulty].score >= score){
-				if(highscores[artist + "_" + track + "_" + difficulty].requiresSyncWithServer){
+			else if(highscores[artist + "_" + track].score >= score){
+				if(highscores[artist + "_" + track].requiresSyncWithServer){
 					postedSavedScore = true;
-					score = highscores[artist + "_" + track + "_" + difficulty].score;
+					score = highscores[artist + "_" + track].score;
 				}
 				else{
 					shouldPostScoreToServer = false;
-					highscores[artist + "_" + track + "_" + difficulty].newHighscore = false;
-					highscoreDataSignal.dispatch(HighscoreEvent.NO_NEW_HIGHSCORE, convertServerScoreVOtoClientVO(highscores[artist + "_" + track + "_" + difficulty]));
+					highscores[artist + "_" + track].newHighscore = false;
+					highscoreDataSignal.dispatch(HighscoreEvent.NO_NEW_HIGHSCORE, convertServerScoreVOtoClientVO(highscores[artist + "_" + track]));
 					return;
 				}
 			}
@@ -88,6 +88,9 @@ package com.edgington.net
 				obj.score = score;
 				obj.trackname = GameProxy.INSTANCE.currentTrackDetails.trackTitle;
 				obj.artist = GameProxy.INSTANCE.currentTrackDetails.artistName;
+				obj.difficulty = GameProxy.INSTANCE.difficulty;
+				obj.starrating = GameProxy.INSTANCE.starRating;
+				obj.precisestarrating = GameProxy.INSTANCE.preciseStarRating;
 				
 				PUT(new NetResponceHandler(onHighscorePosted, onHighscorePostFailed), obj.trackkey, obj);
 			}
@@ -100,8 +103,8 @@ package com.edgington.net
 				localHighscore.rank = -1;
 				localHighscore.score = score;
 				localHighscore.difficulty = difficulty;
-				if(highscores[artist + "_" + track + "_" + difficulty].score < score){
-					highscores[artist + "_" + track + "_" + difficulty] = localHighscore;
+				if(highscores[artist + "_" + track].score < score){
+					highscores[artist + "_" + track] = localHighscore;
 					saveHighscore();
 				}
 				
@@ -113,12 +116,13 @@ package com.edgington.net
 			//Make sure that there is a valid score response.
 			if(e && ServerScoreVO.checkObject(e)){
 				var localHighscore:HighscoreServerVO = convertServerScoreVOtoClientVO(new ServerScoreVO(e));
+				LOG.info("User received " + e.xpRewarded + "XP for this performance");
 				if(localHighscore.newHighscore){
 					if(postedSavedScore){
 						localHighscore.newHighscore = false;
 					}
 					localHighscore.requiresSyncWithServer = false;
-					highscores[localHighscore.track + "_" + localHighscore.artist + "_" + localHighscore.difficulty] == localHighscore;
+					highscores[localHighscore.track + "_" + localHighscore.artist] == localHighscore;
 					saveHighscore();
 					highscoreDataSignal.dispatch(HighscoreEvent.NEW_HIGHSCORE, localHighscore);
 				}
@@ -126,6 +130,7 @@ package com.edgington.net
 					highscoreDataSignal.dispatch(HighscoreEvent.NO_NEW_HIGHSCORE, localHighscore);
 				}
 			}
+			UserData.getInstance().getUser();
 		}
 		
 		private function onHighscorePostFailed():void{
@@ -156,13 +161,13 @@ package com.edgington.net
 				localHighscore.rank = -1;
 				localHighscore.score = score;
 				localHighscore.difficulty = difficulty;
-				if(highscores[artist + "_" + track + "_" + difficulty].score < score){
-					highscores[artist + "_" + track + "_" + difficulty] = localHighscore;
+				if(highscores[artist + "_" + track].score < score){
+					highscores[artist + "_" + track] = localHighscore;
 					saveHighscore();
 					highscoreDataSignal.dispatch(HighscoreEvent.NEW_HIGHSCORE, localHighscore);
 				 }
 				else{
-					highscoreDataSignal.dispatch(HighscoreEvent.NO_NEW_HIGHSCORE, convertServerScoreVOtoClientVO(highscores[artist + "_" + track + "_" + difficulty]));
+					highscoreDataSignal.dispatch(HighscoreEvent.NO_NEW_HIGHSCORE, convertServerScoreVOtoClientVO(highscores[artist + "_" + track]));
 				}
 				
 			}
@@ -174,14 +179,22 @@ package com.edgington.net
 		
 		private function convertServerScoreVOtoClientVO(serverVO:ServerScoreVO):HighscoreServerVO{
 			var localHighscore:HighscoreServerVO = new HighscoreServerVO();
-			localHighscore.artist = highscores[serverVO.trackkey + "_" + 0].artist;
-			localHighscore.track = highscores[serverVO.trackkey + "_" + 0].track;
-			if(!localHighscore.newHighscore){
-				localHighscore.newHighscore = (highscores[serverVO.trackkey + "_" + 0].score != serverVO.score);
+			localHighscore.artist = highscores[serverVO.trackkey].artist;
+			localHighscore.track = highscores[serverVO.trackkey].track;
+			if(GameProxy.INSTANCE != null){
+				localHighscore.newHighscore = (GameProxy.INSTANCE.score == serverVO.score);
+			}
+			else{
+				localHighscore.newHighscore = (highscores[serverVO.trackkey].score == serverVO.score);
 			}
 			localHighscore.rank = serverVO.rank;
 			localHighscore.score = serverVO.score;
-			localHighscore.difficulty = 0;
+			if(GameProxy.INSTANCE != null){
+				localHighscore.difficulty = GameProxy.INSTANCE.difficulty;
+			}
+			else{
+				localHighscore.difficulty = 0;
+			}
 			return localHighscore;
 		}
 		

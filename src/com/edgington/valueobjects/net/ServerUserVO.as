@@ -17,6 +17,8 @@ package com.edgington.valueobjects.net
 		public var tracks:Array;
 		public var airship_token:String;
 		
+		public var xp:uint;
+		
 		public function ServerUserVO(rawObject:Object = null)
 		{
 			for(var key:String in rawObject){

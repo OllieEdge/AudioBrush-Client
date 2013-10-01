@@ -27,29 +27,12 @@ package com.edgington.model.facebook
 			else{
 				facebookSignal.dispatch(FacebookEvent.FACEBOOK_REQUIRES_LOGIN);
 			}
-//			}
-//			else{
-//				if(debug){
-//					LOG.facebook("Using Debug User");
-//					var fbProfile:FacebookProfileVO = new FacebookProfileVO();
-//					fbProfile.firstName = DebugConstants.FACEBOOK_NAME;
-//					fbProfile.lastName = "";
-//					fbProfile.profileID = DebugConstants.FACEBOOK_ID;
-//					fbProfile.gender = "male";
-//					fbProfile.installed = true;
-//					FacebookManager.getInstance().currentLoggedInUser = fbProfile;
-//					TweenLite.delayedCall(1, facebookSignal.dispatch, [FacebookEvent.FACEBOOK_LOGGED_IN]);
-//				}
-//				else{
-//					TweenLite.delayedCall(1, facebookSignal.dispatch, [FacebookEvent.FACEBOOK_NO_FACEBOOK]);
-//				}
-//			}
 		}
 		
 		public function loginToFacebook():void{
 			if(DynamicConstants.isMobileOS()){
 				GoViral.goViral.addEventListener(GVFacebookEvent.FB_LOGGED_IN,onFacebookEvent);
-				GoViral.goViral.addEventListener(GVFacebookEvent.FB_LOGGED_OUT,onFacebookEvent);
+				GoViral.goViral.addEventListener(GVFacebookEvent.FB_LOGGED_OUT,onFacebookLogout);
 				GoViral.goViral.addEventListener(GVFacebookEvent.FB_LOGIN_CANCELED,onFacebookEvent);
 				GoViral.goViral.addEventListener(GVFacebookEvent.FB_LOGIN_FAILED,onFacebookEvent);
 				
@@ -68,6 +51,10 @@ package com.edgington.model.facebook
 			}
 		}
 		
+		private function onFacebookLogout(e:GVFacebookEvent):void{
+			LOG.facebook("Facebook logged out");
+		}
+		
 		private function onFacebookEvent(e:GVFacebookEvent):void{
 			if(e.type == GVFacebookEvent.FB_LOGGED_IN){
 				getUserProfile();
@@ -79,7 +66,7 @@ package com.edgington.model.facebook
 		
 		private function onProfileReceived(e:GVFacebookEvent):void{
 			if(e.type == GVFacebookEvent.FB_REQUEST_RESPONSE){
-				var fbProfileVO:FacebookProfileVO
+				var fbProfileVO:FacebookProfileVO;
 				if(e.friends.length > 0){
 					LOG.facebook(e.data.name + " is now logged into Facebook");
 					fbProfileVO = new FacebookProfileVO(e.friends[0]);
@@ -94,7 +81,7 @@ package com.edgington.model.facebook
 				
 				GoViral.goViral.addEventListener(GVFacebookEvent.FB_REQUEST_RESPONSE, facebookFriendsDownloaded);
 				GoViral.goViral.addEventListener(GVFacebookEvent.FB_REQUEST_FAILED, facebookFriendsDownloadFailed);
-				GoViral.goViral.requestFacebookFriends({fields:"installed"});
+				GoViral.goViral.requestFacebookFriends({fields:"installed,name,gender"});
 				LOG.facebook("Requesting Friends");
 				
 			}
@@ -105,20 +92,21 @@ package com.edgington.model.facebook
 		}
 		
 		private function facebookFriendsDownloaded(e:GVFacebookEvent):void{
-			if(e.friends != null){
+			if(e.graphPath == "me/friends"){
 				var facebookManger:FacebookManager = FacebookManager.getInstance();
 				GoViral.goViral.removeEventListener(GVFacebookEvent.FB_REQUEST_RESPONSE, facebookFriendsDownloaded);
 				GoViral.goViral.removeEventListener(GVFacebookEvent.FB_REQUEST_FAILED, facebookFriendsDownloadFailed);
-				LOG.facebook("Friends Received");
 				var installFriends:Vector.<FacebookProfileVO> = new Vector.<FacebookProfileVO>;
-				for(var i:int = 0; i < e.friends.length; i++){
-					if(e.friends[i].installed){
-						installFriends.push(new FacebookProfileVO(e.friends[i]));
-						LOG.facebook("User has a friend with AudioBrush ("+e.friends[i].name+")");
+				var allFriends:Vector.<FacebookProfileVO> = new Vector.<FacebookProfileVO>;
+				var friendsLength:int = e.data.data.length;
+				for(var i:int = 0; i < friendsLength; i++){
+					if(e.data.data[i].installed){
+						installFriends.push(new FacebookProfileVO(null, e.data.data[i]));
 					}
+					allFriends.push(new FacebookProfileVO(null, e.data.data[i]));
 				}
 				FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall = installFriends;
-				FacebookManager.getInstance().currentLoggedInUserFriends = e.friends;
+				FacebookManager.getInstance().currentLoggedInUserFriends = allFriends;
 				facebookSignal.dispatch(FacebookEvent.FACEBOOK_LOGGED_IN);
 				destroy();
 			}

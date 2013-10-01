@@ -3,7 +3,9 @@ package com.edgington.view.huds.elements
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.control.Control;
+	import com.edgington.model.calculators.PopulatiryCalculator;
 	import com.edgington.net.TrackData;
+	import com.edgington.types.DeviceTypes;
 	import com.edgington.util.TextFieldManager;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
@@ -108,7 +110,7 @@ package com.edgington.view.huds.elements
 					else{
 						trackListingVO.background.graphics.beginFill(Constants.NORMAL_WHITE_COLOUR);
 					}
-					trackListingVO.background.graphics.drawRect(0, 0, _width - (DynamicConstants.BUTTON_SPACING*2), listingItemHeight);
+					trackListingVO.background.graphics.drawRect(0, 0, _width - (DynamicConstants.BUTTON_SPACING*2), listingItemHeight*DynamicConstants.DEVICE_SCALE);
 					trackListingVO.background.graphics.endFill();
 					trackListingVO.background.name = "background";
 					
@@ -116,17 +118,17 @@ package com.edgington.view.huds.elements
 					
 					trackListingVO.image = new ui_profile_artwork();
 					trackListingVO.image.cacheAsBitmap = true;
-					trackListingVO.image.width = 69;
-					trackListingVO.image.height = 69;
-					trackListingVO.image.x = 3;
-					trackListingVO.image.y = 3;
+					trackListingVO.image.width = 69*DynamicConstants.DEVICE_SCALE;
+					trackListingVO.image.height = 69*DynamicConstants.DEVICE_SCALE;
+					trackListingVO.image.x = 3*DynamicConstants.DEVICE_SCALE;
+					trackListingVO.image.y = 3*DynamicConstants.DEVICE_SCALE;
 					
 					trackListingVO.clip.addChild(trackListingVO.image);
 					
 					trackListingVO.trackListingData = new TrackData(new <String>[items[i].trackname, items[i].artist], trackListingVO.image);
 					
-					trackListingVO.trackNameField = TextFieldManager.createTextField(items[i].trackname, FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 26, false, TextFieldAutoSize.LEFT);
-					trackListingVO.name = TextFieldManager.createTextField(gettext("highscores_track_item_listing_artist", {artist:items[i].artist}), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 18, false, TextFieldAutoSize.LEFT);
+					trackListingVO.trackNameField = TextFieldManager.createTextField(items[i].trackname, FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 26*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
+					trackListingVO.name = TextFieldManager.createTextField(gettext("highscores_track_item_listing_artist", {artist:items[i].artist}), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 18*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
 					var plays:String 
 					if(items[i].plays == 1){
 						plays = gettext("highscores_track_play_count");
@@ -134,27 +136,44 @@ package com.edgington.view.huds.elements
 					else{
 						plays = gettext("highscores_track_play_counts", {playcount:items[i].plays});
 					}
-					trackListingVO.plays = TextFieldManager.createTextField(plays, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.RIGHT);
 					
-					trackListingVO.trackNameField.y = 3;
+					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+						var trackPopDiffIphone:ui_track_pop_diff_iphone = new ui_track_pop_diff_iphone();
+						trackPopDiffIphone.popularity.gotoAndStop(PopulatiryCalculator.calculatePopularity(items[i].plays, items[i].last_update));
+						trackPopDiffIphone.difficulty.gotoAndStop(items[i].difficulty);
+						trackPopDiffIphone.height = (listingItemHeight*DynamicConstants.DEVICE_SCALE) - (DynamicConstants.BUTTON_SPACING*2);
+						trackPopDiffIphone.scaleX = trackPopDiffIphone.scaleY;
+						trackPopDiffIphone.cacheAsBitmap = true;
+						trackPopDiffIphone.x = (_width - DynamicConstants.BUTTON_SPACING*2) - DynamicConstants.BUTTON_SPACING;
+						trackPopDiffIphone.y = trackListingVO.background.height *.5 - trackPopDiffIphone.height*.5;
+						trackListingVO.clip.addChild(trackPopDiffIphone);
+					}
+					else{
+						var trackPopDiff:ui_track_pop_diff = new ui_track_pop_diff();
+						trackPopDiff.popularity.gotoAndStop(PopulatiryCalculator.calculatePopularity(items[i].plays, items[i].last_update));
+						trackPopDiff.difficulty.gotoAndStop(items[i].difficulty);
+						trackPopDiff.height = (listingItemHeight*DynamicConstants.DEVICE_SCALE) - (DynamicConstants.BUTTON_SPACING);
+						trackPopDiff.scaleX = trackPopDiff.scaleY;
+						trackPopDiff.cacheAsBitmap = true;
+						trackPopDiff.x = (_width - DynamicConstants.BUTTON_SPACING*2) - DynamicConstants.BUTTON_SPACING;
+						trackPopDiff.y += DynamicConstants.BUTTON_SPACING*.5;
+						trackListingVO.clip.addChild(trackPopDiff);
+					}
+					
+					trackListingVO.trackNameField.y = 3*DynamicConstants.DEVICE_SCALE;
 					trackListingVO.trackNameField.x = trackListingVO.image.width + DynamicConstants.BUTTON_SPACING;
 					
 					trackListingVO.name.x = trackListingVO.image.width + DynamicConstants.BUTTON_SPACING;
-					trackListingVO.name.y = 38;
-					
-					trackListingVO.plays.height = listingItemHeight;
-					trackListingVO.plays.x = (_width - DynamicConstants.BUTTON_SPACING*2) - trackListingVO.plays.textWidth-DynamicConstants.BUTTON_SPACING;
-					trackListingVO.plays.y += Math.round((trackListingVO.plays.height - trackListingVO.plays.textHeight));
+					trackListingVO.name.y = 38*DynamicConstants.DEVICE_SCALE;
 					
 					trackListingVO.clip.addChild(trackListingVO.trackNameField);
 					trackListingVO.clip.addChild(trackListingVO.name);
-					trackListingVO.clip.addChild(trackListingVO.plays);
 					
 					trackListingVO.trackName = items[i].trackname;
 					trackListingVO.artist = items[i].artist;
 					
 					trackListingVO.clip.cacheAsBitmap = true;
-					trackListingVO.clip.y = i*listingItemHeight;
+					trackListingVO.clip.y = i*(listingItemHeight*DynamicConstants.DEVICE_SCALE);
 					trackListingVO.clip.addEventListener(MouseEvent.MOUSE_UP, trackSelected);
 					trackListingVO.clip.addEventListener(MouseEvent.MOUSE_DOWN, trackDown);
 					trackListings.push(trackListingVO);
@@ -164,7 +183,7 @@ package com.edgington.view.huds.elements
 				var trackListingVO2:TrackListingVO = new TrackListingVO();
 				trackListings = new Vector.<TrackListingVO>;
 				trackListingVO2.clip = new Sprite();
-				var txtNoScores:TextField = TextFieldManager.createTextField(gettext("highscores_no_scores_available_global"), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.CENTER);
+				var txtNoScores:TextField = TextFieldManager.createTextField(gettext("highscores_no_scores_available_global"), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 14*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.CENTER);
 				txtNoScores.height = 30;
 				txtNoScores.x = _width*.5 - txtNoScores.width*.5;
 				txtNoScores.y = _height*.5 - txtNoScores.height*.5;
@@ -206,7 +225,7 @@ package com.edgington.view.huds.elements
 				if(e.currentTarget == trackListings[i].clip){
 					trackListings[i].background.graphics.clear();
 					trackListings[i].background.graphics.beginFill(Constants.DARK_FONT_COLOR);
-					trackListings[i].background.graphics.drawRect(0, 0, _width - (DynamicConstants.BUTTON_SPACING*2), listingItemHeight);
+					trackListings[i].background.graphics.drawRect(0, 0, _width - (DynamicConstants.BUTTON_SPACING*2), listingItemHeight*DynamicConstants.DEVICE_SCALE);
 					trackListings[i].background.graphics.endFill();
 					LOG.info("Track Down: " + trackListings[i].trackName);
 					break;
@@ -227,7 +246,7 @@ package com.edgington.view.huds.elements
 						else{
 							trackListings[i].background.graphics.beginFill(Constants.NORMAL_WHITE_COLOUR);
 						}
-						trackListings[i].background.graphics.drawRect(0, 0, _width - (DynamicConstants.BUTTON_SPACING*2), listingItemHeight);
+						trackListings[i].background.graphics.drawRect(0, 0, _width - (DynamicConstants.BUTTON_SPACING*2), listingItemHeight*DynamicConstants.DEVICE_SCALE);
 						trackListings[i].background.graphics.endFill();
 						selectSignal.dispatch(trackListings[i]);
 					}
@@ -276,7 +295,7 @@ package com.edgington.view.huds.elements
 					else{
 						trackListings[i].background.graphics.beginFill(Constants.NORMAL_WHITE_COLOUR);
 					}
-					trackListings[i].background.graphics.drawRect(0, 0, _width - (DynamicConstants.BUTTON_SPACING*2), listingItemHeight);
+					trackListings[i].background.graphics.drawRect(0, 0, _width - (DynamicConstants.BUTTON_SPACING*2), listingItemHeight*DynamicConstants.DEVICE_SCALE);
 					trackListings[i].background.graphics.endFill();
 				}
 				startScrollTracking = false;

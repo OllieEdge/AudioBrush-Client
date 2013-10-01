@@ -49,7 +49,7 @@ package com.edgington.net
 					GET(new NetResponceHandler(onProductsReceived, onProductsFailed), false, FacebookConstants.DEBUG_USER_ID);
 				}
 				else{
-					GET(new NetResponceHandler(onProductsReceived, onProductsFailed), false, FacebookManager.getInstance().currentLoggedInUser.profileID);
+					GET(new NetResponceHandler(onProductsReceived, onProductsFailed), false, FacebookManager.getInstance().currentLoggedInUser.id);
 				}
 			}
 		}
@@ -104,7 +104,7 @@ package com.edgington.net
 				}
 				else{
 					serverProductsVO.productID = productID;
-					serverProductsVO.fb_id = FacebookManager.getInstance().currentLoggedInUser.profileID;
+					serverProductsVO.fb_id = FacebookManager.getInstance().currentLoggedInUser.id;
 					serverProductsVO.quantity = quantity;
 				}
 				PUT(new NetResponceHandler(onItemPurchaseSuccess, onItemPurchaseFailed), serverProductsVO.fb_id, JSON.parse(JSON.stringify(serverProductsVO)));

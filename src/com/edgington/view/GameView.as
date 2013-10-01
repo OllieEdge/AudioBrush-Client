@@ -2,9 +2,11 @@ package com.edgington.view
 {
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.GameProxy;
+	import com.edgington.model.calculators.ScoreCalculator;
 	import com.edgington.model.audio.AudioMainModel;
 	import com.edgington.model.events.AudioEvent;
 	import com.edgington.net.TournamentData;
+	import com.edgington.types.DifficultyTypes;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.view.game.Canvas;
 	import com.edgington.view.game.InGameHud;
@@ -36,8 +38,15 @@ package com.edgington.view
 			gameProxy = GameProxy.getInstance();
 			gameProxy.isTournament = TournamentData.getInstance().isThisGameATournamentGame;
 			gameProxy.currentTrackDetails = AudioMainModel.getInstance().currentTrackDetails;
+			gameProxy.currentTrackDifficulty = AudioMainModel.getInstance().difficulty;
+			gameProxy.currentBeatRatio = AudioMainModel.getInstance().beatRatio;
+			gameProxy.currentHectiness = AudioMainModel.getInstance().hecticness;
+			gameProxy.normalBeatsFromAnalyser = AudioMainModel.getInstance().musicAnalyser.normalBeats;
+			gameProxy.rogueBeatsFromAnalyser = AudioMainModel.getInstance().musicAnalyser.rogueBeats;
+			gameProxy.scoreCalculations = ScoreCalculator.getMaximumScore(gameProxy.normalBeatsFromAnalyser);
 			gameProxy.pauseSignal.add(pauseGame);
 			gameProxy.killGameEarlySignal.add(killGameEarly);
+			gameProxy.difficulty = DifficultyTypes.difficultyStringIDToID(AudioMainModel.getInstance().difficulty);
 			
 			canvas = new Canvas();
 			this.addChild(canvas);

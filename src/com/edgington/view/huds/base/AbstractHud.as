@@ -218,7 +218,9 @@ package com.edgington.view.huds.base
 				this.removeChildAt(0);
 			}
 			hudIsClean = true;
-			superRemoveSignal.dispatch();
+			if(superRemoveSignal!=null){
+				superRemoveSignal.dispatch();
+			}
 		}
 		
 		public function destroy():void{

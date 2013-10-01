@@ -38,7 +38,7 @@ package com.edgington.view
 		
 		private var onScreenState:Sprite;
 		
-		private var removeInterfaceSignal:Signal;
+		public var removeInterfaceSignal:Signal;
 		
 		private var background:hudBackground;
 		private var userHud:element_user_hud;
@@ -51,15 +51,14 @@ package com.edgington.view
 			removeInterfaceSignal.add(removeOnScreenState);
 			
 			setupBackground();
-			
-			loadState();
 		}
 		
-		private function loadState():void{
+		public function loadState():void{
 			LOG.info("Changing game state to: " + DynamicConstants.CURRENT_GAME_STATE);
 			changeQuality(StageQuality.LOW);
 			switch(DynamicConstants.CURRENT_GAME_STATE){
 				case GameStateTypes.MESSAGE_FACEBOOK_LOGIN:
+					removeUserHud();
 					onScreenState = new miniHudFacebookLogin(removeInterfaceSignal);
 					positionHudAtRandom();
 					background.newHudActive(onScreenState);

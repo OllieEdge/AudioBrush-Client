@@ -78,7 +78,7 @@ package com.edgington.net
 					GET(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), false, FacebookConstants.DEBUG_USER_ID);
 				}
 				else{
-					GET(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), false, FacebookManager.getInstance().currentLoggedInUser.profileID);
+					GET(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), false, FacebookManager.getInstance().currentLoggedInUser.id);
 				}
 			}
 			else{
@@ -110,7 +110,7 @@ package com.edgington.net
 					if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
 						PushNotificationsManager.setUserTag(Capabilities.languages[0]);
 						PushNotificationsManager.setUserTag("facebook");
-						PushNotificationsManager.updateUserAlias(FacebookManager.getInstance().currentLoggedInUser.firstName);
+						PushNotificationsManager.updateUserAlias(FacebookManager.getInstance().currentLoggedInUser.name);
 					}
 				}
 				
@@ -134,13 +134,13 @@ package com.edgington.net
 					}
 					else{
 						
-						urlVariables.fb_id = FacebookManager.getInstance().currentLoggedInUser.profileID;
-						urlVariables.username = FacebookManager.getInstance().currentLoggedInUser.firstName;
+						urlVariables.fb_id = FacebookManager.getInstance().currentLoggedInUser.id;
+						urlVariables.username = FacebookManager.getInstance().currentLoggedInUser.name;
 						if(PushNotificationsManager.getInstance().pushNotificationsEnabled){
 							urlVariables.airship_token = PushNotificationsManager.getInstance().airshipToken;
 						}
 						
-						PUT(new NetResponceHandler(onNewUserCreated, onNewUserCreatedFailed), FacebookManager.getInstance().currentLoggedInUser.profileID, urlVariables);
+						PUT(new NetResponceHandler(onNewUserCreated, onNewUserCreatedFailed), FacebookManager.getInstance().currentLoggedInUser.id, urlVariables);
 					}
 				}
 			}
@@ -157,14 +157,17 @@ package com.edgington.net
 		 */
 		private function onNewUserCreated(e:Object = null):void{
 			if(e && DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+				LOG.server("New user was created, now re-downloading the profile");
 				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 					GET(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), false, FacebookConstants.DEBUG_USER_ID);
 				}
 				else{
-					GET(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), false, FacebookManager.getInstance().currentLoggedInUser.profileID);
+					GET(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), false, FacebookManager.getInstance().currentLoggedInUser.id);
 				}
 			}
 			else{
+				LOG.server("New user creation FAILED");
+				LOG.fatal("Hmm, this is a problem, not sure what to do just yet.");
 				userDataSignal.dispatch();
 			}
 		}

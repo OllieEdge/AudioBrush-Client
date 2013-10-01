@@ -160,9 +160,8 @@ package com.edgington.view.huds
 				case buttonOptions[1]:
 					LOG.createCheckpoint("No Facebook Used");
 					var fbProfile:FacebookProfileVO = new FacebookProfileVO();
-					fbProfile.firstName = "Guest";
-					fbProfile.lastName = "";
-					fbProfile.profileID = null;
+					fbProfile.name = "Guest";
+					fbProfile.id = null;
 					fbProfile.gender = "male";
 					fbProfile.installed = true;
 					FacebookManager.getInstance().currentLoggedInUser = fbProfile;

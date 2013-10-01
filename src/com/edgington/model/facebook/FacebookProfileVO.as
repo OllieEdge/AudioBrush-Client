@@ -5,11 +5,10 @@ package com.edgington.model.facebook
 	public class FacebookProfileVO
 	{
 		
-		public var profileID:String;
+		public var id:String;
 		public var gender:String;
 		public var installed:Boolean;
-		public var firstName:String;
-		public var lastName:String;
+		public var name:String;
 		
 		public var rawFacebookData:GVFacebookFriend;
 		
@@ -17,19 +16,17 @@ package com.edgington.model.facebook
 		{
 			if(facebookProfile != null){
 				rawFacebookData = facebookProfile;
-				profileID = facebookProfile.id;
+				id = facebookProfile.id;
 				gender = facebookProfile.gender;
 				installed = facebookProfile.installed;
-				firstName = facebookProfile.properties.first_name;
-				lastName = facebookProfile.properties.last_name;
+				name = facebookProfile.name;
 			}
 			else if(rawData != null){
 				rawFacebookData =  new GVFacebookFriend(rawData.name, rawData.id, rawData);
-				profileID = rawData.id;
+				id = rawData.id;
 				gender = rawData.gender;
 				installed = true;
-				firstName = rawData.first_name;
-				lastName = rawData.last_name;
+				name = rawData.name;
 			}
 		}
 	}

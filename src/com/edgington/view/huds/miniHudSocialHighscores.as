@@ -8,6 +8,7 @@ package com.edgington.view.huds
 	import com.edgington.net.events.HighscoreEvent;
 	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.GameStateTypes;
+	import com.edgington.util.NumberFormat;
 	import com.edgington.util.TextFieldManager;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
@@ -171,41 +172,47 @@ package com.edgington.view.huds
 					var clip:Sprite = new Sprite();
 					if(i%2 == 0){
 						var listing:ui_listItem = new ui_listItem();
-						listing.height = 50;
+						listing.height = 60*DynamicConstants.DEVICE_SCALE;
 						listing.width = tabContainer.width - DynamicConstants.BUTTON_SPACING*2;
 						clip.addChild(listing);
 					}
 					
 					var profilePicture:element_profile_picture = new element_profile_picture(null, highscores[i].userId.fb_id);
-					profilePicture.width = 44;
-					profilePicture.height = 44;
-					profilePicture.x = 3;
-					profilePicture.y = 3;
+					profilePicture.width = 54*DynamicConstants.DEVICE_SCALE;
+					profilePicture.height = 54*DynamicConstants.DEVICE_SCALE;
+					profilePicture.x = 3*DynamicConstants.DEVICE_SCALE;
+					profilePicture.y = 3*DynamicConstants.DEVICE_SCALE;
 					clip.addChild(profilePicture);
 					
-					var txtFieldRank:TextField = TextFieldManager.createTextField(String(highscores[i].rank), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
-					var txtFieldName:TextField = TextFieldManager.createTextField(highscores[i].userId.username, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
-					var txtFieldScore:TextField = TextFieldManager.createTextField(String(highscores[i].score), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.RIGHT);
+					var txtFieldRank:TextField = TextFieldManager.createTextField(gettext("scores_rank_number", {rank:String(highscores[i].rank)}), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 20*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
+					var txtFieldName:TextField = TextFieldManager.createTextField(highscores[i].userId.username, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 20*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
+					var txtFieldScore:TextField = TextFieldManager.createTextField(NumberFormat.addThreeDigitCommaSeperator(highscores[i].score), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 30*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.RIGHT);
 					
-					txtFieldRank.height = 50;
-					txtFieldRank.x = DynamicConstants.BUTTON_SPACING;
-					txtFieldRank.y += Math.round((txtFieldRank.height - txtFieldRank.textHeight));
+					var starRating:ui_star_ratings = new ui_star_ratings();
+					starRating.gotoAndStop(highscores[i].starrating);
+					starRating.height = listing.height*.5;
+					starRating.scaleX = starRating.scaleY;
+					starRating.cacheAsBitmap = true;
+					starRating.x = listing.width*.5 - starRating.width*.5;
+					starRating.y = listing.height*.5 - starRating.height*.5;
 					
-					txtFieldName.height = 50;
-					txtFieldName.x = DynamicConstants.BUTTON_SPACING*3;
-					txtFieldName.y += Math.round((txtFieldName.height - txtFieldName.textHeight));
+					txtFieldRank.x = profilePicture.x + profilePicture.width + DynamicConstants.BUTTON_SPACING;
+					txtFieldRank.y = listing.height*.5;
 					
-					txtFieldScore.height = 50;
+					txtFieldName.x = profilePicture.x + profilePicture.width + DynamicConstants.BUTTON_SPACING;
+					txtFieldName.y = listing.height*.5 - txtFieldName.textHeight;
+					
 					txtFieldScore.x = (tabContainer.width - DynamicConstants.BUTTON_SPACING*2) - txtFieldScore.textWidth-DynamicConstants.BUTTON_SPACING;
-					txtFieldScore.y += Math.round((txtFieldScore.height - txtFieldScore.textHeight));
+					txtFieldScore.y = listing.height*.5 - txtFieldScore.textHeight*.5;
 					
 					clip.addChild(txtFieldRank);
 					clip.addChild(txtFieldName);
 					clip.addChild(txtFieldScore);
+					clip.addChild(starRating);
 					
 					clip.cacheAsBitmap = true;
 					clip.x = tabContainer.x + DynamicConstants.BUTTON_SPACING;
-					clip.y = tabContainer.y + (48*DynamicConstants.BUTTON_SCALE) + 24 + DynamicConstants.BUTTON_SPACING + (i*50);
+					clip.y = tabContainer.y + tabContainer.getTabBodyYOrigin + (clip.height*i);
 					highscoreListings.push(clip);
 				}
 			}
@@ -232,41 +239,47 @@ package com.edgington.view.huds
 					var clip:Sprite = new Sprite();
 					if(i%2 == 0){
 						var listing:ui_listItem = new ui_listItem();
-						listing.height = 50;
+						listing.height = 60*DynamicConstants.DEVICE_SCALE;
 						listing.width = tabContainer.width - DynamicConstants.BUTTON_SPACING*2;
 						clip.addChild(listing);
 					}
 					
 					var profilePicture:element_profile_picture = new element_profile_picture(null, highscores[i].userId.fb_id);
-					profilePicture.width = 44;
-					profilePicture.height = 44;
-					profilePicture.x = 3;
-					profilePicture.y = 3;
+					profilePicture.width = 54*DynamicConstants.DEVICE_SCALE;
+					profilePicture.height = 54*DynamicConstants.DEVICE_SCALE;
+					profilePicture.x = 3*DynamicConstants.DEVICE_SCALE;
+					profilePicture.y = 3*DynamicConstants.DEVICE_SCALE;
 					clip.addChild(profilePicture);
 					
-					var txtFieldRank:TextField = TextFieldManager.createTextField(String(highscoresFriends[i].rank), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
-					var txtFieldName:TextField = TextFieldManager.createTextField(highscoresFriends[i].userId.username, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.LEFT);
-					var txtFieldScore:TextField = TextFieldManager.createTextField(String(highscoresFriends[i].score), FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 14, false, TextFieldAutoSize.RIGHT);
+					var txtFieldRank:TextField = TextFieldManager.createTextField(gettext("scores_rank_number", {rank:String(highscores[i].rank)}), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 20*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
+					var txtFieldName:TextField = TextFieldManager.createTextField(highscores[i].userId.username, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 20*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
+					var txtFieldScore:TextField = TextFieldManager.createTextField(NumberFormat.addThreeDigitCommaSeperator(highscores[i].score), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 30*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.RIGHT);
 					
-					txtFieldRank.height = 50;
-					txtFieldRank.x = DynamicConstants.BUTTON_SPACING;
-					txtFieldRank.y += Math.round((txtFieldRank.height - txtFieldRank.textHeight));
+					var starRating:ui_star_ratings = new ui_star_ratings();
+					starRating.gotoAndStop(highscores[i].starrating);
+					starRating.height = listing.height*.5;
+					starRating.scaleX = starRating.scaleY;
+					starRating.cacheAsBitmap = true;
+					starRating.x = listing.width*.5 - starRating.width*.5;
+					starRating.y = listing.height*.5 - starRating.height*.5;
 					
-					txtFieldName.height = 50;
-					txtFieldName.x = DynamicConstants.BUTTON_SPACING*3;
-					txtFieldName.y += Math.round((txtFieldName.height - txtFieldName.textHeight));
+					txtFieldRank.x = profilePicture.x + profilePicture.width + DynamicConstants.BUTTON_SPACING;
+					txtFieldRank.y = listing.height*.5;
 					
-					txtFieldScore.height = 50;
+					txtFieldName.x = profilePicture.x + profilePicture.width + DynamicConstants.BUTTON_SPACING;
+					txtFieldName.y = listing.height*.5 - txtFieldName.textHeight;
+					
 					txtFieldScore.x = (tabContainer.width - DynamicConstants.BUTTON_SPACING*2) - txtFieldScore.textWidth-DynamicConstants.BUTTON_SPACING;
-					txtFieldScore.y += Math.round((txtFieldScore.height - txtFieldScore.textHeight));
+					txtFieldScore.y = listing.height*.5 - txtFieldScore.textHeight*.5;
 					
 					clip.addChild(txtFieldRank);
 					clip.addChild(txtFieldName);
 					clip.addChild(txtFieldScore);
+					clip.addChild(starRating);
 					
 					clip.cacheAsBitmap = true;
 					clip.x = tabContainer.x + DynamicConstants.BUTTON_SPACING;
-					clip.y = tabContainer.y + (48*DynamicConstants.BUTTON_SCALE) + DynamicConstants.BUTTON_SPACING + (i*50);
+					clip.y = tabContainer.y + tabContainer.getTabBodyYOrigin + (clip.height*i);
 					highscoreListings.push(clip);
 				}
 			}

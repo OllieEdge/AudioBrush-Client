@@ -3,7 +3,6 @@ package com.edgington.view.huds.elements
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.facebook.FacebookManager;
-	import com.edgington.util.NumberFormat;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.net.HighscoreServerVO;
 	
@@ -25,10 +24,6 @@ package com.edgington.view.huds.elements
 			
 			summary = new ui_summaryOverview();
 			
-			summary.txt_beatsHit.text = gettext("summary_screen_beats_hit");
-			summary.txt_longestStreak.text = gettext("summary_screen_longest_streak");
-			summary.txt_additionalBonus.text = gettext("summary_screen_additional_bonus");
-			
 			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
 				summary.txt_noRanking.visible = false;
 				summary.txt_rank.text =  gettext("summary_screen_ranking_loading");
@@ -38,20 +33,16 @@ package com.edgington.view.huds.elements
 				summary.txt_noRanking.text = gettext("summary_screen_ranking_facebook_required");
 			}
 			
-			if(GameProxy.INSTANCE.currentTrackDetails.trackTitle == null){
-				GameProxy.INSTANCE.currentTrackDetails.trackTitle = "Unknown Track";
+			if(GameProxy.INSTANCE.starRating != 0){
+				summary.star_rating.gotoAndStop(GameProxy.INSTANCE.starRating);
+				summary.txt_star_rating.text = gettext("difficulty_star_rating_"+GameProxy.INSTANCE.starRating);
 			}
-			if(GameProxy.INSTANCE.currentTrackDetails.artistName == null){
-				GameProxy.INSTANCE.currentTrackDetails.artistName = "Unknown Artist";
+			else{
+				summary.star_rating.visible = false;
+				summary.txt_star_rating.text = gettext("difficulty_star_rating_0");
 			}
 			
-			summary.txt_artist.text = gettext("summary_screen_artist_name", {artist:GameProxy.INSTANCE.currentTrackDetails.artistName});
-			summary.txt_trackTitle.text = GameProxy.INSTANCE.currentTrackDetails.trackTitle;
-			
-			summary.txt_numBeatsHit.text = NumberFormat.addThreeDigitCommaSeperator(GameProxy.INSTANCE.hitsAllHits) + " / " + NumberFormat.addThreeDigitCommaSeperator(GameProxy.INSTANCE.totalBeats);
-			summary.txt_longestBeatStreak.text = NumberFormat.addThreeDigitCommaSeperator(Math.max(GameProxy.INSTANCE.longestBeatsInARow, GameProxy.INSTANCE.longestPerfectsInARow));
-			
-			summary.txt_totalBonusPoints.text = NumberFormat.addThreeDigitCommaSeperator(GameProxy.INSTANCE.scoreStarPowerBonus + GameProxy.INSTANCE.scorePerfectStreaks);
+			summary.txt_percentage.text = gettext("percentage_beats_hit", {percentage:GameProxy.INSTANCE.percentageOfBeatsHit});
 			
 			summary.share_to_timeline.visible = false;
 			summary.share_to_timeline.txt_share.text = gettext("summary_screen_share");
@@ -148,7 +139,7 @@ package com.edgington.view.huds.elements
 		public function getViewScoreDetailsButtonPoint():Point{
 			var pt:Point = new Point();
 			pt.y = summary.rankBackground.y + summary.rankBackground.height;
-			pt.x = summary.additionalBonusBackground.x + summary.additionalBonusBackground.width;
+			pt.x = summary.rankBackground.x + summary.rankBackground.width;
 			return pt;
 		}
 

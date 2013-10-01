@@ -58,9 +58,9 @@ package com.edgington.net
 					friendIDs = FacebookConstants.DEBUG_USER_FRIENDS.concat();
 				}
 				else{
-					friendIDs.push(FacebookManager.getInstance().currentLoggedInUser.profileID);
+					friendIDs.push(FacebookManager.getInstance().currentLoggedInUser.id);
 					for(var i:int = 0; i < FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.length; i++){
-						friendIDs.push(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].profileID);
+						friendIDs.push(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].id);
 					}
 				}
 				
@@ -79,35 +79,39 @@ package com.edgington.net
 		}
 		
 		private function onFriendScoresRecevied(e:Object = null):void{
-			if(e && e.length > 0){
-				var scores:Vector.<ServerScoreVO> = new Vector.<ServerScoreVO>;
-				for(var i:int = 0; i < e.length; i++){
-					if(ServerScoreVO.checkObject(e[i])){
-						var scr:ServerScoreVO = new ServerScoreVO(e[i]);
-						scr.rank = i+1;
-						scores.push(scr);
+			if(responceSignal){
+				if(e && e.length > 0){
+					var scores:Vector.<ServerScoreVO> = new Vector.<ServerScoreVO>;
+					for(var i:int = 0; i < e.length; i++){
+						if(ServerScoreVO.checkObject(e[i])){
+							var scr:ServerScoreVO = new ServerScoreVO(e[i]);
+							scr.rank = i+1;
+							scores.push(scr);
+						}
 					}
-				}
-				
-				responceSignal.dispatch(HighscoreEvent.FRIEND_HIGHSCORES_RECEIVED, scores);
-			}
-			else{
-				if(e == null){
-					LOG.error("There was an error in retrieving the scores on the server");
-				}
-				else if(e.length == 0){
-					LOG.warning("Track requested does not contain any scores");
+					
+					responceSignal.dispatch(HighscoreEvent.FRIEND_HIGHSCORES_RECEIVED, scores);
 				}
 				else{
-					LOG.error("There is something wrong with the format of the scores that were sent back.");
+					if(e == null){
+						LOG.error("There was an error in retrieving the scores on the server");
+					}
+					else if(e.length == 0){
+						LOG.warning("Track requested does not contain any scores");
+					}
+					else{
+						LOG.error("There is something wrong with the format of the scores that were sent back.");
+					}
+					responceSignal.dispatch(HighscoreEvent.FRIEND_HIGHSCORES_RECEIVED, new Vector.<ServerScoreVO>);
 				}
-				responceSignal.dispatch(HighscoreEvent.FRIEND_HIGHSCORES_RECEIVED, new Vector.<ServerScoreVO>);
 			}
 		}
 		
 		private function onFriendScoresFailed():void{
-			LOG.error("There was a problem getting the scores from the server");
-			responceSignal.dispatch(HighscoreEvent.HIGHSCORES_FAILED);
+			if(responceSignal){
+				LOG.error("There was a problem getting the scores from the server");
+				responceSignal.dispatch(HighscoreEvent.HIGHSCORES_FAILED);
+			}
 		}
 		
 		private function onTopXReceived(e:Object = null):void{

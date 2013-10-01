@@ -50,7 +50,7 @@ package com.edgington.net
 					facebookID = FacebookConstants.DEBUG_USER_ID;
 				}
 				else{
-					facebookID = FacebookManager.getInstance().currentLoggedInUser.profileID;
+					facebookID = FacebookManager.getInstance().currentLoggedInUser.id;
 				}
 				
 			}

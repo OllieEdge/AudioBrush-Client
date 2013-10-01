@@ -82,7 +82,7 @@ package com.edgington.view.huds.elements
 					currentMutliplierStage = 1;
 				}
 				else{
-					currentMutliplierStage = (gameProxy.currentNormalHitStreak - (((currentMultiplier/2)-1)*GameConstants.BEATS_PER_MULTIPLIER)) / (((currentMultiplier/2)*GameConstants.BEATS_PER_MULTIPLIER)-(((currentMultiplier/2)-1)*GameConstants.BEATS_PER_MULTIPLIER));
+					currentMutliplierStage = (gameProxy.beatsInARowForMultiplier - (((currentMultiplier/2)-1)*GameConstants.BEATS_PER_MULTIPLIER)) / (((currentMultiplier/2)*GameConstants.BEATS_PER_MULTIPLIER)-(((currentMultiplier/2)-1)*GameConstants.BEATS_PER_MULTIPLIER));
 				}
 			}
 			else{
@@ -90,7 +90,7 @@ package com.edgington.view.huds.elements
 					currentMutliplierStage = 1;
 				}
 				else{
-					currentMutliplierStage = (gameProxy.currentNormalHitStreak - ((currentMultiplier-1)*GameConstants.BEATS_PER_MULTIPLIER)) / ((currentMultiplier*GameConstants.BEATS_PER_MULTIPLIER)-((currentMultiplier-1)*GameConstants.BEATS_PER_MULTIPLIER));
+					currentMutliplierStage = (gameProxy.beatsInARowForMultiplier - ((currentMultiplier-1)*GameConstants.BEATS_PER_MULTIPLIER)) / ((currentMultiplier*GameConstants.BEATS_PER_MULTIPLIER)-((currentMultiplier-1)*GameConstants.BEATS_PER_MULTIPLIER));
 				}
 			}
 			if(currentMutliplierStage <= 1){

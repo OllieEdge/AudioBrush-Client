@@ -82,7 +82,9 @@ package com.edgington.view.huds.elements
 			if(tabDescriptions.length > 0){
 				tabDescription = new ui_list_description_box();
 				tabDescription.txt_description.text = tabDescriptions[0];
+				tabDescription.txt_description.scaleX = tabDescription.txt_description.scaleY = DynamicConstants.DEVICE_SCALE;
 				tabDescription.background.width = (DynamicConstants.SCREEN_WIDTH-(DynamicConstants.SCREEN_MARGIN*2)) - (DynamicConstants.BUTTON_SPACING*2);
+				tabDescription.background.height *= DynamicConstants.DEVICE_SCALE;
 				tabDescription.x = body.x + DynamicConstants.BUTTON_SPACING;
 				tabDescription.y = body.y + DynamicConstants.BUTTON_SPACING;
 				tabDescription.txt_description.autoSize = TextFieldAutoSize.LEFT;

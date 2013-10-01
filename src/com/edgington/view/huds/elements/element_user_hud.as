@@ -2,10 +2,12 @@ package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.FacebookConstants;
+	import com.edgington.model.calculators.LevelCalculator;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.GiftData;
 	import com.edgington.net.UserData;
 	import com.edgington.types.GameStateTypes;
+	import com.edgington.util.localisation.gettext;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Quad;
 	
@@ -24,6 +26,8 @@ package com.edgington.view.huds.elements
 		private var profilePicture:element_profile_picture;
 		
 		private var credits:ui_credits_box;
+		
+		private var level:ui_level_box;
 		
 		private var inbox:ui_button_inbox;
 		private var inbox_badge:badge_indicator;
@@ -75,12 +79,21 @@ package com.edgington.view.huds.elements
 					profilePicture = new element_profile_picture(null, FacebookConstants.DEBUG_USER_ID);
 				}
 				else{
-					profilePicture = new element_profile_picture(null, FacebookManager.getInstance().currentLoggedInUser.profileID);		
+					profilePicture = new element_profile_picture(null, FacebookManager.getInstance().currentLoggedInUser.id);		
 				}
 			}
 			
 			profilePicture.width = profilePicture.height = profilePictureSize*DynamicConstants.MESSAGE_SCALE;
 			profilePicture.y = DynamicConstants.BUTTON_SPACING;
+			
+			level = new ui_level_box();
+			level.height = profilePicture.height*buttonPercentageScale;
+			level.scaleX = level.scaleY;
+			level.txt_level.text = String(LevelCalculator.getLevel(UserData.getInstance().userProfile.xp));
+			level.txt_percentage.text = gettext("user_hud_level_percentage", {percentage:LevelCalculator.getNextLevelPercentage(UserData.getInstance().userProfile.xp)});
+			level.bar.scaleX = LevelCalculator.getNextLevelPercentage(UserData.getInstance().userProfile.xp) * 0.01;
+			level.y = Math.max(barBackground.height - level.height*.5, DynamicConstants.BUTTON_SPACING);
+			
 			credits = new ui_credits_box();
 			credits.height = profilePicture.height*buttonPercentageScale;
 			credits.scaleX = credits.scaleY;
@@ -119,7 +132,8 @@ package com.edgington.view.huds.elements
 			
 			if(RIGHT){
 				profilePicture.x = DynamicConstants.SCREEN_WIDTH - DynamicConstants.BUTTON_SPACING - profilePicture.width;
-				credits.x = profilePicture.x - DynamicConstants.BUTTON_SPACING - credits.width;
+				level.x =  profilePicture.x - DynamicConstants.BUTTON_SPACING - level.width;
+				credits.x = level.x - DynamicConstants.BUTTON_SPACING - credits.width;
 				
 				inbox.x = credits.x - DynamicConstants.BUTTON_SPACING - inbox.width;
 				
@@ -142,6 +156,7 @@ package com.edgington.view.huds.elements
 			
 			this.addChild(barBackground);
 			this.addChild(profilePicture);
+			this.addChild(level);
 			this.addChild(credits);
 			this.addChild(inbox);
 			this.addChild(store);
@@ -170,6 +185,7 @@ package com.edgington.view.huds.elements
 			inbox_badge.txt_label.visible = false;
 			if(RIGHT){
 				tweens.push(TweenMax.to(profilePicture, 0.5, {height:barBackground.height-2, width:barBackground.height-2, x:DynamicConstants.SCREEN_WIDTH - (barBackground.height-2), y:1, ease:Quad.easeOut}));
+				tweens.push(TweenMax.to(level, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(credits, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(inbox, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(store, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
@@ -177,7 +193,8 @@ package com.edgington.view.huds.elements
 			}
 			else{
 				tweens.push(TweenMax.to(profilePicture, 0.5, {height:barBackground.height-2, width:barBackground.height-2, x:1, y:1, ease:Quad.easeOut}));
-				tweens.push(TweenMax.to(credits, 0.5, {height:barBackground.height-2, x:tweens[0].vars.x + tweens[0].vars.width, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
+				tweens.push(TweenMax.to(level, 0.5, {height:barBackground.height-2, x:tweens[0].vars.x + tweens[0].vars.width, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
+				tweens.push(TweenMax.to(credits, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(inbox, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(store, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(settings, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));	
@@ -190,6 +207,7 @@ package com.edgington.view.huds.elements
 			inbox_badge.txt_label.visible = true;
 			if(RIGHT){
 				tweens.push(TweenMax.to(profilePicture, 0.5, {height:profilePictureSize*DynamicConstants.MESSAGE_SCALE, width:profilePictureSize*DynamicConstants.MESSAGE_SCALE, x: DynamicConstants.SCREEN_WIDTH - DynamicConstants.BUTTON_SPACING - (profilePictureSize*DynamicConstants.MESSAGE_SCALE), y:DynamicConstants.BUTTON_SPACING, ease:Quad.easeOut}));
+				tweens.push(TweenMax.to(level, 0.5, {height:tweens[0].vars.height*buttonPercentageScale, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[0].vars.height*buttonPercentageScale)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 				tweens.push(TweenMax.to(credits, 0.5, {height:tweens[0].vars.height*buttonPercentageScale, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[0].vars.height*buttonPercentageScale)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 				tweens.push(TweenMax.to(inbox, 0.5, {height:tweens[1].vars.height, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[1].vars.height)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge, onComplete:updateInbox}));
 				tweens.push(TweenMax.to(store, 0.5, {height:tweens[1].vars.height, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[1].vars.height)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
@@ -205,8 +223,10 @@ package com.edgington.view.huds.elements
 		}
 		private function updateElementsWidthSmall():void{
 			if(RIGHT){
+				level.scaleX = level.scaleY;
+				level.x = profilePicture.x - level.width;
 				credits.scaleX = credits.scaleY;
-				credits.x = profilePicture.x - credits.width;
+				credits.x = level.x - credits.width;
 				inbox.scaleX = inbox.scaleY;
 				inbox.x = credits.x - inbox.width;
 				store.scaleX = store.scaleY;
@@ -215,7 +235,10 @@ package com.edgington.view.huds.elements
 				settings.x = store.x - settings.width;
 			}
 			else{
+				level.scaleX = level.scaleY;
+				level.x = profilePicture.x + profilePicture.width;
 				credits.scaleX = credits.scaleY;
+				credits.x + level.x + level.width;
 				inbox.scaleX = inbox.scaleY;
 				inbox.x = credits.x + credits.width;
 				store.scaleX = store.scaleY;
@@ -228,8 +251,10 @@ package com.edgington.view.huds.elements
 		}
 		private function updateElementsWidthLarge():void{
 			if(RIGHT){
+				level.scaleX = level.scaleY;
+				level.x = profilePicture.x - level.width - DynamicConstants.BUTTON_SPACING;
 				credits.scaleX = credits.scaleY;
-				credits.x = profilePicture.x - credits.width - DynamicConstants.BUTTON_SPACING;
+				credits.x = level.x - credits.width - DynamicConstants.BUTTON_SPACING;
 				inbox.scaleX = inbox.scaleY;
 				inbox.x = credits.x - inbox.width  - DynamicConstants.BUTTON_SPACING;
 				store.scaleX = store.scaleY;
@@ -238,8 +263,10 @@ package com.edgington.view.huds.elements
 				settings.x = store.x - settings.width - DynamicConstants.BUTTON_SPACING;
 			}
 			else{
+				level.scaleX = level.scaleY;
+				level.x = profilePicture.x +profilePicture.width+ DynamicConstants.BUTTON_SPACING;
 				credits.scaleX = credits.scaleY;
-				credits.x = profilePicture.x +profilePicture.width+ DynamicConstants.BUTTON_SPACING;
+				credits.x = level.x +level.width+ DynamicConstants.BUTTON_SPACING;
 				inbox.scaleX = inbox.scaleY;
 				inbox.x = credits.x + credits.width+DynamicConstants.BUTTON_SPACING;;
 				store.scaleX = store.scaleY;
@@ -294,6 +321,17 @@ package com.edgington.view.huds.elements
 		//When ever the user data is updateed this is fired.
 		private function handleUserDataUpdate():void{
 			credits.txt_label.text = String(UserData.getInstance().userProfile.credits);
+			level.txt_level.text = String(LevelCalculator.getLevel(UserData.getInstance().userProfile.xp));
+			level.txt_percentage.text = gettext("user_hud_level_percentage", {percentage:LevelCalculator.getNextLevelPercentage(UserData.getInstance().userProfile.xp)});
+			level.bar.scaleX = LevelCalculator.getNextLevelPercentage(UserData.getInstance().userProfile.xp) * 0.01;
+			if(FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+					profilePicture.changeImage(FacebookConstants.DEBUG_USER_ID);
+				}
+				else{
+					profilePicture.changeImage(FacebookManager.getInstance().currentLoggedInUser.id);		
+				}
+			}
 		}
 		
 		private function handleGiftDataUpdate():void{

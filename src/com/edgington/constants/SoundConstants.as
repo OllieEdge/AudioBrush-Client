@@ -41,6 +41,7 @@ package com.edgington.constants{
 		
 		public static const SFX_COLLECT_BEAT_1:String = "collect_beat_1.mp3";
 		public static const SFX_COLLECT_BEAT_2:String = "collect_beat_2.mp3";
+		public static const SFX_COLLECT_ROGUE_BEAT:String = "rogue_beat.mp3";
 		
 		public static const SFX_MULTIPLIER_1:String = "multiplier_1.mp3";
 		public static const SFX_MULTIPLIER_2:String = "multiplier_2.mp3";

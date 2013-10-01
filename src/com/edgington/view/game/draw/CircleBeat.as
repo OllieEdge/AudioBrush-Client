@@ -62,14 +62,14 @@ package com.edgington.view.game.draw
 			if(DynamicConstants.DEVICE_NAME == Constants.IPAD_4PLUS || DynamicConstants.DEVICE_NAME == Constants.UNKNOWN_LARGE){
 				circleBeatScale = 40;
 				circlePositionOffset = -20;
-				starBeatScale = 10;
-				starOuterBeatScale = 20;
+				starBeatScale = 20;
+				starOuterBeatScale = 40;
 				scaleReductionSpeed = 0.05;
 			}
 			
 			currentThemeID = SettingsProxy.getInstance().currentTheme;	
 			
-			if(GameProxy.INSTANCE.starPowerBeatsRemainingBeforeActivation >  0){
+			if(GameProxy.INSTANCE.starPowerBeatsRemainingBeforeActivation >  0 && !isRogue){
 				starBeat = true;
 				GameProxy.INSTANCE.starPowerBeatsRemainingBeforeActivation--;
 			}
@@ -116,8 +116,9 @@ package com.edgington.view.game.draw
 				DrawingShapes.drawStar(constCircle.graphics, 0, 0, 5, starBeatScale, starOuterBeatScale);
 				constCircle.graphics.endFill();
 			}
-			
-			circle.blendMode = BlendMode.ADD;
+			if(DynamicConstants.DEVICE_NAME == Constants.IPAD_4PLUS || DynamicConstants.DEVICE_NAME == Constants.IPHONE_5PLUS){
+				circle.blendMode = BlendMode.ADD;
+			}
 			
 			constCircle.cacheAsBitmap = true;
 			
@@ -128,7 +129,12 @@ package com.edgington.view.game.draw
 		public function updateCircle(beatID:int, beatStrength:Number = 0):void{
 			if(this.beatID == beatID){
 				hasBeat = true;
-				circle.scaleX = circle.scaleY = 5;
+				if(isRogue){
+					circle.scaleX = circle.scaleY = 3;
+				}
+				else{
+					circle.scaleX = circle.scaleY = GameConstants.BEAT_PULSE_SCALE;
+				}
 			}
 		}
 		

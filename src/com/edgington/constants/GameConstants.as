@@ -30,6 +30,8 @@ package com.edgington.constants
 		
 		public static const BEATS_PER_MULTIPLIER:int = 12;
 		public static const MAXIMUM_MULTIPLIER:int = 4;
+		
+		public static const BEAT_PULSE_SCALE:int = 5;
 
 	}
 }

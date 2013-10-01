@@ -2,6 +2,7 @@ package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.GameProxy;
+	import com.edgington.net.TrackData;
 	import com.edgington.util.NumberFormat;
 	
 	import flash.display.Sprite;
@@ -11,6 +12,7 @@ package com.edgington.view.huds.elements
 	{
 		
 		private var title:ui_summaryScore;
+		private var trackImage:TrackData;
 		
 		public function element_summaryTitle()
 		{
@@ -21,6 +23,10 @@ package com.edgington.view.huds.elements
 			this.scaleX = this.scaleY = DynamicConstants.MESSAGE_SCALE;
 			this.cacheAsBitmap = true;
 			this.addChild(title);
+			
+			
+			
+			trackImage = new TrackData(new <String>[GameProxy.INSTANCE.currentTrackDetails.trackTitle, GameProxy.INSTANCE.currentTrackDetails.artistName], title.background.picture);
 			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 		}

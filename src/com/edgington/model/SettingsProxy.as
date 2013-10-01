@@ -1,5 +1,6 @@
 package com.edgington.model
 {	
+	import com.edgington.types.HandDirectionType;
 	import com.edgington.types.ThemeTypes;
 	
 	import flash.net.SharedObject;

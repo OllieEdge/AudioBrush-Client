@@ -32,7 +32,7 @@ package com.edgington.model.audio
 		
 		private var soundFileRef:File;
 		
-		private var soundObject:Sound;
+		public var soundObject:Sound;
 		public var soundChannel:SoundChannel;
 		
 		private var soundChannelPeaks:SoundChannelPeaksVO;
@@ -40,9 +40,12 @@ package com.edgington.model.audio
 		public var trackStatusSignal:Signal;
 		
 		public var parser:MusicParser;
-		private var musicAnalyser:MusicAnalyser;
+		public var musicAnalyser:MusicAnalyser;
 		
 		public var currentTrackDetails:NativeMediaVO;
+		public var difficulty:String;
+		public var hecticness:int;
+		public var beatRatio:Number;
 		
 		private var pausedTrackPosition:Number;
 		
@@ -220,7 +223,12 @@ package com.edgington.model.audio
 		}
 		
 		public function resume():void{
-			soundChannel = soundObject.play(pausedTrackPosition, 0);
+			if(DynamicConstants.isIOSPlatform()){
+				soundChannel = MediaManager.INSTANCE.sound.play(pausedTrackPosition, 0);
+			}
+			else{
+				soundChannel = soundObject.play(pausedTrackPosition, 0);
+			}
 			soundChannel.addEventListener(Event.SOUND_COMPLETE, trackFinishedPlaying);
 		}
 		

@@ -19,7 +19,7 @@ package com.edgington.view.huds.elements
 			profile = new ui_main_menu_profile_box_iphone();
 			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
 			//	profile.txt_name.text = FacebookManager.getInstance().currentLoggedInUser.firstName + " " + FacebookManager.getInstance().currentLoggedInUser.lastName;
-				picture = new element_profile_picture(profile.picture as ui_profile_picture, FacebookManager.getInstance().currentLoggedInUser.profileID);
+				picture = new element_profile_picture(profile.picture as ui_profile_picture, FacebookManager.getInstance().currentLoggedInUser.id);
 				profile.credits.txt_label.text = "x" + UserData.getInstance().getCredits();
 			}
 			else{

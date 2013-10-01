@@ -1,5 +1,6 @@
 ﻿package com.edgington.model.audio.analysis
 {
+	import com.edgington.model.calculators.ScoreCalculator;
 	import com.edgington.model.audio.analysis.MusicParser;
 	import com.edgington.valueobjects.AudioCachedVO;
 	
@@ -23,6 +24,10 @@
 		public var fluxThresholds:Vector.<Vector.<Number>>;
 		public var beats:Vector.<Vector.<Number>>;
 		public var beatsDetected:Vector.<Number>;
+		
+		public var normalBeats:int = 0;
+		public var rogueBeats:int = 0;
+		public var beatRatio:Number;
 		
 		public var BPM:int;
 		private var thresholdTimeframe:Vector.<int>;
@@ -80,6 +85,17 @@
 			fluxThresholds = cachedTrack.fluxThresholds;
 			beats = cachedTrack.beats;
 			beatsDetected = cachedTrack.beatsDetected;
+			
+			//We want to get the beat ratio so we need to count the beats detected.
+			for(var i:int = 0; i < beats.length; i++){
+				if(beats[i][0] > 0){
+					normalBeats++;
+				}
+				else if(beats[i].length > 1 && beats[i][1] > 0){
+					rogueBeats++;
+				}
+			}
+			beatRatio = rogueBeats / normalBeats;
 		}
 		
 		public function Analyse():void
@@ -106,6 +122,18 @@
 				_loc_1++;
 			}
 			//BPM = calculateTempo(0);
+			
+			
+			//We want to get the beat ratio so we need to count the beats detected.
+			for(var i:int = 0; i < beats.length; i++){
+				if(beats[i][0] > 0){
+					normalBeats++;
+				}
+				else if(beats[i].length > 1 && beats[i][1] > 0){
+					rogueBeats++;
+				}
+			}
+			beatRatio = rogueBeats / normalBeats;
 			
 			calculateStarSections();
 			

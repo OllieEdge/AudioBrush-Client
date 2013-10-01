@@ -3,9 +3,10 @@ package com.edgington.model.facebook
 	import com.edgington.constants.FacebookConstants;
 	import com.edgington.model.facebook.opengraph.actions.IOpenGraphAction;
 	import com.edgington.util.debug.LOG;
-	import com.milkmangames.nativeextensions.GVFacebookFriend;
 	import com.milkmangames.nativeextensions.GoViral;
 	import com.milkmangames.nativeextensions.events.GVFacebookEvent;
+	
+	import org.osflash.signals.Signal;
 	
 	public class FacebookManager
 	{
@@ -16,13 +17,17 @@ package com.edgington.model.facebook
 		
 		public var currentLoggedInUser:FacebookProfileVO;
 		
-		public var currentLoggedInUserFriends:Vector.<GVFacebookFriend>;
+		public var currentLoggedInUserFriends:Vector.<FacebookProfileVO>;
 		public var currentLoggedInUserFriendsWithInstall:Vector.<FacebookProfileVO>;
 		
 		private var facebookOpenGraphDispatcher:FacebookOpenGraphDispatcher;
 		
+		public var facebookSignals:Signal;
+		
 		public function FacebookManager()
 		{
+			facebookSignals = new Signal();
+			
 			if(GoViral.isSupported())
 			{
 				GoViral.create();
@@ -88,6 +93,7 @@ package com.edgington.model.facebook
 		}
 		
 		private function onFacebookEvent(e:GVFacebookEvent):void{
+			facebookSignals.dispatch(e.type);
 			switch(e.type){
 				case GVFacebookEvent.FB_LOGGED_IN:
 						LOG.facebook("LOGGED IN");

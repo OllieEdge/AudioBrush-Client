@@ -49,14 +49,14 @@ package com.edgington.view.game
 			
 			onScreenFields = new Vector.<TextField>;
 			if(Canvas.handDirection == HandDirectionType.LEFT_HAND){
-				normalChainTextfield = TextFieldManager.createTextField("", FONT_audiobrush_content_bold, 0x3a3a3a, 20, false, TextFieldAutoSize.RIGHT);
-				perfectChainTextField = TextFieldManager.createTextField("", FONT_audiobrush_content_bold, 0x3a3a3a, 60, false, TextFieldAutoSize.RIGHT);
-				perfectChainDescription = TextFieldManager.createTextField(gettext("game_perfect_streak_notification"), FONT_audiobrush_content_bold, 0x3a3a3a, 15, true, TextFieldAutoSize.RIGHT);
+				normalChainTextfield = TextFieldManager.createTextField("", FONT_audiobrush_content_bold, 0x3a3a3a, 20*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.RIGHT);
+				perfectChainTextField = TextFieldManager.createTextField("", FONT_audiobrush_content_bold, 0x3a3a3a, 60*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.RIGHT);
+				perfectChainDescription = TextFieldManager.createTextField(gettext("game_perfect_streak_notification"), FONT_audiobrush_content_bold, 0x3a3a3a, 15*DynamicConstants.DEVICE_SCALE, true, TextFieldAutoSize.RIGHT);
 			}
 			else{
-				normalChainTextfield = TextFieldManager.createTextField("", FONT_audiobrush_content_bold, 0x3a3a3a, 20, false, TextFieldAutoSize.LEFT);
-				perfectChainTextField = TextFieldManager.createTextField("", FONT_audiobrush_content_bold, 0x3a3a3a, 60, false, TextFieldAutoSize.LEFT);
-				perfectChainDescription = TextFieldManager.createTextField(gettext("game_perfect_streak_notification"), FONT_audiobrush_content_bold, 0x3a3a3a, 15, true, TextFieldAutoSize.LEFT);
+				normalChainTextfield = TextFieldManager.createTextField("", FONT_audiobrush_content_bold, 0x3a3a3a, 20*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
+				perfectChainTextField = TextFieldManager.createTextField("", FONT_audiobrush_content_bold, 0x3a3a3a, 60*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
+				perfectChainDescription = TextFieldManager.createTextField(gettext("game_perfect_streak_notification"), FONT_audiobrush_content_bold, 0x3a3a3a, 15*DynamicConstants.DEVICE_SCALE, true, TextFieldAutoSize.LEFT);
 			}
 				
 			normalChainTextfield.cacheAsBitmap = true;
@@ -93,8 +93,8 @@ package com.edgington.view.game
 				currentStreakTotal++;
 			}
 			else if(beatScale < GameConstants.GOOD_THRESHOLD){
-				currentStreakTotal = 0;
-				removeField(normalChainTextfield);
+//				currentStreakTotal = 0;
+//				removeField(normalChainTextfield);
 			}
 			
 			if(GameProxy.INSTANCE.currentPerfectHitStreak > 1 && !perfectChainActive){
@@ -150,24 +150,26 @@ package com.edgington.view.game
 		}
 		
 		private function displayNote(str:String):void{
-			SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_ON_SCREEN_DETAILS), "", 0.25);
-			normalChainTextfield.text = str;
-			normalChainTextfield.y = DynamicConstants.SCREEN_HEIGHT*.5 + normalChainTextfield.height + DynamicConstants.BUTTON_SPACING*.5;
-			TweenLite.killDelayedCallsTo(removeField);
-			cleanTween(normalChainTween);
-			if(Canvas.handDirection == HandDirectionType.LEFT_HAND){
-				normalChainTextfield.x = 0;
-				normalChainTween = TweenLite.to(normalChainTextfield, 0.5, {x:-DynamicConstants.SCREEN_MARGIN*2, ease:Quad.easeOut, onComplete:removeMessage});
+			if(str != ""){
+				SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_ON_SCREEN_DETAILS), "", 0.25);
+				normalChainTextfield.text = str;
+				normalChainTextfield.y = DynamicConstants.SCREEN_HEIGHT*.5 + normalChainTextfield.height + DynamicConstants.BUTTON_SPACING*.5;
+				TweenLite.killDelayedCallsTo(removeField);
+				cleanTween(normalChainTween);
+				if(Canvas.handDirection == HandDirectionType.LEFT_HAND){
+					normalChainTextfield.x = 0;
+					normalChainTween = TweenLite.to(normalChainTextfield, 0.5, {x:-DynamicConstants.SCREEN_MARGIN*2, ease:Quad.easeOut, onComplete:removeMessage});
+				}
+				else{
+					normalChainTextfield.x = -normalChainTextfield.textWidth;
+					normalChainTween = TweenLite.to(normalChainTextfield, 0.5, {x:DynamicConstants.SCREEN_MARGIN, ease:Quad.easeOut, onComplete:removeMessage});
+				}
+				this.addChild(normalChainTextfield);
 			}
-			else{
-				normalChainTextfield.x = -normalChainTextfield.textWidth;
-				normalChainTween = TweenLite.to(normalChainTextfield, 0.5, {x:DynamicConstants.SCREEN_MARGIN, ease:Quad.easeOut, onComplete:removeMessage});
-			}
-			this.addChild(normalChainTextfield);
 		}
 		
 		private function removeMessage():void{
-			TweenLite.delayedCall(3, removeField, [normalChainTextfield]);
+			TweenLite.delayedCall(1.5, removeField, [normalChainTextfield]);
 		}
 		
 		private function removeField(field:TextField):void{

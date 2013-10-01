@@ -91,32 +91,34 @@ package com.edgington.view.huds.elements
 		
 		private function setupVisuals():void{
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
-				friendsList = new element_smallList(friends, 8, 30, 326, nonSelectedFriendsSignal);
+				friendsList = new element_smallList(friends, 8, 30*DynamicConstants.DEVICE_SCALE, 326*DynamicConstants.DEVICE_SCALE, nonSelectedFriendsSignal);
 			}
 			else{
-				friendsList = new element_smallList(friends, 8, 23, 326, nonSelectedFriendsSignal);
+				friendsList = new element_smallList(friends, 8, 23*DynamicConstants.DEVICE_SCALE, 326*DynamicConstants.DEVICE_SCALE, nonSelectedFriendsSignal);
 			}
 			friendsList.x = DynamicConstants.BUTTON_SPACING;
 			friendsList.y = _height - DynamicConstants.BUTTON_SPACING - friendsList.height;
 			
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
-				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 30, 326, selectedFriendsSignal);;
+				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 30*DynamicConstants.DEVICE_SCALE, 326*DynamicConstants.DEVICE_SCALE, selectedFriendsSignal);
 			}
 			else{
-				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 23, 326, selectedFriendsSignal);
+				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 23*DynamicConstants.DEVICE_SCALE, 326*DynamicConstants.DEVICE_SCALE, selectedFriendsSignal);
 			}
 			friendsSelectedList.x = _width - DynamicConstants.BUTTON_SPACING - friendsSelectedList.width;
 			friendsSelectedList.y = friendsList.y;
 			
 			sendItemSurround = new element_sendItemSurround();
 			sendItemSurround.setMaximumUsers(friends.length);
-			sendItemSurround.x = (_width*.5) - (sendItemSurround.width*.5);
+			
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
-				sendItemSurround.y = DynamicConstants.BUTTON_SPACING;
 				sendItemSurround.scaleX = sendItemSurround.scaleY = DynamicConstants.MESSAGE_SCALE;
+				sendItemSurround.y = DynamicConstants.BUTTON_SPACING;
 			}
+			sendItemSurround.x = (_width*.5) - (sendItemSurround.width*.5);
 			
 			audioBrushOnlyTickBox = new element_tickBoxWithText(gettext("send_freinds_audiobrush_only"), tickBoxSignal, false);
+			audioBrushOnlyTickBox.scaleX = audioBrushOnlyTickBox.scaleY = DynamicConstants.DEVICE_SCALE;
 			audioBrushOnlyTickBox.x = friendsSelectedList.x;
 			audioBrushOnlyTickBox.y = friendsSelectedList.y + friendsSelectedList.height + DynamicConstants.BUTTON_SPACING;
 			
@@ -209,19 +211,19 @@ package com.edgington.view.huds.elements
 			selectedFriendsSignal.add(handleSelectedFriendSelected);
 			
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
-				friendsList = new element_smallList(friends, 8, 30, 326, nonSelectedFriendsSignal);
+				friendsList = new element_smallList(friends, 8, 30*DynamicConstants.DEVICE_SCALE, 326*DynamicConstants.DEVICE_SCALE, nonSelectedFriendsSignal);
 			}
 			else{
-				friendsList = new element_smallList(friends, 8, 23, 326, nonSelectedFriendsSignal);
+				friendsList = new element_smallList(friends, 8, 23*DynamicConstants.DEVICE_SCALE, 326*DynamicConstants.DEVICE_SCALE, nonSelectedFriendsSignal);
 			}
 			friendsList.x = DynamicConstants.BUTTON_SPACING;
 			friendsList.y = _height - DynamicConstants.BUTTON_SPACING - friendsList.height;
 			
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
-				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 30, 326, selectedFriendsSignal);;
+				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 30*DynamicConstants.DEVICE_SCALE, 326*DynamicConstants.DEVICE_SCALE, selectedFriendsSignal);;
 			}
 			else{
-				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 23, 326, selectedFriendsSignal);
+				friendsSelectedList = new element_smallList(new Vector.<SmallListItemVO>, 6, 23*DynamicConstants.DEVICE_SCALE, 326*DynamicConstants.DEVICE_SCALE, selectedFriendsSignal);
 			}
 			friendsSelectedList.x = _width - DynamicConstants.BUTTON_SPACING - friendsSelectedList.width;
 			friendsSelectedList.y = friendsList.y;

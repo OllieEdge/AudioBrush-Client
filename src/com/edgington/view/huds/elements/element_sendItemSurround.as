@@ -62,14 +62,14 @@ package com.edgington.view.huds.elements
 					userProfilePicElement = new element_profile_picture(userProfilePicture, FacebookConstants.DEBUG_USER_ID); 	
 				}
 				else if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
-					userProfilePicElement = new element_profile_picture(userProfilePicture, FacebookManager.getInstance().currentLoggedInUser.profileID);
+					userProfilePicElement = new element_profile_picture(userProfilePicture, FacebookManager.getInstance().currentLoggedInUser.id);
 				}
 				
 				friendsProfilePicElement = new Vector.<element_profile_picture>;
 				for(var i:int = 0; i < friendProfilePic.length; i++){
 					friendsProfilePicElement.push(new element_profile_picture(friendProfilePic[i]));
 				}
-				ipadSendItemSurround.x = 23*DynamicConstants.DEVICE_SCALE;
+				ipadSendItemSurround.x = 23//*DynamicConstants.DEVICE_SCALE; //We dont need this because the scale is set outside of this class.
 				this.addChild(ipadSendItemSurround);
 			}
 		}

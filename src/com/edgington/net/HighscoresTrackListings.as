@@ -59,7 +59,7 @@ package com.edgington.net
 				}
 				else{
 					for(var i:int = 0; i < FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.length; i++){
-						friends.push(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].profileID);
+						friends.push(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].id);
 					}
 				}
 				

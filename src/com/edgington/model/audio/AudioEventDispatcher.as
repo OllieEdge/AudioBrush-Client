@@ -1,5 +1,8 @@
 package com.edgington.model.audio
 {
+	import com.edgington.model.GameProxy;
+	import com.edgington.types.DifficultyTypes;
+	
 	import org.osflash.signals.Signal;
 
 	public class AudioEventDispatcher
@@ -33,6 +36,27 @@ package com.edgington.model.audio
 		{
 			
 			audioModel = AudioMainModel.getInstance();
+			
+			switch(GameProxy.INSTANCE.currentHectiness){
+				case 0:
+					trackHeading = 30;
+					break;
+				case 1:
+					trackHeading = 25;
+					break;
+				case 2:
+					trackHeading = 20;
+					break;
+				case 3:
+					trackHeading = 15;
+					break;
+				case 4:
+					trackHeading = 15;
+					break;
+				case 5:
+					trackHeading = 10;
+					break;
+			}
 			
 			this.colourSignal = colourSignal;
 			this.starPowerSignal = starPowerSignal;
@@ -95,8 +119,8 @@ package com.edgington.model.audio
 						lastCheckPosition_AddBeat = trackPosition+trackHeading;
 						addBeatSignal.dispatch(trackPosition+trackHeading);
 					}
-					else if(audioModel.analyser.beats[trackPosition+30][band+1] != 0){
-						addRogueBeatSignal.dispatch(trackPosition+30);
+					else if(audioModel.analyser.beats[trackPosition+trackHeading][band+1] != 0){
+						addRogueBeatSignal.dispatch(trackPosition+trackHeading);
 					}
 					if(audioModel.analyser.beats[trackPosition][band] != 0){
 						lastCheckPosition_Beat = trackPosition;

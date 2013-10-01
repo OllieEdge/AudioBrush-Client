@@ -5,7 +5,10 @@ package com.edgington.view.game.analysis
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.SettingsProxy;
 	import com.edgington.model.audio.AudioMainModel;
+	import com.edgington.net.TrackData;
 	import com.edgington.net.UserData;
+	import com.edgington.types.DeviceTypes;
+	import com.edgington.types.DifficultyTypes;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
@@ -14,8 +17,11 @@ package com.edgington.view.game.analysis
 	import com.edgington.view.huds.base.IAbstractHud;
 	import com.edgington.view.huds.elements.element_mainButton;
 	
+	import flash.display.BlendMode;
 	import flash.display.MovieClip;
+	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
@@ -61,6 +67,8 @@ package com.edgington.view.game.analysis
 		
 		private var allValues:Number = 0;
 		
+		private var trackImage:TrackData;
+		
 		public function ViewTrackAnalysis(removeSignal:Signal)
 		{
 			super();
@@ -82,16 +90,6 @@ package com.edgington.view.game.analysis
 		public function setupVisuals():void{
 			trackData = AudioMainModel.getInstance().currentTrackDetails;
 			
-			trackAnalysis = new ui_trackAnalysis();
-			trackAnalysis.graph.width = DynamicConstants.SCREEN_WIDTH-(DynamicConstants.SCREEN_WIDTH*graphScreenMarginPercentage)
-			trackAnalysis.x = DynamicConstants.SCREEN_WIDTH*.5 - trackAnalysis.width*.5;
-			trackAnalysis.y = DynamicConstants.SCREEN_HEIGHT*.5;
-			trackAnalysis.txt_track.x = trackAnalysis.graph.x + (trackAnalysis.graph.width*.5) - (trackAnalysis.txt_track.width*.5);
-			trackAnalysis.txt_track.y = trackAnalysis.graph.y + trackAnalysis.graph.height + 10;
-			trackAnalysis.txt_hecticness.x = trackAnalysis.graph.x - trackAnalysis.txt_hecticness.width - 10;
-			trackAnalysis.cacheAsBitmap = true;
-			onScreenElements.push(trackAnalysis);
-			
 			trackTitle = new ui_trackAnalysisTitle();
 			
 			if(trackData != null && trackData.trackTitle != null){
@@ -102,52 +100,110 @@ package com.edgington.view.game.analysis
 				trackTitle.txt_title.text = "Debug Mode";
 			}
 			
-			var trackTitleScale:Number = 1;
-			trackTitleScale = Math.min(1, DynamicConstants.SCREEN_WIDTH/trackTitle.width);
-			trackTitle.scaleX = trackTitle.scaleY = trackTitleScale;
+			trackTitle.scaleX = trackTitle.scaleY = DynamicConstants.MESSAGE_SCALE;
 			trackTitle.cacheAsBitmap = true;
 			trackTitle.x = (DynamicConstants.SCREEN_WIDTH*.5) - (trackTitle.width *.5);
 			trackTitle.y = DynamicConstants.SCREEN_MARGIN;
 			
+			trackImage = new TrackData(new <String>[trackData.trackTitle, trackData.artistName], trackTitle.picture);
+			
+			
+			
+			var sprite:Sprite = new Sprite();
+			sprite.graphics.beginFill(Constants.DARK_WHITE_COLOUR, 1);
+			if(DeviceTypes.IPHONE == DynamicConstants.DEVICE_TYPE){
+				sprite.graphics.drawRect(0, 0, DynamicConstants.SCREEN_WIDTH-(DynamicConstants.SCREEN_MARGIN*2), DynamicConstants.SCREEN_HEIGHT - (DynamicConstants.SCREEN_MARGIN*3.5) - trackTitle.height);
+			}
+			else{
+				sprite.graphics.drawRect(0, 0, DynamicConstants.SCREEN_WIDTH-(DynamicConstants.SCREEN_MARGIN*2), DynamicConstants.SCREEN_HEIGHT - (DynamicConstants.SCREEN_MARGIN*2.5) - trackTitle.height);
+			}
+			sprite.graphics.endFill();
+			sprite.x = DynamicConstants.SCREEN_WIDTH*.5 - sprite.width*.5;
+			sprite.y = trackTitle.y + trackTitle.height + DynamicConstants.BUTTON_SPACING;
+			
+			var graphSprite:Sprite = new Sprite();
+			graphSprite.graphics.beginFill(Constants.DARK_FONT_COLOR);
+			graphSprite.graphics.drawRect(0, 0, sprite.width-(25*DynamicConstants.DEVICE_SCALE), sprite.height-(25*DynamicConstants.DEVICE_SCALE));
+			graphSprite.graphics.endFill();
+			graphSprite.x = sprite.x + ((sprite.width*.5) - (graphSprite.width*.5));
+			graphSprite.y = sprite.y + ((sprite.height*.5) - (graphSprite.height*.5));
+			
+			graphWidth = graphSprite.width;
+			graphHeight = graphSprite.height;
+			
+			
+			
+			sectionsDisplay = new MovieClip();
+			graphSprite.addChild(sectionsDisplay);
+			
+			starSectionsDisplay = new MovieClip();
+			graphSprite.addChild(starSectionsDisplay);
+			
+			hecticnessLineGraph = new MovieClip();
+			hecticnessLineGraph.y = graphSprite.height;
+			graphSprite.addChild(hecticnessLineGraph);
+			
+			onScreenElements.push(trackTitle, sprite, graphSprite);
+					
 			if(UserData.getInstance().unlimited){
 				playButton = new element_mainButton(gettext("analysis_play_button"), buttonOptions[1]);
 			}
 			else{
 				playButton = new element_mainButton(gettext("analysis_play_button"), buttonOptions[1], Constants.TRACK_PLAY_COST);
 			}
-			playButton.x = trackTitle.x + trackTitle.width - playButton.width;
-			playButton.y = trackTitle.y + trackTitle.height + DynamicConstants.BUTTON_SPACING;
+			
+			playButton.x = sprite.x + sprite.width - playButton.width;
+			playButton.y = sprite.y + sprite.height + DynamicConstants.BUTTON_SPACING;
 			
 			cancelButton = new element_mainButton(gettext("analysis_cancel_button"), buttonOptions[0]);
-			cancelButton.x = trackTitle.x;
-			cancelButton.y = trackTitle.y + trackTitle.height + DynamicConstants.BUTTON_SPACING;
+			cancelButton.x = sprite.x;
+			cancelButton.y = sprite.y + sprite.height + DynamicConstants.BUTTON_SPACING;
 			
 			addButton(playButton);
 			addButton(cancelButton);
 			
 			buttonSignal.add(handleInteraction);
-			
-			graphWidth = trackAnalysis.graph.width;
-			graphHeight = trackAnalysis.graph.height;
-			
-			onScreenElements.push(trackTitle, playButton, cancelButton);
-			
-			hecticnessLineGraph = new MovieClip();
-			hecticnessLineGraph.x = trackAnalysis.graph.x;
-			hecticnessLineGraph.y = trackAnalysis.graph.y;
-			trackAnalysis.addChild(hecticnessLineGraph);
-			
-			sectionsDisplay = new MovieClip();
-			sectionsDisplay.x = trackAnalysis.graph.x;
-			sectionsDisplay.y = trackAnalysis.graph.y;
-			trackAnalysis.addChild(sectionsDisplay);
-			
-			starSectionsDisplay = new MovieClip();
-			starSectionsDisplay.x = trackAnalysis.graph.x;
-			starSectionsDisplay.y = trackAnalysis.graph.y;
-			trackAnalysis.addChildAt(starSectionsDisplay, 0);
-			
+		
+			onScreenElements.push(playButton, cancelButton);
+
 			drawTrackAnalysis();
+			var difficultyIcon:MovieClip;
+		
+			switch(AudioMainModel.getInstance().difficulty){
+				case DifficultyTypes.DIFFICULTY_EASY:
+					trackTitle.txt_difficulty.text = gettext("difficulty_name_easy").toUpperCase();
+					trackTitle.difficulty_icon.gotoAndStop(1);
+					difficultyIcon = new ui_difficulty_easy() as MovieClip;
+					break;
+				case DifficultyTypes.DIFFICULTY_NORMAL:
+					trackTitle.txt_difficulty.text = gettext("difficulty_name_normal").toUpperCase();
+					trackTitle.difficulty_icon.gotoAndStop(2);
+					difficultyIcon = new ui_difficulty_normal() as MovieClip;
+					break;
+				case DifficultyTypes.DIFFICULTY_HARD:
+					trackTitle.txt_difficulty.text = gettext("difficulty_name_hard").toUpperCase();
+					trackTitle.difficulty_icon.gotoAndStop(3);
+					difficultyIcon = new ui_difficulty_hard() as MovieClip;
+					break;
+				case DifficultyTypes.DIFFICULTY_EXTREME:
+					trackTitle.txt_difficulty.text = gettext("difficulty_name_expert").toUpperCase();
+					trackTitle.difficulty_icon.gotoAndStop(4);
+					difficultyIcon = new ui_difficulty_expert() as MovieClip;
+					break;
+				case DifficultyTypes.DIFFICULTY_INSANE:
+					trackTitle.txt_difficulty.text = gettext("difficulty_name_insane").toUpperCase();
+					trackTitle.difficulty_icon.gotoAndStop(5);
+					difficultyIcon = new ui_difficulty_insane() as MovieClip;
+					break;
+			}
+			difficultyIcon.height = graphHeight*.7;
+			difficultyIcon.scaleX = difficultyIcon.scaleY;
+			difficultyIcon.y = graphHeight * .5;
+			difficultyIcon.x = graphWidth * .5;
+			difficultyIcon.alpha = 0.3;
+			difficultyIcon.blendMode = BlendMode.ADD;
+			graphSprite.addChildAt(difficultyIcon, 1);
+			graphSprite.cacheAsBitmap = true;
 		}
 		
 		private function handleInteraction(buttonOption:String):void{
@@ -167,21 +223,47 @@ package com.edgington.view.game.analysis
 		}
 		
 		private function drawTrackAnalysis():void{
+			
 			var fluxThresholds:Vector.<Vector.<Number>> = AudioMainModel.getInstance().analyser.fluxThresholds;
 			var sections:Array = AudioMainModel.getInstance().analyser.sections;
 			var starSections:Array = AudioMainModel.getInstance().analyser.starSections;
 			var currentSection:int = 0;
 			stepAmount = Math.floor(fluxThresholds.length/graphWidth);
-			normalised = fluxThresholds[0][0];
-			lastValue = normalised;
-			hecticnessLineGraph.graphics.moveTo(0, graphHeight+(normalised*scale)*-1);
+			
+			
+			var highestFluxThreshold:Number = 0;
+			var lowestFluxThreshold:Number  = 0;
+			var averageFluxThresholds:Number = 0;
+			var numberOfResults:uint = 0;
+			
 			for(var i:int = 0; i < graphWidth; i++){
-				normalised += (fluxThresholds[stepAmount*i][0] - lastValue)*.02;
+				averageFluxThresholds += fluxThresholds[stepAmount*i][0];
+				if(fluxThresholds[stepAmount*i][0] > highestFluxThreshold){
+					highestFluxThreshold = fluxThresholds[stepAmount*i][0];
+				}
+				if(lowestFluxThreshold > fluxThresholds[stepAmount*i][0]){
+					lowestFluxThreshold = fluxThresholds[stepAmount*i][0];
+				}
+				i+=3;
+				numberOfResults++;
+			}
+			
+			averageFluxThresholds = averageFluxThresholds / numberOfResults;
+			
+			normalised = fluxThresholds[0][0];
+			scale = graphHeight / highestFluxThreshold;
+			lastValue = normalised;
+			hecticnessLineGraph.graphics.moveTo(0, normalised*scale*-1);
+		
+			
+			
+			for(i = 0; i < graphWidth; i++){
+				normalised += (fluxThresholds[stepAmount*i][0] - lastValue)*.04;
 				lastValue = normalised;
-				var param1:Number = graphHeight+(normalised*scale)*-1;
+				var param1:Number = (normalised*scale)*-1;
 				allValues += param1;
-				hecticnessLineGraph.graphics.lineStyle(2, hecticnessLineColour);
-				hecticnessLineGraph.graphics.beginFill(hecticnessLineColour);
+				hecticnessLineGraph.graphics.lineStyle(2*DynamicConstants.DEVICE_SCALE, Constants.DARK_WHITE_COLOUR);
+				hecticnessLineGraph.graphics.beginFill(Constants.DARK_WHITE_COLOUR);
 				hecticnessLineGraph.graphics.lineTo(i, param1);
 				hecticnessLineGraph.graphics.moveTo(i, param1);
 				hecticnessLineGraph.graphics.endFill();
@@ -198,31 +280,23 @@ package com.edgington.view.game.analysis
 					}
 					currentSection++;
 				}
+				i+=3;
 			}
 			
 			allValues = (allValues / graphWidth)*-1;
 			
-			if(hecticnessLineGraph.height > graphHeight){
-				var mc:MovieClip = new MovieClip();
-				mc.addChild(hecticnessLineGraph);
-				mc.x = trackAnalysis.graph.x;
-				mc.y = trackAnalysis.graph.y;
-				trackAnalysis.addChild(mc);
-				hecticnessLineGraph.height = graphHeight;
-				
-				
-				var hecticnessBounds:Rectangle = mc.getBounds(mc);
-				mc.y = trackAnalysis.graph.y-(hecticnessBounds.topLeft.y);
-			}
-			
+			AudioMainModel.getInstance().difficulty = DifficultyTypes.getDifficultyOfGame(averageFluxThresholds, AudioMainModel.getInstance().analyser.beatRatio);
+			AudioMainModel.getInstance().hecticness = DifficultyTypes.getHecticnessRating(averageFluxThresholds);
+			AudioMainModel.getInstance().beatRatio = DifficultyTypes.getBeatRatioRating(AudioMainModel.getInstance().analyser.beatRatio);
+
 			hecticnessLineGraph.cacheAsBitmap = true;
 		}
 		
 		private function drawNewSection(xPos:int):void{
 			if(xPos > 5){
-				sectionsDisplay.graphics.lineStyle(1, sectionLineColour, 0.3);
+				sectionsDisplay.graphics.lineStyle(1, Constants.DARK_WHITE_COLOUR, 0.3);
 				sectionsDisplay.graphics.moveTo(xPos, graphHeight);
-				sectionsDisplay.graphics.beginFill(sectionLineColour, 0.1);
+				sectionsDisplay.graphics.beginFill(Constants.DARK_WHITE_COLOUR, 0.1);
 				sectionsDisplay.graphics.lineTo(xPos, 0);
 				sectionsDisplay.graphics.endFill();
 			}
@@ -235,7 +309,8 @@ package com.edgington.view.game.analysis
 			starSectionsDisplay.graphics.beginBitmapFill(AssetLoader.imageDictionary[SettingsProxy.getInstance().currentTheme+"_gameStarBackground"], matrix, true);
 			starSectionsDisplay.graphics.drawRect(starSectionStartingX, 0, xPos-starSectionStartingX, graphHeight);
 			starSectionsDisplay.graphics.endFill();
-			starSectionsDisplay.alpha = 0.8;
+			starSectionsDisplay.alpha = 0.4;
+			starSectionsDisplay.blendMode = BlendMode.ADD;
 		}
 		
 		public function readyForRemoval():void{

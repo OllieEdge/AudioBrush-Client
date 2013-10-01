@@ -36,8 +36,6 @@ package com.edgington.view.huds
 		
 		private var dismissButton:element_mainButton;
 		
-		private var profileIpadProfile:element_mainMenuProfileIphone;
-		
 		private var reportMessage:element_mainMessage;
 		
 		public function hudPurchase(removeSignal:Signal)
@@ -74,18 +72,18 @@ package com.edgington.view.huds
 					mediumCreditsButton = new element_purchaseButton(products[1], buttonOptions[1], DynamicConstants.SCREEN_WIDTH*.7);
 					mediumCreditsButton.x = smallCreditsButton.x;
 					mediumCreditsButton.y = smallCreditsButton.y + smallCreditsButton.height + DynamicConstants.BUTTON_SPACING;
-					unlimitedCreditsButton = new element_purchaseButton(products[2], buttonOptions[2], DynamicConstants.SCREEN_WIDTH*.7);
-					unlimitedCreditsButton.x = smallCreditsButton.x;
-					unlimitedCreditsButton.y = mediumCreditsButton.y + mediumCreditsButton.height + DynamicConstants.BUTTON_SPACING;
+					//unlimitedCreditsButton = new element_purchaseButton(products[2], buttonOptions[2], DynamicConstants.SCREEN_WIDTH*.7);
+					//unlimitedCreditsButton.x = smallCreditsButton.x;
+					//unlimitedCreditsButton.y = mediumCreditsButton.y + mediumCreditsButton.height + DynamicConstants.BUTTON_SPACING;
 					largeCreditsButton = new element_purchaseButton(products[3], buttonOptions[3], DynamicConstants.SCREEN_WIDTH*.7);
 					largeCreditsButton.x = smallCreditsButton.x;
-					largeCreditsButton.y = unlimitedCreditsButton.y + unlimitedCreditsButton.height + DynamicConstants.BUTTON_SPACING;
+					largeCreditsButton.y = mediumCreditsButton.y + mediumCreditsButton.height + DynamicConstants.BUTTON_SPACING;
 					
-					profileIpadProfile = new element_mainMenuProfileIphone();
-					profileIpadProfile.scaleX = profileIpadProfile.scaleY = DynamicConstants.MESSAGE_SCALE;
-					profileIpadProfile.x = DynamicConstants.SCREEN_WIDTH - DynamicConstants.SCREEN_MARGIN - profileIpadProfile.width;
-					profileIpadProfile.y = DynamicConstants.SCREEN_MARGIN;
-					onScreenElements.push(profileIpadProfile);
+//					profileIpadProfile = new element_mainMenuProfileIphone();
+//					profileIpadProfile.scaleX = profileIpadProfile.scaleY = DynamicConstants.MESSAGE_SCALE;
+//					profileIpadProfile.x = DynamicConstants.SCREEN_WIDTH - DynamicConstants.SCREEN_MARGIN - profileIpadProfile.width;
+//					profileIpadProfile.y = DynamicConstants.SCREEN_MARGIN;
+//					onScreenElements.push(profileIpadProfile);
 				}
 				else{
 					smallCreditsButton = new element_purchaseButton(products[0], buttonOptions[0], DynamicConstants.SCREEN_WIDTH*.6);
@@ -94,17 +92,17 @@ package com.edgington.view.huds
 					mediumCreditsButton = new element_purchaseButton(products[1], buttonOptions[1], DynamicConstants.SCREEN_WIDTH*.6);
 					mediumCreditsButton.x = smallCreditsButton.x;
 					mediumCreditsButton.y = smallCreditsButton.y + smallCreditsButton.height + DynamicConstants.BUTTON_SPACING;
-					unlimitedCreditsButton = new element_purchaseButton(products[2], buttonOptions[2], DynamicConstants.SCREEN_WIDTH*.6);
-					unlimitedCreditsButton.x = smallCreditsButton.x;
-					unlimitedCreditsButton.y = mediumCreditsButton.y + mediumCreditsButton.height + DynamicConstants.BUTTON_SPACING;
+					//unlimitedCreditsButton = new element_purchaseButton(products[2], buttonOptions[2], DynamicConstants.SCREEN_WIDTH*.6);
+					//unlimitedCreditsButton.x = smallCreditsButton.x;
+					//unlimitedCreditsButton.y = mediumCreditsButton.y + mediumCreditsButton.height + DynamicConstants.BUTTON_SPACING;
 					largeCreditsButton = new element_purchaseButton(products[3], buttonOptions[3], DynamicConstants.SCREEN_WIDTH*.6);
 					largeCreditsButton.x = smallCreditsButton.x;
-					largeCreditsButton.y = unlimitedCreditsButton.y + unlimitedCreditsButton.height + DynamicConstants.BUTTON_SPACING;
+					largeCreditsButton.y = mediumCreditsButton.y + mediumCreditsButton.height + DynamicConstants.BUTTON_SPACING;
 					
-					profileIpadProfile = new element_mainMenuProfileIphone();
-					profileIpadProfile.x = DynamicConstants.SCREEN_WIDTH - DynamicConstants.SCREEN_MARGIN - profileIpadProfile.width;
-					profileIpadProfile.y = DynamicConstants.SCREEN_MARGIN;
-					onScreenElements.push(profileIpadProfile);
+//					profileIpadProfile = new element_mainMenuProfileIphone();
+//					profileIpadProfile.x = DynamicConstants.SCREEN_WIDTH - DynamicConstants.SCREEN_MARGIN - profileIpadProfile.width;
+//					profileIpadProfile.y = DynamicConstants.SCREEN_MARGIN;
+//					onScreenElements.push(profileIpadProfile);
 				}
 				
 				backButton = new element_mainButton(gettext("purchase_menu_back"), buttonOptions[4]);
@@ -113,10 +111,10 @@ package com.edgington.view.huds
 				
 				addButton(smallCreditsButton);
 				addButton(mediumCreditsButton);
-				addButton(unlimitedCreditsButton);
+				//addButton(unlimitedCreditsButton);
 				addButton(largeCreditsButton);
 				addButton(backButton);
-				onScreenElements.push(smallCreditsButton, mediumCreditsButton, unlimitedCreditsButton, largeCreditsButton, backButton);
+				onScreenElements.push(smallCreditsButton, mediumCreditsButton, largeCreditsButton, backButton);
 			}
 			else{
 				reportMessage = new element_mainMessage(gettext("purchase_error_downloading_options"));
@@ -160,36 +158,24 @@ package com.edgington.view.huds
 					TweenLite.delayedCall(1.5, MobilePurchaseManager.INSTANCE.purchaseSmallCredits);
 					cleanButtons(false);
 					LOG.createCheckpoint("Purchased 25 Credits");
-					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
-						removeSeperateElements(profileIpadProfile);
-					}
 					addReportMessage();
 					break;
 				case buttonOptions[1]:
 					TweenLite.delayedCall(1.5, MobilePurchaseManager.INSTANCE.purchaseMediumCredits);
 					cleanButtons(false);
 					LOG.createCheckpoint("Purchased 50 Credits");
-					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
-						removeSeperateElements(profileIpadProfile);
-					}
 					addReportMessage();
 					break;
 				case buttonOptions[2]:
 					LOG.createCheckpoint("Purchased Unlimited Plays");
 					TweenLite.delayedCall(1.5, MobilePurchaseManager.INSTANCE.purchaseUnlimitedTrackPlays);
 					cleanButtons(false);
-					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
-						removeSeperateElements(profileIpadProfile);
-					}
 					addReportMessage();
 					break;
 				case buttonOptions[3]:
 					LOG.createCheckpoint("Purchased 310 Credits");
 					TweenLite.delayedCall(1.5, MobilePurchaseManager.INSTANCE.purchaseLargeCredits);
 					cleanButtons(false);
-					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
-						removeSeperateElements(profileIpadProfile);
-					}
 					addReportMessage();
 					break;
 				case buttonOptions[4]:
@@ -269,7 +255,6 @@ package com.edgington.view.huds
 			backButton = null;
 			dismissButton = null;
 			reportMessage = null;
-			profileIpadProfile = null;
 		}
 	}
 }
