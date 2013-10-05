@@ -17,6 +17,9 @@ package com.edgington.types
 		public static const GIFT:String = "ServerObjectTypes::GIFT";
 		public static const GIFTS:String = "ServerObjectTypes::GIFTS";
 		
+		public static const ACHIEVEMENT:String = "ServerObjectTypes::ACHIEVEMENT";
+		public static const ACHIEVEMENTS:String = "ServerObjectTypes::ACHIEVEMENTS";
+		
 		public static const UNKNOWN:String = "ServerObjectTypes::UNKNOWN";
 	}
 }

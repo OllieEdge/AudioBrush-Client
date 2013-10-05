@@ -8,6 +8,7 @@ package com.edgington.view.huds
 	import com.edgington.util.debug.LOG;
 	import com.edgington.view.huds.base.AbstractHud;
 	import com.edgington.view.huds.base.IAbstractHud;
+	import com.edgington.view.huds.elements.element_bonus;
 	import com.edgington.view.huds.elements.element_mainButton;
 	import com.edgington.view.huds.elements.element_mainMenuProfileIphone;
 	import com.edgington.view.huds.elements.element_mainMenuProfileiPad;
@@ -35,6 +36,8 @@ package com.edgington.view.huds
 		
 		private var ipadProfileInfo:element_mainMenuProfileiPad;
 		private var iphoneProfileInfo:element_mainMenuProfileIphone;
+		
+		private var bonus:element_bonus;
 		
 		private var buttonOptions:Vector.<String> = new <String>["NAVIGATE_NEW_GAME", "TOURNAMENT", "LEADERBOARDS", "BETA_FEEDBACK", "PROFILE", "INBOX"];
 		
@@ -69,17 +72,17 @@ package com.edgington.view.huds
 			settingsButton.x = playButton.x
 			settingsButton.y = howToPlayButton.y + howToPlayButton.height + DynamicConstants.BUTTON_SPACING;
 			
-			profileButton = new element_mainButton("Profile", buttonOptions[4]);
+			profileButton = new element_mainButton("Achievements", buttonOptions[4]);
 			profileButton.x = playButton.x
 			profileButton.y = settingsButton.y + settingsButton.height + DynamicConstants.BUTTON_SPACING;
 			
-			feedbackButton = new element_mainButton("Give Feedback", buttonOptions[3]);
-			feedbackButton.x = playButton.x;
-			feedbackButton.y = profileButton.y + profileButton.height + DynamicConstants.BUTTON_SPACING;
-			
-			inboxButton = new element_mainMiniButton("Messages", buttonOptions[5]);
-			inboxButton.x = playButton.x;
-			inboxButton.y = feedbackButton.y + feedbackButton.height  + DynamicConstants.BUTTON_SPACING;
+//			feedbackButton = new element_mainButton("Achievements", buttonOptions[3]);
+//			feedbackButton.x = playButton.x;
+//			feedbackButton.y = profileButton.y + profileButton.height + DynamicConstants.BUTTON_SPACING;
+//			
+//			inboxButton = new element_mainMiniButton("Messages", buttonOptions[5]);
+//			inboxButton.x = playButton.x;
+//			inboxButton.y = feedbackButton.y + feedbackButton.height  + DynamicConstants.BUTTON_SPACING;
 			
 //			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
 //				ipadProfileInfo = new element_mainMenuProfileiPad();
@@ -95,6 +98,8 @@ package com.edgington.view.huds
 //				iphoneProfileInfo.addEventListener(MouseEvent.MOUSE_UP, purchasesClicked);
 //			}
 			
+			bonus = new element_bonus();
+			
 			addButton(playButton);
 			addButton(howToPlayButton);
 			addButton(settingsButton);
@@ -104,7 +109,7 @@ package com.edgington.view.huds
 			
 			buttonSignal.add(handleInteraction);
 			
-			onScreenElements.push(playButton, howToPlayButton, settingsButton);
+			onScreenElements.push(playButton, howToPlayButton, settingsButton, bonus);
 //			if(ipadProfileInfo){
 //				onScreenElements.push(ipadProfileInfo);
 //			}
@@ -139,7 +144,7 @@ package com.edgington.view.huds
 					cleanButtons();
 					break;
 				case buttonOptions[4]:
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_SETTINGS;
+					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_ACHIEVEMENTS;
 					cleanButtons();
 					break;
 				case buttonOptions[5]:

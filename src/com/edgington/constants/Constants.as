@@ -23,6 +23,15 @@ package com.edgington.constants
 		public static const IPAD_2:String = "iPad2"; // wifi:2,1 gsm:2,2 cdma:2,3
 		public static const IPAD_3:String = "iPad3"; // (guessing)
 		public static const IPAD_4PLUS:String = "iPad4";
+		public static const ANDROID_XXL:String = "Nexus10";
+		public static const ANDROID_XL:String = "Nexus7";
+		public static const ANDROID_L:String = "SamsungGalaxyS3";
+		
+		public static const ANDROID_XXLDPI:String = "SamsungGalaxyS4";
+		
+		public static const ANDROID_IPAD_2_SIZE:String = "AndroidIpad2";
+		public static const ANDROID_IPHONE_3GS_SIZE:String = "AndroidIpad2";
+		
 		public static const UNKNOWN_SMALL:String = "UNKNOWN_SMALL"
 		public static const UNKNOWN_LARGE:String = "UNKNOWN_LARGE"
 		public static const UNKNOWN:String = "unknown";
@@ -40,5 +49,7 @@ package com.edgington.constants
 		
 		
 		public static const TRACK_PLAY_COST:int = 5;
+		
+		public static const BONUS_DELAY:Number = 20000;//14400000;
 	}
 }

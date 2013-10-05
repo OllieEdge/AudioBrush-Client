@@ -109,8 +109,11 @@ package com.edgington.view.huds.elements
 			var tfSentance:TextField;
 			var tfItem:TextField;
 			var itemSymbol:MovieClip;
-			var button:element_mainMiniButton
-			if(!(gift.from is String)){//If the from user is not a string
+			var button:element_mainMiniButton;
+			
+			var giftType:int;
+			
+			if(gift.from != null && !(gift.from is String)){//If the from user is not a string
 				var picture:element_profile_picture = new element_profile_picture(null, gift.from.fb_id);
 				picture.width = picture.height = itemHeight - (DynamicConstants.DEVICE_SCALE*8);
 				picture.y = picture.x = 4*DynamicConstants.DEVICE_SCALE;
@@ -118,10 +121,24 @@ package com.edgington.view.huds.elements
 				tfSentance = TextFieldManager.createTextField(gettext("inbox_credit_item_description_friend_"+Math.ceil(Math.random()*13), {name:gift.from.username}), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, itemHeight*.3, false, TextFieldAutoSize.LEFT);
 				tfSentance.x = itemHeight;
 				
+				giftType = 0;
+				
 				inboxItem.addChild(picture);
 			}
 			else{
-				//implement server admin gifts
+				if(gift.admin != null && gift.admin != ""){
+					var strings:Array = gift.admin.split("_");
+					if(strings[0] == "achievement"){
+						tfSentance = TextFieldManager.createTextField(gettext("inbox_credit_item_description_"+gift.admin), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, itemHeight*.3, false, TextFieldAutoSize.LEFT);
+						tfSentance.x = 4*DynamicConstants.DEVICE_SCALE;
+						giftType = 1;
+					}
+					else if(strings[0] == "redeem"){
+						tfSentance = TextFieldManager.createTextField("NEED TO DO REDEEM CODE", FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, itemHeight*.3, false, TextFieldAutoSize.LEFT);
+						tfSentance.x = 4*DynamicConstants.DEVICE_SCALE;
+						giftType = 2;
+					}
+				}
 			}
 			tfSentance.y = 4*DynamicConstants.DEVICE_SCALE;
 			if(gift.credits > 0){
@@ -136,8 +153,18 @@ package com.edgington.view.huds.elements
 			itemSymbol.y = tfSentance.y + tfSentance.textHeight + (4*DynamicConstants.DEVICE_SCALE) + (itemSymbol.height*.5);
 			tfItem.x = itemSymbol.x + (itemSymbol.width);
 			tfItem.y = itemSymbol.y - itemSymbol.height*.5;// + (4*DynamicConstants.DEVICE_SCALE);
+			switch(giftType){
+				case 0:
+					button = new element_mainMiniButton(gettext("inbox_button_accept_n_gift"), "gift_"+gift._id);		
+					break;
+				case 1:
+					button = new element_mainMiniButton(gettext("inbox_button_collect"), "gift_"+gift._id);
+					break;
+				case 2:
+					button = new element_mainMiniButton(gettext("inbox_button_collect"), "gift_"+gift._id);
+					break;
+			}
 			
-			button = new element_mainMiniButton(gettext("inbox_button_accept_n_gift"), "gift_"+gift._id);
 			button.x = _width - button.width - DynamicConstants.BUTTON_SPACING;
 			button.y = itemHeight *.5 - button.height*.5;
 			addButton(button);

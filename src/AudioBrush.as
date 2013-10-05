@@ -217,7 +217,7 @@ package
 			var date:Number = new Date().time;
 			date = date - inactivityTime.time;
 			inactivityTime = null;
-			if(date > 7000){
+			if(date > 7000 && DynamicConstants.CURRENT_GAME_STATE != GameStateTypes.MESSAGE_FACEBOOK_LOGIN){
 				if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
 					addLoadingScreen();
 					checkFacebookIsStillAuthenticated = new FacebookCheckIfStillAuthenicated();
@@ -258,12 +258,15 @@ package
 					startupImage = new startup_image_iphone_retina() as MovieClip;
 					break;
 				default:
-					if(stage.fullScreenWidth > 1024){
+					if(stage.fullScreenWidth > 1500){
+						startupImage = new startup_image_ipad_retina() as MovieClip;
+					}
+					else if(stage.fullScreenWidth > 1024){
 						if(stage.fullScreenHeight > 960){
-							startupImage = new startup_image_iphone_5() as MovieClip;
+							startupImage = new startup_image_ipad() as MovieClip;
 						}
 						else{
-							startupImage = new startup_image_ipad_retina() as MovieClip;
+							startupImage = new startup_image_iphone_5() as MovieClip;
 						}
 					}
 					else if(stage.fullScreenHeight > 768){
@@ -272,6 +275,8 @@ package
 					else{
 						startupImage = new startup_image_ipad() as MovieClip;
 					}
+					startupImage.width = stage.fullScreenWidth;
+					startupImage.height = stage.fullScreenHeight;
 					startupImage.x = stage.fullScreenWidth*.5 - startupImage.width*.5;
 					startupImage.y = stage.fullScreenHeight*.5 - startupImage.height*.5;
 					break;

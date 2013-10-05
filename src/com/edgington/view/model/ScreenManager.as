@@ -3,6 +3,7 @@ package com.edgington.view.model
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.types.DeviceTypes;
+	import com.edgington.util.debug.LOG;
 	
 	import flash.system.Capabilities;
 
@@ -14,45 +15,109 @@ package com.edgington.view.model
 		}
 		
 		public function setupDynamicScaling():void{
-			DynamicConstants.BUTTON_SCALE = setButtonScale();
-			DynamicConstants.SCREEN_MARGIN = setScreenMargin();
-			DynamicConstants.MESSAGE_SCALE = setMessageScale();
-			DynamicConstants.BUTTON_PURCHASE_SCALE = setPurchaseButtonScale();
+			getDevice();
 			DynamicConstants.BUTTON_MINI_SCALE = DynamicConstants.MESSAGE_SCALE*0.68;
-			DynamicConstants.DEVICE_SCALE = setDeviceScale();
 		}
-			
-			
 		
 		public static function getDevice():String {
 			var info:Array = Capabilities.os.split(" ");
 			
+			calculateDeviceDependantResolutions();
+			
 			// ordered from specific (iPhone1,1) to general (iPhone)
 				switch(DynamicConstants.SCREEN_WIDTH){
-					case 1136:
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPHONE;
+					case 1136://iPhone 5 - iPhone 5S/5C
+						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
 						DynamicConstants.DEVICE_NAME = Constants.IPHONE_5PLUS;
+						
+						DynamicConstants.DEVICE_SCALE = 1;
+						
+						DynamicConstants.MESSAGE_SCALE = 1.5;
+						
+						DynamicConstants.BUTTON_SCALE = 2;
+						
+						DynamicConstants.BUTTON_SPACING = 17;
+						
+						DynamicConstants.SCREEN_MARGIN = 50;
+						
+						DynamicConstants.BUTTON_PURCHASE_SCALE = 1.2;
+						
 						return Constants.IPHONE_5PLUS;
 						break;
-					case 1024:
+					case 1024://iPad 1 - iPad 2 - iPad Mini
 						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
 						DynamicConstants.DEVICE_NAME = Constants.IPAD_2;
+						
+						DynamicConstants.DEVICE_SCALE = 1;
+						
+						DynamicConstants.MESSAGE_SCALE = 1;
+						
+						DynamicConstants.BUTTON_SCALE = 1;
+						
+						DynamicConstants.BUTTON_SPACING = 17;
+						
+						DynamicConstants.SCREEN_MARGIN = 100;
+						
+						DynamicConstants.BUTTON_PURCHASE_SCALE = 1;
+						
 						return Constants.IPAD_2;
 						break;
-					case 960:
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPHONE;
+					case 960://iPhone 4 - iPhone 4S
+						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
 						DynamicConstants.DEVICE_NAME = Constants.IPHONE_4;
+						
+						DynamicConstants.DEVICE_SCALE = 1;
+						
+						DynamicConstants.MESSAGE_SCALE = 1.3;
+						
+						DynamicConstants.BUTTON_SCALE = 2;
+						
+						DynamicConstants.BUTTON_SPACING = 17;
+						
+						DynamicConstants.SCREEN_MARGIN = 50;
+						
+						DynamicConstants.BUTTON_PURCHASE_SCALE = 1.2;
+						
 						return Constants.IPHONE_4S;
 						break;
-					case 480:
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPHONE;
+					case 480://iPhone 3GS - not compatible on iOS 7
+						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
 						DynamicConstants.DEVICE_NAME = Constants.IPHONE_3GS;
+						
+						DynamicConstants.DEVICE_SCALE = 0.5;
+						
+						DynamicConstants.MESSAGE_SCALE = 0.6;
+						
+						DynamicConstants.BUTTON_SCALE = 1;
+						
+						DynamicConstants.BUTTON_SPACING = 8;
+						
+						DynamicConstants.SCREEN_MARGIN = 25;
+						
+						DynamicConstants.BUTTON_PURCHASE_SCALE = 0.6;
+						
 						return Constants.IPHONE_3GS;
 						break;
-					case 2048:
+					case 2048://iPad 3/4
 						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
 						DynamicConstants.DEVICE_NAME = Constants.IPAD_4PLUS;
+						
+						DynamicConstants.DEVICE_SCALE = 2;
+						
+						DynamicConstants.MESSAGE_SCALE = 2;
+						
+						DynamicConstants.BUTTON_SCALE = 2;
+						
+						DynamicConstants.BUTTON_SPACING = 34;
+						
+						DynamicConstants.SCREEN_MARGIN = 200;
+						
+						DynamicConstants.BUTTON_PURCHASE_SCALE = 2;
+						
 						return Constants.IPAD_4PLUS;
+						break;
+					default:
+						calculateDeviceDependantResolutions();
 						break;
 				}
 //			else{
@@ -62,6 +127,9 @@ package com.edgington.view.model
 //					}
 //				}
 //			}
+				
+			LOG.debug("DEVICE RECOGNISED: " + DynamicConstants.DEVICE_NAME);
+				
 			if(DynamicConstants.SCREEN_WIDTH > 1500){
 				return Constants.UNKNOWN_LARGE;
 			}
@@ -71,171 +139,60 @@ package com.edgington.view.model
 			return Constants.UNKNOWN;
 		}
 		
-		public static function setDeviceScale():Number{
-			switch(getDevice()){
-				case Constants.IPHONE_5PLUS:
-					return 1;
-					break;
-				case Constants.IPHONE_4S:
-					return 1;
-					break;
-				case Constants.IPHONE_3GS:
-					return 0.5;
-					break;
-				case Constants.IPAD_2:
-					return 1;
-					break;
-				case Constants.IPAD_3:
-					return 2;
-					break;
-				case Constants.IPAD_4PLUS:
-					return 2;
-					break;
-				default:
-					if(getDevice() == Constants.UNKNOWN_LARGE){
-						DynamicConstants.BUTTON_SPACING *= 2;
-						return 2;
-					}
-					else{
-						return 1;
-					}
-					break;
-			}
-			return 1;
-		}
-		
-		public static function setMessageScale():Number{
-			//if(DynamicConstants.isMobileOS()){
-				switch(getDevice()){
-					case Constants.IPHONE_5PLUS:
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPHONE;
-						return 1.5;
-						break;
-					case Constants.IPAD_3:
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
-						return 2;
-						break;
-					case Constants.IPAD_4PLUS:
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
-						return 2;
-						break;
-					case Constants.IPHONE_4S:
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPHONE;
-						return 1.3;
-						break;
-					case Constants.IPHONE_3GS:
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPHONE;
-						return 0.65;
-						break;
-					default:
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
-						return 1;
-						break;
+		private static function calculateDeviceDependantResolutions():void{
+				if(DynamicConstants.SCREEN_WIDTH >= 1920){
+					DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
+					DynamicConstants.DEVICE_NAME = Constants.ANDROID_XXL;
+					
+					DynamicConstants.DEVICE_SCALE = 2;
+					
+					DynamicConstants.MESSAGE_SCALE = 2;
+					
+					DynamicConstants.BUTTON_SCALE = 2.2;
+					
+					DynamicConstants.BUTTON_SPACING = 40;
+					
+					DynamicConstants.SCREEN_MARGIN = 200;
+					
+					DynamicConstants.BUTTON_PURCHASE_SCALE = 2;
 				}
-		//	}
-			return 1;
-		}
-		
-		
-		public static function setButtonScale():Number{
-			//if(DynamicConstants.isMobileOS()){
-				switch(getDevice()){
-					case Constants.IPHONE_5PLUS:
-						return 2;
-						break;
-					case Constants.IPAD_3:
-						DynamicConstants.BUTTON_SPACING *= 2;
-						return 2;
-						break;
-					case Constants.IPAD_4PLUS:
-						DynamicConstants.BUTTON_SPACING *= 2;
-						return 2;
-						break;
-					case Constants.IPHONE_4S:
-						return 2;
-						break;
-					case Constants.IPHONE_3GS:
-						return 1;
-						break;
-					default:
-						if(getDevice() == Constants.UNKNOWN_LARGE){
-							DynamicConstants.BUTTON_SPACING *= 2;
-							return 2;
-						}
-						else{
-							return 1;
-						}
-						break;
+				else if(DynamicConstants.SCREEN_WIDTH >= 1280){
+					DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
+					DynamicConstants.DEVICE_NAME = Constants.ANDROID_L;
+					
+					DynamicConstants.DEVICE_SCALE = 1;
+					
+					DynamicConstants.MESSAGE_SCALE = 1.3;
+					
+					DynamicConstants.BUTTON_SCALE = 1.3;
+					
+					DynamicConstants.BUTTON_SPACING = 20;
+					
+					DynamicConstants.SCREEN_MARGIN = 100;
+					
+					DynamicConstants.BUTTON_PURCHASE_SCALE = 1.1;
+					
 				}
-		//	}
-			return 1;
-		}
-		
-		public static function setPurchaseButtonScale():Number{
-			//if(DynamicConstants.isMobileOS()){
-			switch(getDevice()){
-				case Constants.IPHONE_5PLUS:
-					return 1.2;
-					break;
-				case Constants.IPAD_3:
-					return 2;
-					break;
-				case Constants.IPAD_4PLUS:
-					return 2;
-					break;
-				case Constants.IPHONE_4S:
-					return 1.2;
-					break;
-				case Constants.IPHONE_3GS:
-					return 1;
-					break;
-				default:
-					if(getDevice() == Constants.UNKNOWN_LARGE){
-						DynamicConstants.BUTTON_SPACING *= 2;
-						return 2;
-					}
-					else{
-						return 1;
-					}
-					break;
-			}
-			//	}
-			return 1;
-		}
-		
-		public static function setScreenMargin():Number{
-			//if(DynamicConstants.isMobileOS()){
-				switch(getDevice()){
-					case Constants.IPHONE_5PLUS:
-						return 50;
-						break;
-					case Constants.IPHONE_4S:
-						return 50;
-						break;
-					case Constants.IPHONE_3GS:
-						return 25;
-						break;
-					case Constants.IPAD_2:
-						return 100;
-						break;
-					case Constants.IPAD_3:
-						return 200;
-						break;
-					case Constants.IPAD_4PLUS:
-						return 200;
-						break;
-					default:
-						if(getDevice() == Constants.UNKNOWN_LARGE){
-							DynamicConstants.BUTTON_SPACING *= 2;
-							return 200;
-						}
-						else{
-							return 50;
-						}
-						break;
+				else{// if(DynamicConstants.SCREEN_WIDTH >= 1024){
+					DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
+					DynamicConstants.DEVICE_NAME = Constants.ANDROID_IPAD_2_SIZE;
+					
+					DynamicConstants.DEVICE_SCALE = 1;
+					
+					DynamicConstants.MESSAGE_SCALE = 1;
+					
+					DynamicConstants.BUTTON_SCALE = 1;
+					
+					DynamicConstants.BUTTON_SPACING = 17;
+					
+					DynamicConstants.SCREEN_MARGIN = 100;
+					
+					DynamicConstants.BUTTON_PURCHASE_SCALE = 1;
 				}
-			//}
-			return 100;
+			
+			LOG.debug("SCREEN RES X: " + Capabilities.screenResolutionX);
+			LOG.debug("SCREEN RES Y: " + Capabilities.screenResolutionY);
+			LOG.debug("SCREEN DPI: " + Capabilities.screenDPI);
 		}
 	}
 }

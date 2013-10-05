@@ -114,6 +114,7 @@ package com.edgington.net
 			if(statusSignal != null){
 				GiftData.getInstance().getGifts();
 				ProductsData.getInstance().getProducts();
+				AchievementData.getInstance().getAchievements();
 				statusSignal.dispatch(true);
 			}
 		}

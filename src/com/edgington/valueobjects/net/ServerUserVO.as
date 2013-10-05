@@ -1,5 +1,6 @@
 package com.edgington.valueobjects.net
 {
+	import com.edgington.util.DateFormatter;
 	import com.edgington.util.debug.LOG;
 
 	public class ServerUserVO
@@ -8,6 +9,9 @@ package com.edgington.valueobjects.net
 		
 		private var updated:String;
 		private var created:String;
+		
+		public var last_login:Date;
+		public var last_bonus:Date;
 		
 		public var role:String;
 		public var username:String;
@@ -23,7 +27,23 @@ package com.edgington.valueobjects.net
 		{
 			for(var key:String in rawObject){
 				if(key.charAt(0) != "_" || key == "_id"){
-					this[key] = rawObject[key];
+					if(key == "last_login" || key == "last_bonus"){
+						if(key == "last_login"){
+							if(String(rawObject[key]).charAt(String(rawObject[key]).length-1) == "Z"){
+								last_login = DateFormatter.RFC3339toDate(rawObject[key]);
+							}
+						}
+						else{
+							if(rawObject[key] != null){
+								if(String(rawObject[key]).charAt(String(rawObject[key]).length-1) == "Z"){
+									last_bonus = DateFormatter.RFC3339toDate(rawObject[key]);
+								}
+							}
+						}
+					}
+					else{
+						this[key] = rawObject[key];
+					}
 				}
 			}
 		}
@@ -36,7 +56,7 @@ package com.edgington.valueobjects.net
 				if(key != "created" && key != "updated" && key.charAt(0) != "_" || key == "_id"){
 					//We must filter out the mongoDB defaults as we do not use these (they start with a _ )
 					if(!serverObject.hasOwnProperty(key)){
-						LOG.debug("Key that doesn't exist in client but is in the server responce is: " + key);
+						//LOG.debug("Key that doesn't exist in client but is in the server responce is: " + key);
 						return false;
 					}
 				}

@@ -353,6 +353,7 @@ package com.edgington.model
 		private function checkStreak(beatScale:Number):int{
 			if(beatScale >= GameConstants.GOOD_THRESHOLD){
 				currentNormalHitStreak++;
+				longestBeatsInARow = Math.max(currentNormalHitStreak, longestBeatsInARow);
 			}
 			if(currentNormalHitStreak > 0 && beatScale < GameConstants.GOOD_THRESHOLD){
 				var streakBonus:int = Math.floor(currentNormalHitStreak/GameConstants.BEAT_CHAIN_MULTIPLE_BONUS)*GameConstants.BEAT_CHAIN_BONUS_AMOUNT;
@@ -373,6 +374,7 @@ package com.edgington.model
 		private function checkPerfectStreak(beatScale:Number):int{
 			if(beatScale >= GameConstants.PERFECT_THRESHOLD){
 				currentPerfectHitStreak++;
+				longestPerfectsInARow = Math.max(currentPerfectHitStreak, longestPerfectsInARow);
 			}
 			if(currentPerfectHitStreak > 0 && beatScale < GameConstants.PERFECT_THRESHOLD){
 				var perfectStreakBonus:int = Math.floor(currentPerfectHitStreak/GameConstants.PERFECT_CHAIN_MULTIPLE_BONUS)*GameConstants.PERFECT_CHAIN_BONUS_AMOUNT;

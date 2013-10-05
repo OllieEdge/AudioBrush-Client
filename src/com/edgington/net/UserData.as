@@ -1,10 +1,12 @@
 package com.edgington.net
 {
+	import com.edgington.constants.AchievementConstants;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.FacebookConstants;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.helpers.NetResponceHandler;
 	import com.edgington.types.ThemeTypes;
+	import com.edgington.util.ObjectLength;
 	import com.edgington.util.PushNotificationsManager;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.valueobjects.net.ServerUserVO;
@@ -35,6 +37,11 @@ package com.edgington.net
 		
 		public var unlimited:Boolean = false;
 		
+		public var isLogin:Boolean = true;
+		
+		public var bonusSignal:Signal;
+		public var bonusTime:Number = 0;
+		
 		public function UserData()
 		{
 			super("user", "users");
@@ -55,11 +62,16 @@ package com.edgington.net
 			userProfile = serverUserVO;
 			
 			userDataSignal = new Signal();
+			bonusSignal = new Signal();
 		}
 		
 		
 		public function purchaseTheme(themeID:String):void{
 			if(!ProductsData.getInstance().doesUserHaveProduct(themeID)){
+				//Artist at Heart
+				if(!AchievementConstants.ach_21){
+					AchievementData.UnlockAchievement(21);
+				}
 				useCredits(ThemeTypes[themeID.toUpperCase()+"_THEME_COST"]);
 				ProductsData.getInstance().createNewPurchase(themeID, 1);
 			}
@@ -74,11 +86,13 @@ package com.edgington.net
 		 */
 		public function getUser():void{
 			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+				var obj:Object = new Object();
+				obj.isLogin = isLogin;
 				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-					GET(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), false, FacebookConstants.DEBUG_USER_ID);
+					POST(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), FacebookConstants.DEBUG_USER_ID, obj);
 				}
 				else{
-					GET(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), false, FacebookManager.getInstance().currentLoggedInUser.id);
+					POST(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), FacebookManager.getInstance().currentLoggedInUser.id, obj);
 				}
 			}
 			else{
@@ -92,8 +106,15 @@ package com.edgington.net
 		 * If the responce doesn't contain data we need to create the user
 		 */
 		private function onUserDataRecevied(e:Object = null):void{
-			if(e && e.length > 0){
-				userProfile = new ServerUserVO(e[0]);
+			if(e && ObjectLength.count(e) > 0 && ServerUserVO.checkObject(e)){
+				userProfile = new ServerUserVO(e);
+				
+				if(userProfile.last_login != null){
+					isLogin = false;
+					var clientDate:Date = new Date();
+					DynamicConstants.SERVER_TIME_DIFFERENCE = userProfile.last_login.time - clientDate.time;
+					LOG.server("Server time is " + (DynamicConstants.SERVER_TIME_DIFFERENCE/1000) + " seconds ahead");
+				}
 				
 				
 				//If we need to update the user
@@ -117,6 +138,7 @@ package com.edgington.net
 				ProductsData.getInstance().getProducts();
 				//Save
 				saveProfile();
+				checkAchievements();
 				userDataSignal.dispatch();
 			}
 			else{
@@ -153,16 +175,46 @@ package com.edgington.net
 		}
 		
 		/**
+		 * Just a quick check of any user related achievements
+		 */
+		private function checkAchievements():void{
+			//5 tracks
+			if(!AchievementConstants.ach_15){
+				var ach15Progress:int  = AchievementData.getInstance().userAchievements[14].progress;
+				var calculatedProgress15:int = Math.min(100, Math.floor((userProfile.tracks.length / 5)*100));
+				if(ach15Progress != calculatedProgress15){
+					AchievementData.getInstance().updateAchievement(15, calculatedProgress15);
+				}
+			}
+			//10 tracks
+			if(!AchievementConstants.ach_16){
+				var ach16Progress:int  = AchievementData.getInstance().userAchievements[15].progress;
+				var calculatedProgress16:int = Math.min(100, Math.floor((userProfile.tracks.length / 10)*100));
+				if(ach16Progress != calculatedProgress16){
+					AchievementData.getInstance().updateAchievement(16, calculatedProgress16);
+				}
+			}
+			//50 shades of track
+			if(!AchievementConstants.ach_17){
+				var ach17Progress:int  = AchievementData.getInstance().userAchievements[16].progress;
+				var calculatedProgress17:int = Math.min(100, Math.floor((userProfile.tracks.length / 50)*100));
+				if(ach16Progress != calculatedProgress17){
+					AchievementData.getInstance().updateAchievement(17, calculatedProgress17);
+				}
+			}
+		}
+		
+		/**
 		 * When the server response as successful after creating a new user
 		 */
 		private function onNewUserCreated(e:Object = null):void{
 			if(e && DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				LOG.server("New user was created, now re-downloading the profile");
 				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-					GET(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), false, FacebookConstants.DEBUG_USER_ID);
+					POST(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), FacebookConstants.DEBUG_USER_ID, null);
 				}
 				else{
-					GET(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), false, FacebookManager.getInstance().currentLoggedInUser.id);
+					POST(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), FacebookManager.getInstance().currentLoggedInUser.id, null);
 				}
 			}
 			else{
@@ -194,7 +246,7 @@ package com.edgington.net
 			}
 			if(override){
 				if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-					POST(new NetResponceHandler(onCreditsUpdated, onCreditsUpdateFailed), userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
+					POST(new NetResponceHandler(onCreditsUpdated, onCreditsUpdateFailed), "update/"+userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
 				}
 			}
 		}
@@ -206,14 +258,14 @@ package com.edgington.net
 			userProfile.credits += creditsAmount;
 			saveProfile();
 			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-				POST(new NetResponceHandler(onCreditsUpdated, onCreditsUpdateFailed), userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
+				POST(new NetResponceHandler(onCreditsUpdated, onCreditsUpdateFailed), "update/"+userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
 			}
 		}
 		public function useCredits(creditsAmount:int):void{
 			userProfile.credits -= creditsAmount;
 			saveProfile();
 			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-				POST(new NetResponceHandler(onCreditsUpdated, onCreditsUpdateFailed), userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
+				POST(new NetResponceHandler(onCreditsUpdated, onCreditsUpdateFailed), "update/"+userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
 			}
 		}
 		
@@ -237,7 +289,7 @@ package com.edgington.net
 			saveProfile();
 			unlimited = true;
 			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-				POST(new NetResponceHandler(onUnlimitedEditSuccess, onUnlimitedEditFailed), userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
+				POST(new NetResponceHandler(onUnlimitedEditSuccess, onUnlimitedEditFailed), "update/"+userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
 			}
 		}
 		
@@ -253,6 +305,48 @@ package com.edgington.net
 		}
 		private function onUnlimitedEditFailed():void{
 			LOG.error("There was a problem updating the Users Unlimited status");
+		}
+		
+		public function checkBonusStatus():void{
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+				GET(new NetResponceHandler(onBonusStatus, onBonusStatusFailed), false, "bonus/"+userProfile.fb_id);
+			}
+		}
+		public function collectBonus():void{
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+				POST(new NetResponceHandler(onBonusCollected, onBonusCollectFailed), "bonus/"+userProfile.fb_id, null);
+			}
+		}
+		
+		private function onBonusStatus(e:Object = null):void{
+			if(e && ServerUserVO.checkObject(e)){
+				var serverUser:ServerUserVO = new ServerUserVO(e);
+				userProfile.last_bonus = serverUser.last_bonus;
+				bonusSignal.dispatch();
+			}
+			else{
+				LOG.error("There was a problem getting the bonus status");
+			}
+		}
+		private function onBonusStatusFailed(e:Object = null):void{
+			LOG.error("ERROR There was a problem getting the bonus status");
+		}
+		
+		private function onBonusCollected(e:Object = null):void{
+			if(e && ServerUserVO.checkObject(e)){
+				var serverUser:ServerUserVO = new ServerUserVO(e);
+				userProfile.last_bonus = serverUser.last_bonus;
+				userProfile.credits = serverUser.credits;
+				saveProfile();
+				userDataSignal.dispatch();
+				bonusSignal.dispatch();
+			}
+			else{
+				LOG.error("There was a problem getting the bonus status");
+			}
+		}
+		private function onBonusCollectFailed(e:Object = null):void{
+			LOG.error("ERROR There was a problem getting the bonus status");
 		}
 		
 		

@@ -130,7 +130,7 @@
 
         public function stroke(param1:Number, param2:Number, param3:BrushManager, param4:BitmapData = null, param5:BitmapData = null, param6:Matrix = null) : void
         {
-			if(DynamicConstants.DEVICE_NAME == Constants.IPAD_4PLUS || DynamicConstants.DEVICE_NAME == Constants.UNKNOWN_LARGE){
+			if(DynamicConstants.DEVICE_NAME == Constants.IPAD_4PLUS || DynamicConstants.DEVICE_NAME == Constants.ANDROID_XXL || DynamicConstants.DEVICE_NAME == Constants.ANDROID_XXLDPI){
 				maxDistanciaTrazo = 106;
 			}
 			else{

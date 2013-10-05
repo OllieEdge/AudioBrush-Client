@@ -59,7 +59,7 @@ package com.edgington.view.game.draw
 			}
 		
 			
-			if(DynamicConstants.DEVICE_NAME == Constants.IPAD_4PLUS || DynamicConstants.DEVICE_NAME == Constants.UNKNOWN_LARGE){
+			if(DynamicConstants.DEVICE_NAME == Constants.IPAD_4PLUS || DynamicConstants.DEVICE_NAME == Constants.ANDROID_XXL || DynamicConstants.DEVICE_NAME == Constants.ANDROID_XXLDPI){
 				circleBeatScale = 40;
 				circlePositionOffset = -20;
 				starBeatScale = 20;

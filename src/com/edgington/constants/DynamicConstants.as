@@ -29,6 +29,8 @@ package com.edgington.constants
 		
 		public static var IS_CONNECTED:Boolean = true;
 		
+		public static var SERVER_TIME_DIFFERENCE:Number = 0;
+		
 		public static function isMobileOS():Boolean{
 			return (getOperatingSystem() == Constants.OS_IOS || getOperatingSystem() == Constants.OS_ANDRIOD);
 		}
@@ -61,6 +63,12 @@ package com.edgington.constants
 					break;
 			}
 			return Constants.OS_MAC;
+		}
+		
+		public static function getCurrentServerTime():Date{
+			var serverTime:Date = new Date();
+			serverTime.setTime(serverTime.time+SERVER_TIME_DIFFERENCE);
+			return serverTime;
 		}
 		
 		public static function isDebug():Boolean{

@@ -5,6 +5,7 @@ package com.edgington.view
 	import com.edgington.util.debug.LOG;
 	import com.edgington.view.game.analysis.ViewLoadAndAnalysisProgress;
 	import com.edgington.view.game.analysis.ViewTrackAnalysis;
+	import com.edgington.view.huds.hudAchievements;
 	import com.edgington.view.huds.hudBackground;
 	import com.edgington.view.huds.hudDownloadTournamentData;
 	import com.edgington.view.huds.hudInboxMenu;
@@ -148,6 +149,11 @@ package com.edgington.view
 					break;
 				case GameStateTypes.MENU_INBOX:
 					onScreenState = new hudInboxMenu(removeInterfaceSignal);
+					positionHudAtRandom();
+					background.newHudActive(onScreenState);
+					break;
+				case GameStateTypes.MENU_ACHIEVEMENTS:
+					onScreenState = new hudAchievements(removeInterfaceSignal);
 					positionHudAtRandom();
 					background.newHudActive(onScreenState);
 					break;

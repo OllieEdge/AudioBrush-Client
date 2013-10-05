@@ -70,6 +70,7 @@ package com.edgington.net
 				postObject.score = score;
 				postObject.trackname = TournamentData.getInstance().currentActiveTournament.TRACK;
 				postObject.artist = TournamentData.getInstance().currentActiveTournament.ARTIST;
+				postObject.difficulty = GameProxy.INSTANCE.difficulty;
 				
 				PUT(new NetResponceHandler(onHighscorePosted, onHighscorePostFailed), postObject.trackkey, postObject);
 			}

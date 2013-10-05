@@ -1,7 +1,6 @@
 package com.edgington.model.audio
 {
 	import com.edgington.model.GameProxy;
-	import com.edgington.types.DifficultyTypes;
 	
 	import org.osflash.signals.Signal;
 

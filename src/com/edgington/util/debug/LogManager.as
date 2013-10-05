@@ -10,6 +10,17 @@ package com.edgington.util.debug
 	{	
 		private static var _LOGGER_INSTANCE:LogManager;
 		
+		private var showCreate:Boolean = false;
+		private var showDestroy:Boolean = false;
+		private var showInfo:Boolean = false;
+		private var showDebug:Boolean = true;
+		private var showWarning:Boolean = true;
+		private var showError:Boolean = true;
+		private var showFatal:Boolean = true;
+		private var showServer:Boolean = true;
+		private var showFacebook:Boolean = true;
+		
+		
 		private var testFlight:TestFlight;
 		private var testFlightReady:Boolean = false;
 		
@@ -76,16 +87,18 @@ package com.edgington.util.debug
 		 * LOG.create(this) //this will trace: "CREATED CLASS: LogManager"
 		 */
 		public function create(_class:*):void{
-			if(_class is String){
-				trace("CREATED CLASS: " + _class);
-				if(testFlightReady){
-					testFlight.log("CREATED CLASS: " + _class);
+			if(showCreate){
+				if(_class is String){
+					trace("CREATED CLASS: " + _class);
+					if(testFlightReady){
+						testFlight.log("CREATED CLASS: " + _class);
+					}
 				}
-			}
-			else{
-				trace("CREATED CLASS: " + getQualifiedClassName(_class).split("::")[1])
-				if(testFlightReady){
-					testFlight.log("CREATED CLASS: " + getQualifiedClassName(_class).split("::")[1]);
+				else{
+					trace("CREATED CLASS: " + getQualifiedClassName(_class).split("::")[1])
+					if(testFlightReady){
+						testFlight.log("CREATED CLASS: " + getQualifiedClassName(_class).split("::")[1]);
+					}
 				}
 			}
 		}
@@ -100,16 +113,18 @@ package com.edgington.util.debug
 		 * LOG.destroy(this) //this will trace: "DESTORYED CLASS: LogManager"
 		 */
 		public function destroy(_class:*):void{
-			if(_class is String){
-				trace("DESTROYED CLASS: " + _class);		
-				if(testFlightReady){
-					testFlight.log("DESTROYED CLASS: " + _class);
+			if(showDestroy){
+				if(_class is String){
+					trace("DESTROYED CLASS: " + _class);		
+					if(testFlightReady){
+						testFlight.log("DESTROYED CLASS: " + _class);
+					}
 				}
-			}
-			else{
-				trace("DESTROYED CLASS: " + getQualifiedClassName(_class).split("::")[1]);
-				if(testFlightReady){
-					testFlight.log("DESTROYED CLASS: " + getQualifiedClassName(_class).split("::")[1]);
+				else{
+					trace("DESTROYED CLASS: " + getQualifiedClassName(_class).split("::")[1]);
+					if(testFlightReady){
+						testFlight.log("DESTROYED CLASS: " + getQualifiedClassName(_class).split("::")[1]);
+					}
 				}
 			}
 		}
@@ -126,15 +141,17 @@ package com.edgington.util.debug
 		 * LOG.info(12, "Ollie", "Awesome") //this will trace: "INFO [0]: 12 \n INFO [1]: Ollie \n INFO [2]: Awesome"
 		 */
 		public function info(...args):void{
-			if(args.length > 1){
-				for(var i:int = 0; i < args.length; i++){
-					trace("INFO ["+i+"]: " + args[i]);
+			if(showInfo){
+				if(args.length > 1){
+					for(var i:int = 0; i < args.length; i++){
+						trace("INFO ["+i+"]: " + args[i]);
+					}
 				}
-			}
-			else if(args.length != 0){
-				trace("INFO: " + args[0]);
-				if(testFlightReady){
-					testFlight.log("INFO: " + args[0]);
+				else if(args.length != 0){
+					trace("INFO: " + args[0]);
+					if(testFlightReady){
+						testFlight.log("INFO: " + args[0]);
+					}
 				}
 			}
 		}
@@ -151,15 +168,17 @@ package com.edgington.util.debug
 		 * LOG.warning(12, "Ollie", "Awesome") //this will trace: "[WARNING] [0]: 12 \n [WARNING] [1]: Ollie \n [WARNING] [2]: Awesome"
 		 */
 		public function warning(...args):void{
-			if(args.length > 1){
-				for(var i:int = 0; i < args.length; i++){
-					trace("[WARNING] ["+i+"]: " + args[i]);
+			if(showWarning){
+				if(args.length > 1){
+					for(var i:int = 0; i < args.length; i++){
+						trace("[WARNING] ["+i+"]: " + args[i]);
+					}
 				}
-			}
-			else if(args.length != 0){
-				trace("[WARNING]: " + args[0]);
-				if(testFlightReady){
-					testFlight.log("[WARNING]: " + args[0]);
+				else if(args.length != 0){
+					trace("[WARNING]: " + args[0]);
+					if(testFlightReady){
+						testFlight.log("[WARNING]: " + args[0]);
+					}
 				}
 			}
 		}
@@ -176,15 +195,17 @@ package com.edgington.util.debug
 		 * LOG.debug(12, "Ollie", "Awesome") //this will trace: "[DEBUG] [0]: 12 \n [DEBUG] [1]: Ollie \n [DEBUG] [2]: Awesome"
 		 */
 		public function debug(...args):void{
-			if(args.length > 1){
-				for(var i:int = 0; i < args.length; i++){
-					trace("[DEBUG] ["+i+"]: " + args[i]);
+			if(showDebug){
+				if(args.length > 1){
+					for(var i:int = 0; i < args.length; i++){
+						trace("[DEBUG] ["+i+"]: " + args[i]);
+					}
 				}
-			}
-			else if(args.length != 0){
-				trace("[DEBUG]: " + args[0]);
-				if(testFlightReady){
-					testFlight.log("[DEBUG]: " + args[0]);
+				else if(args.length != 0){
+					trace("[DEBUG]: " + args[0]);
+					if(testFlightReady){
+						testFlight.log("[DEBUG]: " + args[0]);
+					}
 				}
 			}
 		}
@@ -201,15 +222,17 @@ package com.edgington.util.debug
 		 * LOG.error(12, "Ollie", "Awesome") //this will trace: "[[ERROR]] [0]: 12 \n [[ERROR]] [1]: Ollie \n [[ERROR]] [2]: Awesome"
 		 */
 		public function error(...args):void{
-			if(args.length > 1){
-				for(var i:int = 0; i < args.length; i++){
-					trace("[[ERROR]] ["+i+"]: " + args[i]);
+			if(showError){
+				if(args.length > 1){
+					for(var i:int = 0; i < args.length; i++){
+						trace("[[ERROR]] ["+i+"]: " + args[i]);
+					}
 				}
-			}
-			else if(args.length != 0){
-				trace("[[ERROR]]: " + args[0]);
-				if(testFlightReady){
-					testFlight.log("[[ERROR]]: " + args[0]);
+				else if(args.length != 0){
+					trace("[[ERROR]]: " + args[0]);
+					if(testFlightReady){
+						testFlight.log("[[ERROR]]: " + args[0]);
+					}
 				}
 			}
 		}
@@ -226,15 +249,17 @@ package com.edgington.util.debug
 		 * LOG.fatal(12, "Ollie", "Awesome") //this will trace: "[[[FATAL]]] [0]: 12 \n [[[FATAL]]] [1]: Ollie \n [[[FATAL]]] [2]: Awesome"
 		 */
 		public function fatal(...args):void{
-			if(args.length > 1){
-				for(var i:int = 0; i < args.length; i++){
-					trace("[[[FATAL]]] ["+i+"]: " + args[i]);
+			if(showFatal){
+				if(args.length > 1){
+					for(var i:int = 0; i < args.length; i++){
+						trace("[[[FATAL]]] ["+i+"]: " + args[i]);
+					}
 				}
-			}
-			else if(args.length != 0){
-				trace("[[[FATAL]]]: " + args[0]);
-				if(testFlightReady){
-					testFlight.log("[[[FATAL]]]: " + args[0]);
+				else if(args.length != 0){
+					trace("[[[FATAL]]]: " + args[0]);
+					if(testFlightReady){
+						testFlight.log("[[[FATAL]]]: " + args[0]);
+					}
 				}
 			}
 		}
@@ -251,15 +276,17 @@ package com.edgington.util.debug
 		 * LOG.facebook(12, "Ollie", "Awesome") //this will trace: "[#FACEBOOK#] [0]: 12 \n [#FACEBOOK#] [1]: Ollie \n [#FACEBOOK#] [2]: Awesome"
 		 */
 		public function facebook(...args):void{
-			if(args.length > 1){
-				for(var i:int = 0; i < args.length; i++){
-					trace("[#FACEBOOK#] ["+i+"]: " + args[i]);
+			if(showFacebook){
+				if(args.length > 1){
+					for(var i:int = 0; i < args.length; i++){
+						trace("[#FACEBOOK#] ["+i+"]: " + args[i]);
+					}
 				}
-			}
-			else if(args.length != 0){
-				trace("[#FACEBOOK#]: " + args[0]);
-				if(testFlightReady){
-					testFlight.log("[#FACEBOOK#]: " + args[0]);
+				else if(args.length != 0){
+					trace("[#FACEBOOK#]: " + args[0]);
+					if(testFlightReady){
+						testFlight.log("[#FACEBOOK#]: " + args[0]);
+					}
 				}
 			}
 		}
@@ -276,15 +303,17 @@ package com.edgington.util.debug
 		 * LOG.server(12, "Ollie", "Awesome") //this will trace: "[#SERVER#] [0]: 12 \n [#SERVER#] [1]: Ollie \n [#SERVER#] [2]: Awesome"
 		 */
 		public function server(...args):void{
-			if(args.length > 1){
-				for(var i:int = 0; i < args.length; i++){
-					trace("[#SERVER#] ["+i+"]: " + args[i]);
+			if(showServer){
+				if(args.length > 1){
+					for(var i:int = 0; i < args.length; i++){
+						trace("[#SERVER#] ["+i+"]: " + args[i]);
+					}
 				}
-			}
-			else if(args.length != 0){
-				trace("[#SERVER#]: " + args[0]);
-				if(testFlightReady){
-					testFlight.log("[#SERVER#]: " + args[0]);
+				else if(args.length != 0){
+					trace("[#SERVER#]: " + args[0]);
+					if(testFlightReady){
+						testFlight.log("[#SERVER#]: " + args[0]);
+					}
 				}
 			}
 		}

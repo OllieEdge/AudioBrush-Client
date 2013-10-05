@@ -23,7 +23,7 @@ package com.edgington.net
 		 * 
 		 * If there is a plural for this resource (eg. user > users) in the Server API parsing true will default to get all objects.
 		 */
-		public function GET(responseHandler:NetResponceHandler, getAll:Boolean = false, singularExtension:String = "", pluralExtension:String = ""):void{
+		public function GET(responseHandler:NetResponceHandler, getAll:Boolean = false, singularExtension:String = "", pluralExtension:String = "",  urlVariables:Object = null):void{
 			var URL:String = NetManager.getURL();
 			if(getAll){
 				URL += "/" + objectPlural + "/" + pluralExtension;
@@ -31,7 +31,20 @@ package com.edgington.net
 			else{
 				URL += "/" + objectSingular + "/" + singularExtension;
 			}
-			NetResponder.getInstance().newCall(responseHandler, URL, URLRequestMethod.GET);
+			
+			if(urlVariables){
+				var VARIBALES:URLVariables = new URLVariables();
+				
+				//Converts a standard object into a URLVariables Object
+				for(var key:String in urlVariables){
+					VARIBALES[key] = urlVariables[key];
+				}
+				
+				NetResponder.getInstance().newCall(responseHandler, URL, URLRequestMethod.GET, VARIBALES);
+			}
+			else{
+				NetResponder.getInstance().newCall(responseHandler, URL, URLRequestMethod.GET);
+			}
 		}
 		
 		/**
@@ -44,9 +57,11 @@ package com.edgington.net
 			var URL:String = NetManager.getURL();
 			var VARIBALES:URLVariables = new URLVariables();
 			
-			//Converts a standard object into a URLVariables Object
-			for(var key:String in urlVariables){
-				VARIBALES[key] = urlVariables[key];
+			if(urlVariables){
+				//Converts a standard object into a URLVariables Object
+				for(var key:String in urlVariables){
+					VARIBALES[key] = urlVariables[key];
+				}
 			}
 			
 			if(pluralExtension != ""){

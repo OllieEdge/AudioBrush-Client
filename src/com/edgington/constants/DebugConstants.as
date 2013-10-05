@@ -4,5 +4,6 @@ package com.edgington.constants
 	{
 		public static const FACEBOOK_ID:String = "879575611";
 		public static const FACEBOOK_NAME:String = "Ollie Edgington";
+		public static const SHOW_JSON:Boolean = false;
 	}
 }

@@ -1,7 +1,9 @@
 package com.edgington.view.huds
 {
+	import com.edgington.constants.AchievementConstants;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.GameProxy;
+	import com.edgington.model.SettingsProxy;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.model.facebook.opengraph.actions.OpenGraphAchieveAction;
 	import com.edgington.model.facebook.opengraph.actions.OpenGraphNewHighscoreAction;
@@ -10,12 +12,15 @@ package com.edgington.view.huds
 	import com.edgington.model.facebook.opengraph.objects.OpenGraphHighscoreObject;
 	import com.edgington.model.facebook.opengraph.objects.OpenGraphRankObject;
 	import com.edgington.model.facebook.opengraph.objects.OpenGraphTrackObject;
+	import com.edgington.net.AchievementData;
 	import com.edgington.net.HighscoresPostData;
 	import com.edgington.net.TournamentPostData;
+	import com.edgington.net.UserData;
 	import com.edgington.net.events.HighscoreEvent;
 	import com.edgington.net.events.TournamentEvent;
 	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.GameStateTypes;
+	import com.edgington.types.HandDirectionType;
 	import com.edgington.util.NumberFormat;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
@@ -169,6 +174,7 @@ package com.edgington.view.huds
 						summaryOverview.tournamentOffline();
 					break;
 			}
+			checkAchievements();
 		}
 		
 		private function handleInteraction(buttonOption:String):void{
@@ -192,6 +198,99 @@ package com.edgington.view.huds
 		{
 			super.destroy();
 			readyToRemoveSignal.dispatch();
+		}
+		
+		private function checkAchievements():void{
+			
+			//I'm in!
+			if(!AchievementConstants.ach_22 && GameProxy.INSTANCE.isTournament){
+				AchievementData.UnlockAchievement(22);
+			}
+			//Hendrix's Prophecy
+			if(!AchievementConstants.ach_19 && SettingsProxy.getInstance().handSelection == HandDirectionType.LEFT_HAND){
+				AchievementData.UnlockAchievement(19);
+			}
+			//5 fingers
+			if(!AchievementConstants.ach_4 && GameProxy.INSTANCE.starRating >= 5 && GameProxy.INSTANCE.difficulty == 1){
+				AchievementData.UnlockAchievement(4);
+			}
+			//Perfect!
+			if(!AchievementConstants.ach_9 && GameProxy.INSTANCE.starRating >= 6){
+				AchievementData.UnlockAchievement(9);
+			}
+			//100 Streak
+			if(!AchievementConstants.ach_12 && GameProxy.INSTANCE.longestBeatsInARow >= 100){
+				AchievementData.UnlockAchievement(12);
+			}
+			//500 Streak
+			if(!AchievementConstants.ach_13 && GameProxy.INSTANCE.longestBeatsInARow >= 500){
+				AchievementData.UnlockAchievement(13);
+			}
+			//100 Perfect Streak
+			if(!AchievementConstants.ach_14 && GameProxy.INSTANCE.longestPerfectsInARow >= 100){
+				AchievementData.UnlockAchievement(14);
+			}
+			
+			//IF NORMAL OR HIGHER
+			if(GameProxy.INSTANCE.difficulty > 1){
+				
+				//Starry Eyed
+				if(!AchievementConstants.ach_20){
+					var ach20Progress:int  = AchievementData.getInstance().userAchievements[19].progress;
+					ach20Progress += 10;
+					AchievementData.getInstance().updateAchievement(20, ach20Progress);
+				}
+				
+				//500k club
+				if(!AchievementConstants.ach_1 && GameProxy.INSTANCE.score > 500000){
+					AchievementData.UnlockAchievement(1);
+				}
+				//2million
+				if(!AchievementConstants.ach_3 && GameProxy.INSTANCE.score > 2000000){
+					AchievementData.UnlockAchievement(3);
+				}
+				//5 toes
+				if(!AchievementConstants.ach_5 && GameProxy.INSTANCE.starRating >= 5 && GameProxy.INSTANCE.difficulty == 2){
+					AchievementData.UnlockAchievement(5);
+				}
+				//NINJA!
+				if(!AchievementConstants.ach_10 && GameProxy.INSTANCE.starRating >= 7){
+					AchievementData.UnlockAchievement(10);
+				}
+				//Leonardo da Vinci
+				if(!AchievementConstants.ach_11 && GameProxy.INSTANCE.starRating >= 8){
+					AchievementData.UnlockAchievement(11);
+				}				
+				
+				//IF HARD OR HIGHER
+				if(GameProxy.INSTANCE.difficulty > 2){
+					//1mill Groupie
+					if(!AchievementConstants.ach_2 && GameProxy.INSTANCE.score > 1000000){
+						AchievementData.UnlockAchievement(2);
+					}
+					//5 senses
+					if(!AchievementConstants.ach_6 && GameProxy.INSTANCE.starRating >= 5 && GameProxy.INSTANCE.difficulty == 3){
+						AchievementData.UnlockAchievement(6);
+					}
+					
+					//IF EXPERT OR HIGHER
+					if(GameProxy.INSTANCE.difficulty > 3){
+						//5 oceans
+						if(!AchievementConstants.ach_7 && GameProxy.INSTANCE.starRating >= 5 && GameProxy.INSTANCE.difficulty == 4){
+							AchievementData.UnlockAchievement(7);
+						}
+						
+						//IF INSANE OR HIGHER
+						if(GameProxy.INSTANCE.difficulty > 4){
+							//5 hundred miles
+							if(!AchievementConstants.ach_8 && GameProxy.INSTANCE.starRating >= 5 && GameProxy.INSTANCE.difficulty == 5){
+								AchievementData.UnlockAchievement(8);
+							}
+						}
+					}
+				}
+				
+			}
 		}
 		
 		private function destroy(e:Event):void{
@@ -227,6 +326,7 @@ package com.edgington.view.huds
 						var openGraphPlayAction:OpenGraphPlayAction = new OpenGraphPlayAction(openGraphPlayObject, false);
 					}
 				}
+				UserData.getInstance().getUser();
 				GameProxy.deleteInstance();	
 			}
 			while(this.numChildren > 0){

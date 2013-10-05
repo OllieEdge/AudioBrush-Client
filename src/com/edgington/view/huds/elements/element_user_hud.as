@@ -35,6 +35,8 @@ package com.edgington.view.huds.elements
 		private var store:ui_buton_store;
 		private var settings:ui_button_settings;
 		
+		private var achievements:ui_button_achievements;
+		
 		private var inboxCount:int = 0;
 		
 		public var currentHudSignal:Signal;
@@ -116,6 +118,13 @@ package com.edgington.view.huds.elements
 			inbox.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			inbox.addEventListener(MouseEvent.MOUSE_OUT, handleMouseOut);
 			
+			achievements = new ui_button_achievements();
+			achievements.scaleX = achievements.scaleY = inbox.scaleX;
+			achievements.y = credits.y;
+			achievements.addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
+			achievements.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
+			achievements.addEventListener(MouseEvent.MOUSE_OUT, handleMouseOut);
+			
 			store = new ui_buton_store();
 			store.scaleX = store.scaleY = inbox.scaleX;
 			store.y = credits.y;
@@ -137,7 +146,9 @@ package com.edgington.view.huds.elements
 				
 				inbox.x = credits.x - DynamicConstants.BUTTON_SPACING - inbox.width;
 				
-				store.x = inbox.x - DynamicConstants.BUTTON_SPACING - store.width;
+				achievements.x = inbox.x - DynamicConstants.BUTTON_SPACING - achievements.width;
+				
+				store.x = achievements.x - DynamicConstants.BUTTON_SPACING - store.width;
 
 				settings.x = store.x - DynamicConstants.BUTTON_SPACING - settings.width;
 			
@@ -148,7 +159,10 @@ package com.edgington.view.huds.elements
 				credits.x = profilePicture.x +profilePicture.width+ DynamicConstants.BUTTON_SPACING;
 				
 				inbox.x = credits.x + credits.width + DynamicConstants.BUTTON_SPACING;
-				store.x = inbox.x + inbox.width + DynamicConstants.BUTTON_SPACING;
+				
+				achievements.x = inbox.x + inbox.width + DynamicConstants.BUTTON_SPACING;
+				
+				store.x = achievements.x + achievements.width + DynamicConstants.BUTTON_SPACING;
 				
 				settings.x = store.x + store.width + DynamicConstants.BUTTON_SPACING;
 			}
@@ -159,6 +173,7 @@ package com.edgington.view.huds.elements
 			this.addChild(level);
 			this.addChild(credits);
 			this.addChild(inbox);
+			this.addChild(achievements);
 			this.addChild(store);
 			this.addChild(settings);
 			this.addChild(inbox_badge);
@@ -188,6 +203,7 @@ package com.edgington.view.huds.elements
 				tweens.push(TweenMax.to(level, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(credits, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(inbox, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
+				tweens.push(TweenMax.to(achievements, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(store, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(settings, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 			}
@@ -196,6 +212,7 @@ package com.edgington.view.huds.elements
 				tweens.push(TweenMax.to(level, 0.5, {height:barBackground.height-2, x:tweens[0].vars.x + tweens[0].vars.width, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(credits, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(inbox, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
+				tweens.push(TweenMax.to(achievements, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(store, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));
 				tweens.push(TweenMax.to(settings, 0.5, {height:barBackground.height-2, y:1, ease:Quad.easeOut, onUpdate:updateElementsWidthSmall}));	
 			}
@@ -210,6 +227,7 @@ package com.edgington.view.huds.elements
 				tweens.push(TweenMax.to(level, 0.5, {height:tweens[0].vars.height*buttonPercentageScale, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[0].vars.height*buttonPercentageScale)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 				tweens.push(TweenMax.to(credits, 0.5, {height:tweens[0].vars.height*buttonPercentageScale, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[0].vars.height*buttonPercentageScale)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 				tweens.push(TweenMax.to(inbox, 0.5, {height:tweens[1].vars.height, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[1].vars.height)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge, onComplete:updateInbox}));
+				tweens.push(TweenMax.to(achievements, 0.5, {height:tweens[1].vars.height, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[1].vars.height)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 				tweens.push(TweenMax.to(store, 0.5, {height:tweens[1].vars.height, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[1].vars.height)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 				tweens.push(TweenMax.to(settings, 0.5, {height:tweens[1].vars.height, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[1].vars.height)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 			}
@@ -217,6 +235,7 @@ package com.edgington.view.huds.elements
 				tweens.push(TweenMax.to(profilePicture, 0.5, {height:profilePictureSize*DynamicConstants.MESSAGE_SCALE, width:profilePictureSize*DynamicConstants.MESSAGE_SCALE, x:DynamicConstants.BUTTON_SPACING, y:DynamicConstants.BUTTON_SPACING, ease:Quad.easeOut}));
 				tweens.push(TweenMax.to(credits, 0.5, {height:tweens[0].vars.height*buttonPercentageScale, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[0].vars.height*buttonPercentageScale)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 				tweens.push(TweenMax.to(inbox, 0.5, {height:tweens[1].vars.height, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[1].vars.height)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge, onComplete:updateInbox}));
+				tweens.push(TweenMax.to(achievements, 0.5, {height:tweens[1].vars.height, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[1].vars.height)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 				tweens.push(TweenMax.to(store, 0.5, {height:tweens[1].vars.height, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[1].vars.height)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 				tweens.push(TweenMax.to(settings, 0.5, {height:tweens[1].vars.height, y:Math.max(DynamicConstants.BUTTON_SPACING, barBackground.height - ((tweens[1].vars.height)*.5)), ease:Quad.easeOut, onUpdate:updateElementsWidthLarge}));
 			}
@@ -229,8 +248,10 @@ package com.edgington.view.huds.elements
 				credits.x = level.x - credits.width;
 				inbox.scaleX = inbox.scaleY;
 				inbox.x = credits.x - inbox.width;
+				achievements.scaleX = achievements.scaleY;
+				achievements.x = inbox.x - achievements.width;
 				store.scaleX = store.scaleY;
-				store.x = inbox.x - store.width
+				store.x = achievements.x - store.width
 				settings.scaleX = settings.scaleY;
 				settings.x = store.x - settings.width;
 			}
@@ -241,8 +262,10 @@ package com.edgington.view.huds.elements
 				credits.x + level.x + level.width;
 				inbox.scaleX = inbox.scaleY;
 				inbox.x = credits.x + credits.width;
+				achievements.scaleX = achievements.scaleY;
+				achievements.x = inbox.x + inbox.width;
 				store.scaleX = store.scaleY;
-				store.x = inbox.x + inbox.width;
+				store.x = achievements.x + achievements.width;
 				settings.scaleX = settings.scaleY;
 				settings.x = store.x + store.width;
 			}
@@ -257,8 +280,10 @@ package com.edgington.view.huds.elements
 				credits.x = level.x - credits.width - DynamicConstants.BUTTON_SPACING;
 				inbox.scaleX = inbox.scaleY;
 				inbox.x = credits.x - inbox.width  - DynamicConstants.BUTTON_SPACING;
+				achievements.scaleX = achievements.scaleY;
+				achievements.x = inbox.x - achievements.width  - DynamicConstants.BUTTON_SPACING;
 				store.scaleX = store.scaleY;
-				store.x = inbox.x - store.width - DynamicConstants.BUTTON_SPACING;
+				store.x = achievements.x - store.width - DynamicConstants.BUTTON_SPACING;
 				settings.scaleX = settings.scaleY;
 				settings.x = store.x - settings.width - DynamicConstants.BUTTON_SPACING;
 			}
@@ -268,11 +293,13 @@ package com.edgington.view.huds.elements
 				credits.scaleX = credits.scaleY;
 				credits.x = level.x +level.width+ DynamicConstants.BUTTON_SPACING;
 				inbox.scaleX = inbox.scaleY;
-				inbox.x = credits.x + credits.width+DynamicConstants.BUTTON_SPACING;;
+				inbox.x = credits.x + credits.width+DynamicConstants.BUTTON_SPACING;
+				achievements.scaleX = achievements.scaleY;
+				achievements.x = inbox.x + inbox.width+DynamicConstants.BUTTON_SPACING;
 				store.scaleX = store.scaleY;
-				store.x = inbox.x + inbox.width+DynamicConstants.BUTTON_SPACING;;
+				store.x = achievements.x + achievements.width+DynamicConstants.BUTTON_SPACING;
 				settings.scaleX = settings.scaleY;
-				settings.x = store.x + store.width+DynamicConstants.BUTTON_SPACING;;
+				settings.x = store.x + store.width+DynamicConstants.BUTTON_SPACING;
 			}
 			inbox_badge.x = inbox.x + inbox.width;
 			inbox_badge.y = inbox.y;
@@ -310,6 +337,9 @@ package com.edgington.view.huds.elements
 					break;
 				case settings:
 					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_SETTINGS;
+					break;
+				case achievements:
+					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_ACHIEVEMENTS;
 					break;
 			}
 			currentHudSignal.dispatch();
@@ -369,6 +399,10 @@ package com.edgington.view.huds.elements
 			inbox.removeEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
 			inbox.removeEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			inbox.removeEventListener(MouseEvent.MOUSE_OUT, handleMouseOut);
+			
+			achievements.removeEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
+			achievements.removeEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
+			achievements.removeEventListener(MouseEvent.MOUSE_OUT, handleMouseOut);
 			
 			store.removeEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
 			store.removeEventListener(MouseEvent.MOUSE_UP, handleMouseUp);

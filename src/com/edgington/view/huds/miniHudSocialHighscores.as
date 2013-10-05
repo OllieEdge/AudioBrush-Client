@@ -4,6 +4,7 @@ package com.edgington.view.huds
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.GameProxy;
+	import com.edgington.model.calculators.LevelCalculator;
 	import com.edgington.net.HighscoresGetData;
 	import com.edgington.net.events.HighscoreEvent;
 	import com.edgington.types.DeviceTypes;
@@ -184,6 +185,15 @@ package com.edgington.view.huds
 					profilePicture.y = 3*DynamicConstants.DEVICE_SCALE;
 					clip.addChild(profilePicture);
 					
+					var levelIndicator:ui_level_indicator = new ui_level_indicator();
+					levelIndicator.width = profilePicture.width * 0.4;
+					levelIndicator.scaleY = levelIndicator.scaleX;
+					levelIndicator.x = profilePicture.x + profilePicture.width-levelIndicator.width;
+					levelIndicator.y = profilePicture.y + profilePicture.height-levelIndicator.height;
+					levelIndicator.txt_level.text = String(LevelCalculator.getLevel(highscores[i].userId.xp));
+					levelIndicator.cacheAsBitmap = true;
+					clip.addChild(levelIndicator);
+					
 					var txtFieldRank:TextField = TextFieldManager.createTextField(gettext("scores_rank_number", {rank:String(highscores[i].rank)}), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 20*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
 					var txtFieldName:TextField = TextFieldManager.createTextField(highscores[i].userId.username, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 20*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
 					var txtFieldScore:TextField = TextFieldManager.createTextField(NumberFormat.addThreeDigitCommaSeperator(highscores[i].score), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 30*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.RIGHT);
@@ -250,6 +260,15 @@ package com.edgington.view.huds
 					profilePicture.x = 3*DynamicConstants.DEVICE_SCALE;
 					profilePicture.y = 3*DynamicConstants.DEVICE_SCALE;
 					clip.addChild(profilePicture);
+					
+					var levelIndicator:ui_level_indicator = new ui_level_indicator();
+					levelIndicator.width = profilePicture.width * 0.4;
+					levelIndicator.scaleY = levelIndicator.scaleX;
+					levelIndicator.x = profilePicture.x + profilePicture.width-levelIndicator.width;
+					levelIndicator.y = profilePicture.y + profilePicture.height-levelIndicator.height;
+					levelIndicator.txt_level.text = String(LevelCalculator.getLevel(highscores[i].userId.xp));
+					levelIndicator.cacheAsBitmap = true;
+					clip.addChild(levelIndicator);
 					
 					var txtFieldRank:TextField = TextFieldManager.createTextField(gettext("scores_rank_number", {rank:String(highscores[i].rank)}), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 20*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);
 					var txtFieldName:TextField = TextFieldManager.createTextField(highscores[i].userId.username, FONT_audiobrush_content, Constants.DARK_FONT_COLOR, 20*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.LEFT);

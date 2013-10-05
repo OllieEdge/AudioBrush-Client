@@ -28,7 +28,7 @@ package com.edgington.valueobjects.net
 				if(key != "created" && key != "updated" && key.charAt(0) != "_"){
 					//We must filter out the mongoDB defaults as we do not use these (they start with a _ )
 					if(!serverObject.hasOwnProperty(key)){
-						LOG.debug("Key that doesn't exist in client but is in the server responce is: " + key);
+						//LOG.debug("Key that doesn't exist in client but is in the server responce is: " + key);
 						return false;
 					}
 				}

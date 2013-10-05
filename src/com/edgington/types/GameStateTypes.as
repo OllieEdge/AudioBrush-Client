@@ -12,6 +12,8 @@ package com.edgington.types
 		
 		public static const MENU_INBOX:String = "GameStateTypes::MENU_INBOX";
 		
+		public static const MENU_ACHIEVEMENTS:String = "GameStateTypes::MENU_ACHIEVEMENTS";
+		
 		
 		public static const GAME_LOADING:String = "GameStateTypes::GAME_LOADING";
 		

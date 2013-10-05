@@ -1,5 +1,6 @@
 package com.edgington.net
 {
+	import com.edgington.constants.DebugConstants;
 	import com.edgington.net.helpers.NetRequestObject;
 	import com.edgington.net.helpers.NetResponceHandler;
 	import com.edgington.net.helpers.NetResponceTypeIdentifier;
@@ -60,11 +61,17 @@ package com.edgington.net
 		 * On successful response from the server
 		 */
 		private function onServerResponceComplete(e:Event):void{
-			var responceData:Object = JSON.parse(e.target.data as String);
+			var responceData:Object;
+			if(e.target.data == ""){
+				responceData = new Object();
+			}
+			else{
+				responceData = JSON.parse(e.target.data as String);
+			}
 			var responceType:String = NetResponceTypeIdentifier.GET_RESPONCE_TYPE(responceData);
-			
+		
 			LOG.server("Responce Type: " + responceType);
-			if(Capabilities.isDebugger){
+			if(DebugConstants.SHOW_JSON){
 				LOG.server("JSON: " + e.target.data);
 			}
 			

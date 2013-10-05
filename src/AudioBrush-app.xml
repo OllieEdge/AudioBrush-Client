@@ -27,7 +27,7 @@
 	<!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade. 
 	Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
 	An updated version of application must have a versionNumber value higher than the previous version. Required for namespace >= 2.5 . -->
-	<versionNumber>1.0.11</versionNumber>
+	<versionNumber>1.0.2</versionNumber>
 		         
 	<!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. Optional. -->
 	<!-- <versionLabel></versionLabel> -->
@@ -136,18 +136,29 @@
 	<!-- The icon the system uses for the application. For at least one resolution,
 	specify the path to a PNG file included in the AIR package. Optional. -->
 	<icon> 
-        <image29x29>icons/29.png</image29x29> 
-        <image36x36>icons/36.png</image36x36> 
-        <image48x48>icons/48.png</image48x48> 
-        <image50x50>icons/50.png</image50x50> 
-        <image57x57>icons/57.png</image57x57> 
-        <image58x58>icons/58.png</image58x58> 
-        <image72x72>icons/72.png</image72x72> 
-        <image100x100>icons/100.png</image100x100> 
+	    
+<!-- 	      App icons for iOS 6 -->
+	    <image29x29>icons/29.png</image29x29>
+        <image57x57>icons/57.png</image57x57>
+        <image58x58>icons/58.png</image58x58>
+        <image72x72>icons/72.png</image72x72>
         <image114x114>icons/114.png</image114x114>
-        <image144x144>icons/144.png</image144x144>  
-        <image512x512>icons/512.png</image512x512> 
-        <image1024x1024>icons/1024.png</image1024x1024> 
+        <image144x144>icons/144.png</image144x144>
+        <image512x512>icons/512.png</image512x512>
+       
+<!--         Additional app icons for iOS 7 -->
+        <image40x40>icons/40.png</image40x40>
+        <image76x76>icons/76.png</image76x76>
+        <image80x80>icons/80.png</image80x80>
+        <image120x120>icons/120.png</image120x120>
+        <image152x152>icons/152.png</image152x152>
+	    
+	    <!-- App icons for Android -->
+<!--         <image36x36>icons/android/36.png</image36x36>  -->
+<!--         <image48x48>icons/android/48.png</image48x48> -->
+<!--         <image72x72>icons/android/72.png</image72x72>  -->
+<!--         <image96x96>icons/android/96.png</image96x96>  -->
+        
 	</icon>
 
 	<!-- Whether the application handles the update when a user double-clicks an update version
@@ -254,8 +265,27 @@
 <android>
         <manifestAdditions><![CDATA[
 			<manifest android:installLocation="auto">
+			
+				<supports-screens
+			        android:smallScreens="false"
+			        android:normalScreens="true"
+			        android:largeScreens="true"
+			        android:xlargeScreens="true"/>
+			      <compatible-screens>
+			        <!-- list the screens you support here -->
+			        <screen android:screenSize="normal" android:screenDensity="hdpi" />
+			        <screen android:screenSize="normal" android:screenDensity="xhdpi" />
+			        <screen android:screenSize="large" android:screenDensity="mdpi" />
+			        <screen android:screenSize="large" android:screenDensity="hdpi" />
+			        <screen android:screenSize="large" android:screenDensity="xhdpi" />
+			        <screen android:screenSize="xlarge" android:screenDensity="ldpi" />
+			        <screen android:screenSize="xlarge" android:screenDensity="mdpi" />
+			        <screen android:screenSize="xlarge" android:screenDensity="hdpi" />
+			        <screen android:screenSize="xlarge" android:screenDensity="xhdpi" />
+			      </compatible-screens>
+			
 				<uses-sdk android:targetSdkVersion="18"/>
-				<uses-sdk android:minSdkVersion="8"/>
+      			<uses-sdk android:minSdkVersion="8"/>
 				
 				<uses-permission android:name="android.permission.INTERNET" />
     			<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -324,6 +354,7 @@
 	    <extensionID>com.edgington.testflight</extensionID>
 	    
 	    
-    <extensionID>com.milkmangames.extensions.EasyPush</extensionID>
+    	<extensionID>com.milkmangames.extensions.EasyPush</extensionID>
+    	<extensionID>com.edgington.testflightandroid</extensionID>
     </extensions>
 </application>
