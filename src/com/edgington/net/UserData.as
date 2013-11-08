@@ -42,6 +42,10 @@ package com.edgington.net
 		public var bonusSignal:Signal;
 		public var bonusTime:Number = 0;
 		
+		//This is a complicated boolean, make sure it's tru ewhen the user data has downloaded properly.
+		private var newUserBeingCreated:Boolean = false;
+		public var firstPlay:Boolean = false;
+		
 		public function UserData()
 		{
 			super("user", "users");
@@ -49,6 +53,7 @@ package com.edgington.net
 			
 			var serverUserVO:ServerUserVO;
 			if(userData.data.profile == null){
+				firstPlay = true;
 				userData.data.profile = new ServerUserVO();
 				serverUserVO = userData.data.profile;
 				LOG.info("Created a new user");
@@ -72,7 +77,7 @@ package com.edgington.net
 				if(!AchievementConstants.ach_21){
 					AchievementData.UnlockAchievement(21);
 				}
-				useCredits(ThemeTypes[themeID.toUpperCase()+"_THEME_COST"]);
+				//useCredits(ThemeTypes[themeID.toUpperCase()+"_THEME_COST"]);
 				ProductsData.getInstance().createNewPurchase(themeID, 1);
 			}
 		}
@@ -110,6 +115,13 @@ package com.edgington.net
 				userProfile = new ServerUserVO(e);
 				
 				if(userProfile.last_login != null){
+					if(newUserBeingCreated && !firstPlay){
+						firstPlay = true;
+						newUserBeingCreated = false;
+					}
+					else if(!newUserBeingCreated && firstPlay){
+						firstPlay = false;
+					}
 					isLogin = false;
 					var clientDate:Date = new Date();
 					DynamicConstants.SERVER_TIME_DIFFERENCE = userProfile.last_login.time - clientDate.time;
@@ -144,7 +156,7 @@ package com.edgington.net
 			else{
 				if(FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 					LOG.info("User doesn't exist - creating new user now");
-					
+					newUserBeingCreated = true;
 					var urlVariables:Object = new Object();
 					
 					if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){

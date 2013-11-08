@@ -1,7 +1,8 @@
 package com.edgington.view.huds
 {
+	import com.adobe.ane.productStore.Product;
 	import com.edgington.constants.DynamicConstants;
-	import com.edgington.model.events.TransactionEvent;
+	import com.edgington.model.events.TransactionABEvent;
 	import com.edgington.model.payments.MobilePurchaseManager;
 	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.GameStateTypes;
@@ -10,11 +11,9 @@ package com.edgington.view.huds
 	import com.edgington.view.huds.base.AbstractHud;
 	import com.edgington.view.huds.base.IAbstractHud;
 	import com.edgington.view.huds.elements.element_mainButton;
-	import com.edgington.view.huds.elements.element_mainMenuProfileIphone;
 	import com.edgington.view.huds.elements.element_mainMessage;
 	import com.edgington.view.huds.elements.element_purchaseButton;
 	import com.greensock.TweenLite;
-	import com.milkmangames.nativeextensions.ios.StoreKitProduct;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -53,6 +52,8 @@ package com.edgington.view.huds
 		
 		public function addListeners():void
 		{
+			LOG.createCheckpoint("MENU: Credits Purchase");
+			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			superRemoveSignal.addOnce(readyForRemoval);
 			MobilePurchaseManager.INSTANCE.transactionSignal.add(handleTransactionEvent);
@@ -61,7 +62,7 @@ package com.edgington.view.huds
 		public function setupVisuals():void
 		{
 			if(MobilePurchaseManager.INSTANCE.avaliable){
-				var products:Vector.<StoreKitProduct> = MobilePurchaseManager.INSTANCE.getProducts();
+				var products:Vector.<Product> = MobilePurchaseManager.INSTANCE.getProducts();
 				
 				sortProducts(products);
 				
@@ -75,7 +76,7 @@ package com.edgington.view.huds
 					//unlimitedCreditsButton = new element_purchaseButton(products[2], buttonOptions[2], DynamicConstants.SCREEN_WIDTH*.7);
 					//unlimitedCreditsButton.x = smallCreditsButton.x;
 					//unlimitedCreditsButton.y = mediumCreditsButton.y + mediumCreditsButton.height + DynamicConstants.BUTTON_SPACING;
-					largeCreditsButton = new element_purchaseButton(products[3], buttonOptions[3], DynamicConstants.SCREEN_WIDTH*.7);
+					largeCreditsButton = new element_purchaseButton(products[2], buttonOptions[3], DynamicConstants.SCREEN_WIDTH*.7);
 					largeCreditsButton.x = smallCreditsButton.x;
 					largeCreditsButton.y = mediumCreditsButton.y + mediumCreditsButton.height + DynamicConstants.BUTTON_SPACING;
 					
@@ -95,7 +96,7 @@ package com.edgington.view.huds
 					//unlimitedCreditsButton = new element_purchaseButton(products[2], buttonOptions[2], DynamicConstants.SCREEN_WIDTH*.6);
 					//unlimitedCreditsButton.x = smallCreditsButton.x;
 					//unlimitedCreditsButton.y = mediumCreditsButton.y + mediumCreditsButton.height + DynamicConstants.BUTTON_SPACING;
-					largeCreditsButton = new element_purchaseButton(products[3], buttonOptions[3], DynamicConstants.SCREEN_WIDTH*.6);
+					largeCreditsButton = new element_purchaseButton(products[2], buttonOptions[3], DynamicConstants.SCREEN_WIDTH*.6);
 					largeCreditsButton.x = smallCreditsButton.x;
 					largeCreditsButton.y = mediumCreditsButton.y + mediumCreditsButton.height + DynamicConstants.BUTTON_SPACING;
 					
@@ -157,23 +158,14 @@ package com.edgington.view.huds
 				case buttonOptions[0]:
 					TweenLite.delayedCall(1.5, MobilePurchaseManager.INSTANCE.purchaseSmallCredits);
 					cleanButtons(false);
-					LOG.createCheckpoint("Purchased 25 Credits");
 					addReportMessage();
 					break;
 				case buttonOptions[1]:
 					TweenLite.delayedCall(1.5, MobilePurchaseManager.INSTANCE.purchaseMediumCredits);
 					cleanButtons(false);
-					LOG.createCheckpoint("Purchased 50 Credits");
-					addReportMessage();
-					break;
-				case buttonOptions[2]:
-					LOG.createCheckpoint("Purchased Unlimited Plays");
-					TweenLite.delayedCall(1.5, MobilePurchaseManager.INSTANCE.purchaseUnlimitedTrackPlays);
-					cleanButtons(false);
 					addReportMessage();
 					break;
 				case buttonOptions[3]:
-					LOG.createCheckpoint("Purchased 310 Credits");
 					TweenLite.delayedCall(1.5, MobilePurchaseManager.INSTANCE.purchaseLargeCredits);
 					cleanButtons(false);
 					addReportMessage();
@@ -197,7 +189,7 @@ package com.edgington.view.huds
 		
 		private function handleTransactionEvent(eventType:String, messageText:String = null):void{
 			switch(eventType){
-				case TransactionEvent.TRANSACTION_COMPLETE:
+				case TransactionABEvent.TRANSACTION_COMPLETE:
 						dismissButton = new element_mainButton(gettext("purchase_menu_dismiss_transaction_report"), buttonOptions[5]);
 						dismissButton.x = reportMessage.x + reportMessage.width - dismissButton.width;
 						dismissButton.y = reportMessage.y + reportMessage.height + DynamicConstants.BUTTON_SPACING;
@@ -206,7 +198,7 @@ package com.edgington.view.huds
 						reportMessage.changeMessage(messageText);
 						buttonSignal.add(handleInteractions);
 					break;
-				case TransactionEvent.TRANSACTION_FAILED:
+				case TransactionABEvent.TRANSACTION_FAILED:
 						dismissButton = new element_mainButton(gettext("purchase_menu_dismiss_transaction_report"), buttonOptions[5]);
 						dismissButton.x = reportMessage.x + reportMessage.width - dismissButton.width;
 						dismissButton.y = reportMessage.y + reportMessage.height + DynamicConstants.BUTTON_SPACING;
@@ -219,7 +211,7 @@ package com.edgington.view.huds
 			
 		}
 		
-		private function sortProducts(toSort:Vector.<StoreKitProduct>):Vector.<StoreKitProduct>{
+		private function sortProducts(toSort:Vector.<Product>):Vector.<Product>{
 			var changed:Boolean = false;
 			
 			while (!changed)
@@ -228,9 +220,9 @@ package com.edgington.view.huds
 				
 				for (var i:int = 0; i < toSort.length - 1; i++)
 				{
-					if (Number(toSort[i].price) > Number(toSort[i + 1].price))
+					if (toSort[i].price > toSort[i + 1].price)
 					{
-						var tmp:StoreKitProduct = toSort[i];
+						var tmp:Product = toSort[i];
 						toSort[i] = toSort[i + 1];
 						toSort[i + 1] = tmp;
 						
@@ -243,6 +235,7 @@ package com.edgington.view.huds
 		}
 		
 		private function destroy(e:Event):void{
+			DynamicConstants.DISABLE_RELOAD = false;
 			MobilePurchaseManager.INSTANCE.transactionSignal.remove(handleTransactionEvent);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			while(this.numChildren > 0){

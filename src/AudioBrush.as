@@ -6,9 +6,11 @@ package
 		import com.edgington.model.GameProxy;
 		import com.edgington.model.SettingsProxy;
 		import com.edgington.model.SoundManager;
+		import com.edgington.model.audio.AudioModel;
 		import com.edgington.model.calculators.LevelCalculator;
 		import com.edgington.model.facebook.FacebookCheckIfStillAuthenicated;
 		import com.edgington.model.facebook.FacebookManager;
+		import com.edgington.model.gamecenter.GameCenterManager;
 		import com.edgington.model.payments.MobilePurchaseManager;
 		import com.edgington.net.SingleSignOnManager;
 		import com.edgington.net.UserData;
@@ -76,11 +78,14 @@ package
 			LOCALE_INSTANCE.addEventListener(Event.COMPLETE, setupGame);
 			
 			MobilePurchaseManager.INSTANCE;
+			MobilePurchaseManager.INSTANCE.addEventListener(Event.COMPLETE, setupGame);
 			PushNotificationsManager.getInstance();
 			PushNotificationsManager.getInstance().addEventListener(Event.COMPLETE, setupGame);
 			PushNotificationsManager.getInstance().setupPN();
 			
 			SoundManager.getInstance();
+			
+			GameCenterManager.getInstance();
 			
 			TextFieldManager.createCentrallyAllignedTextField("Warm-up fonts", FONT_audiobrush_content, 0xFFFFFF, 10);
 			
@@ -89,7 +94,13 @@ package
 		}
 		
 		private function setupGame(e:Event):void{
-			if(loadsComplete == 2){
+			if(loadsComplete == 3){
+				
+				LOG.createCheckpoint("APP: Opened"); 
+				
+				AudioModel.getInstance();
+				AudioModel.getInstance().getIpodLibrary();
+				
 				//Make sure that we have the levels calculated.
 				LevelCalculator.calculateLevels();
 				
@@ -202,6 +213,7 @@ package
 		 * Finds when the app is about to be closed.
 		 */
 		private function handleDeActivation(e:Event):void{
+			LOG.createCheckpoint("APP: Deactivated");
 			LOG.debug("Application has been de-activated");
 			inactivityTime = new Date();
 			if(GameProxy.INSTANCE != null && GameProxy.INSTANCE.activeGame){
@@ -213,16 +225,19 @@ package
 		 * If the application is closed and then re-activates, we need to make sure that the person is still signed into facebook.
 		 */
 		private function handleReActivation(e:Event):void{
+			LOG.createCheckpoint("APP: Activated");
 			LOG.debug("Application has been re-activated");
-			var date:Number = new Date().time;
-			date = date - inactivityTime.time;
-			inactivityTime = null;
-			if(date > 7000 && DynamicConstants.CURRENT_GAME_STATE != GameStateTypes.MESSAGE_FACEBOOK_LOGIN){
-				if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
-					addLoadingScreen();
-					checkFacebookIsStillAuthenticated = new FacebookCheckIfStillAuthenicated();
-					checkFacebookIsStillAuthenticated.statusSignal.add(isStillConnectedHandler);
-					checkFacebookIsStillAuthenticated.startCheck();
+			if(inactivityTime != null){
+				var date:Number = new Date().time;
+				date = date - inactivityTime.time;
+				inactivityTime = null;
+				if(date > 7000 && !DynamicConstants.DISABLE_RELOAD){
+					if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
+						addLoadingScreen();
+						checkFacebookIsStillAuthenticated = new FacebookCheckIfStillAuthenicated();
+						checkFacebookIsStillAuthenticated.statusSignal.add(isStillConnectedHandler);
+						checkFacebookIsStillAuthenticated.startCheck();
+					}
 				}
 			}
 		}

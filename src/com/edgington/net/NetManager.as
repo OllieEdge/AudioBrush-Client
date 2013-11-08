@@ -13,7 +13,7 @@ package com.edgington.net
 		
 		public var netConnection:NetConnection;
 		
-		public static var CORE_URL:String = "http://82.10.100.127:3000/api/";
+		public static var CORE_URL:String = "http://api.audiobrush.com:3000/api/";//"http://82.10.100.127:3000/api/"
 		private static const CORE_API:String = "v1"
 		
 		public var serverConnectionErrorSignal:Signal;

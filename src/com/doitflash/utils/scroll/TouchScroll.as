@@ -1,116 +1,25 @@
-﻿package com.doitflash.utils.scroll
+package com.doitflash.utils.scroll
 {
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////// import classes
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	import com.doitflash.consts.Orientation;
+	import com.doitflash.consts.ScrollConst;
+	import com.doitflash.events.ScrollEvent;
+	import com.edgington.control.Control;
+	import com.greensock.TweenLite;
+	import com.greensock.TweenMax;
+	import com.greensock.plugins.ThrowPropsPlugin;
+	import com.greensock.plugins.TweenPlugin;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.utils.getTimer;
 	
-	import com.greensock.plugins.*;
-	import com.greensock.*; 
-	import com.greensock.events.*;
-	import com.greensock.easing.*;
-	//import com.greensock.easing.EaseLookup;
-	
-	import com.doitflash.consts.Orientation;
-	import com.doitflash.consts.ScrollConst;
-	import com.doitflash.events.ScrollEvent;
-	
-	//import com.luaye.console.C;
-	
-	/**
-	 * TouchScroll is a class to create a touch scroll, that is a kind of scrollbar to scroll your contents by touching the screen and moving your mouse or finger, mostly used for touch screen devices
-	 * 
-	 * <b>Copyright 2012, DoItFlash. All rights reserved.</b>
-	 * For seeing the scroll preview and sample files visit <a href="http://myappsnippet.com/">http://www.myappsnippet.com/</a>
-	 * 
-	 * @see Scroll
-	 * @see com.doitflash.events.ScrollEvent
-	 * @see com.doitflash.consts.Orientation
-	 * @see com.doitflash.consts.Easing
-	 * @see com.doitflash.consts.ScrollConst
-	 * @see MouseScroll
-	 * @see TouchScroll
-	 * 
-	 * @author Ali Tavakoli - 3/6/2012 12:43 PM
-	 * modified - 3/13/2012 1:00 PM
-	 * 
-	 * @version 1.0
-	 * 
-	 * @example The following example shows you how to create a simple touch scroll,
-	 * it's just like creating a mouse scroll but with a little more settings.
-	 * 
-	 * <listing version="3.0">
-	 * import com.doitflash.events.ScrollEvent;
-	 * import com.doitflash.consts.Orientation;
-	 * import com.doitflash.utils.scroll.TouchScroll;
-	 * import com.doitflash.consts.Easing;
-	 * import com.doitflash.consts.ScrollConst;
-	 * 
-	 * var _touchScroll:TouchScroll =  new TouchScroll();
-	 * var _myContent:MyContent = new MyContent(); // the content you want to scroll
-	 * 
-	 * this.addChild(_touchScroll);
-	 * 
-	 * //_touchScroll.addEventListener(ScrollEvent.ENTER_FRAME, onScrollEnterFrame); // this listener works like a simple on Enter Frame
-	 * //_touchScroll.addEventListener(ScrollEvent.MASK_WIDTH, onMaskWidth); // listens when ever the mask width changes by calling maskWidth setter
-	 * //_touchScroll.addEventListener(ScrollEvent.MASK_HEIGHT, onMaskHeight); // listens when ever the mask height changes by calling maskHeight setter
-	 * 
-	 * //_touchScroll.addEventListener(ScrollEvent.MOUSE_DOWN, onTouchDown); // listens when ever you touch the screen
-	 * _touchScroll.addEventListener(ScrollEvent.MOUSE_MOVE, onTouchMove); // listens when ever you move the content
-	 * _touchScroll.addEventListener(ScrollEvent.MOUSE_UP, onTouchUp); // listens when ever you release the content
-	 * //_touchScroll.addEventListener(ScrollEvent.TOUCH_TWEEN_UPDATE, onTouchTweenUpdate); // will be triggered when you have released the content but the scroll animation is still running
-	 * //_touchScroll.addEventListener(ScrollEvent.TOUCH_TWEEN_COMPLETE, onTouchTweenComplete); // will be triggered when you have released the content and the scroll animation is also complete
-	 * 
-	 * // set inputs
-	 * _touchScroll.maskContent = _myContent;
-	 * _touchScroll.maskWidth = 200;
-	 * _touchScroll.maskHeight = 200;
-	 * _touchScroll.enableVirtualBg = true;
-	 * 
-	 * _touchScroll.orientation = Orientation.VERTICAL; // accepted values: Orientation.AUTO, Orientation.VERTICAL, Orientation.HORIZONTAL
-	 * _touchScroll.easeType = Easing.Expo_easeOut;
-	 * _touchScroll.scrollSpace = 0;
-	 * _touchScroll.aniInterval = .5;
-	 * _touchScroll.blurEffect = true;
-	 * _touchScroll.lessBlurSpeed = 3;
-	 * _touchScroll.yPerc = 0; // min value is 0, max value is 100
-	 * _touchScroll.xPerc = 0; // min value is 0, max value is 100
-	 * _touchScroll.mouseWheelSpeed = 2;
-	 * _touchScroll.isMouseScroll = false;
-	 * 
-	 * _touchScroll.isTouchScroll = true;
-	 * _touchScroll.isStickTouch = false;
-	 * _touchScroll.holdArea = 0;
-	 * _touchScroll.bitmapMode = ScrollConst.NORMAL; // use it for smoother scrolling, special when working on mobile devices, accepted values: "normal", "weak", "strong"
-	 * 
-	 * // _touchScroll.maskAutoForceUpdate = true; // set it to false if you don't want the mask to take a new bitmap from the modified maskContent when its size changes and like to do it yourself when ever you like
-	 * // _touchScroll._mask.update(null, true); // if you have set bitmapMode to "normal" or "strong" and like to force update the mask manually
-	 * // _touchScroll._mask.smoothing = true; // allow mask smoothing
-	 * 
-	 * _touchScroll.doMouseUpScroll = true; // DO NOT MODIFY THIS VALUE
-	 * 
-	 * function onTouchMove(e:ScrollEvent):void
-	 * {
-	 * 		trace(_touchScroll.yPerc);
-	 * }
-	 * 
-	 * function onTouchUp(e:ScrollEvent):void
-	 * {
-	 * 		trace(_touchScroll.yPerc);
-	 * }
-	 * 
-	 * </listing>
-	 */
 	public class TouchScroll extends MouseScroll
 	{
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////// properties
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	// needed variables
+		
 		
 		TweenPlugin.activate([ThrowPropsPlugin]);
 		
@@ -124,54 +33,41 @@
 		
 		public var _isHoldAreaDone:Boolean = false;
 		
-	// input variables
 		
 		protected var _isTouchScroll:Boolean = true;
 		protected var _isStickTouch:Boolean = false;
 		protected var _holdArea:Number = 0;
 		protected var _doMouseUpScroll:Boolean = true; // DO NOT MODIFY THIS VALUE
 		
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////// constructor function
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-		/**
-		 * Constructor function
-		 */
+		
 		public function TouchScroll():void
 		{	
-			// I'm ready
+			
 		}
 		
-		/**
-		 * when the class is added to stage this method will be called
-		 */
+
 		override protected function start(e:Event = null):void
 		{
 			super.start(e);
 			
-		// let's set the settings
+			// let's set the settings
 			if (_isTouchScroll) setTouchSettings();
 		}
-		
-		/**
-		 * when the class is removed from stage this method will be called to collect the garbages.
-		 */
+
 		override protected function finish(e:Event = null):void
 		{
 			_maskHolder.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 			_maskHolder.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			TweenLite.killTweensOf(_maskContentHolder); 
-			
+			TweenLite.killDelayedCallsTo(Control.disableMouseFunc);
+			Control.disableMouse = false;
 			_holdAreaPoints = null;
 			
 			super.finish(e);
 		}
 		
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////// private function
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		private function setTouchSettings():void
 		{
@@ -207,6 +103,7 @@
 			_holdAreaPoints.x = mouseX;
 			_holdAreaPoints.y = mouseY;
 			_isHoldAreaDone = false; // so that mouseMoveHandler() would check the _holdArea
+			Control.disableMouse = true;
 			
 			_maskHolder.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler, false, 0, true);
@@ -360,9 +257,15 @@
 			
 			if (!_isMouseMoved) // user didn't move the scroll and only made a click, so add onEnterFrame function and don't do the scroll animation by breaking this function
 			{
+				Control.disableMouse = false;
 				this.addEventListener(Event.ENTER_FRAME, contentMover, false, 0, true);
 				return;
 			}
+			if(!_isHoldAreaDone){
+				Control.disableMouse = false;
+			}
+			
+			TweenLite.delayedCall(0.5, Control.disableMouseFunc, [false]);
 			
 			// user didn't just make a click on scroll and _isMouseMoved is true, so set the scroll animation settings
 			if (!_doMouseUpScroll) return; // if it was false pause everything untill the user himself set it to true manually again
@@ -378,18 +281,15 @@
 			
 			// set animation tolerance amount accroding to _isStickTouch is true or false
 			var tolerance:Object = { minDuration:(_isStickTouch) ? 0: .3, 
-									 overShoot:(_isStickTouch) ? 0: 1 };
+				overShoot:(_isStickTouch) ? 0: 1 };
 			
 			ThrowPropsPlugin.to(_maskContentHolder, {throwProps:{
-								y:{velocity:yVelocity, max:_maskHolder.y, min:_maskHolder.y - _yOverlap, resistance:300},
-								x:{velocity:xVelocity, max:_maskHolder.x, min:_maskHolder.x - _xOverlap, resistance:300}
-								}, onUpdate:onTweenUpdate, onComplete:onTweenComplete, ease:_easeTypeFunc
-								}, 10, tolerance.minDuration, tolerance.overShoot);
+				y:{velocity:yVelocity, max:_maskHolder.y, min:_maskHolder.y - _yOverlap, resistance:300},
+				x:{velocity:xVelocity, max:_maskHolder.x, min:_maskHolder.x - _xOverlap, resistance:300}
+			}, onUpdate:onTweenUpdate, onComplete:onTweenComplete, ease:_easeTypeFunc
+			}, 10, tolerance.minDuration, tolerance.overShoot);
 		}
 		
-		//================================================================================================================
-		//================================================================================================= main functions
-		//================================================================================================================
 		
 		protected function onTweenUpdate():void
 		{
@@ -449,7 +349,7 @@
 					_xLoc += .5;
 				}
 			}
-			
+			Control.disableMouse = false;
 			if (_bitmapMode == ScrollConst.NORMAL || _bitmapMode == ScrollConst.WEAK) _mask.bitmapMode = false;
 			_isMouseMoved = false;
 			this.addEventListener(Event.ENTER_FRAME, contentMover, false, 0, true);
@@ -504,34 +404,18 @@
 		override protected function onResize(e:*=null):void
 		{
 			super.onResize(e);
-			
-			//var rect:Rectangle = this.getRect(this);
-			//this._width = rect.width;
-			//this._height = rect.height;
 		}
 		
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////// methods
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		
-		
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////// setter - getter
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		/**
 		 * if <code>true</code>, we have touch scroll ability (touch scroll priority is higher than mouse scroll),
 		 * if <code>false</code>, we don't have touch scroll ability.
-		 * @default true
 		 */
 		public function get isTouchScroll():Boolean
 		{
 			return _isTouchScroll;
 		}
-		/**
-		 * @private
-		 */
+		
 		public function set isTouchScroll(sc:Boolean):void
 		{
 			if(sc != _isTouchScroll)
@@ -552,15 +436,13 @@
 		/**
 		 * if <code>true</code>, touch scroll is sticked if content position is at the start or end point of the mask,
 		 * if <code>false</code>, touch scroll bounces when gets to the start or end point of the mask.
-		 * @default false
 		 */
 		public function get isStickTouch():Boolean
 		{
 			return _isStickTouch;
 		}
-		/**
-		 * @private
-		 */
+		
+		
 		public function set isStickTouch(sc:Boolean):void
 		{
 			if(sc != _isStickTouch)
@@ -573,15 +455,13 @@
 		
 		/**
 		 * indicates the hold area boundaries.
-		 * @default 0
 		 */
 		public function get holdArea():Number
 		{
 			return _holdArea;
 		}
-		/**
-		 * @private
-		 */
+		
+		
 		public function set holdArea(sc:Number):void
 		{
 			if(sc != _holdArea)
@@ -595,18 +475,13 @@
 		
 		
 		
-		/**
-		 * if <code>true</code>, on mouse up of the touch scroll, the ease animation of scrolling will happen
-		 * if <code>false</code>, the animation will be paused till the user set doMouseUpScroll value to true again.
-		 * @default false
-		 */
+		
 		public function get doMouseUpScroll():Boolean
 		{
 			return _doMouseUpScroll;
 		}
-		/**
-		 * @private
-		 */
+		
+		
 		public function set doMouseUpScroll(a:Boolean):void
 		{
 			if(a != _doMouseUpScroll)
@@ -621,9 +496,5 @@
 				}
 			}
 		}
-		
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 }

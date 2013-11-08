@@ -13,12 +13,12 @@ package com.edgington.util.debug
 		private var showCreate:Boolean = false;
 		private var showDestroy:Boolean = false;
 		private var showInfo:Boolean = false;
-		private var showDebug:Boolean = true;
-		private var showWarning:Boolean = true;
+		private var showDebug:Boolean = false;
+		private var showWarning:Boolean = false;
 		private var showError:Boolean = true;
 		private var showFatal:Boolean = true;
-		private var showServer:Boolean = true;
-		private var showFacebook:Boolean = true;
+		private var showServer:Boolean = false;
+		private var showFacebook:Boolean = false;
 		
 		
 		private var testFlight:TestFlight;
@@ -313,6 +313,34 @@ package com.edgington.util.debug
 					trace("[#SERVER#]: " + args[0]);
 					if(testFlightReady){
 						testFlight.log("[#SERVER#]: " + args[0]);
+					}
+				}
+			}
+		}
+		
+		
+		/**
+		 * LOG.gamecenter
+		 * 
+		 * If you have a server enabled application this can be used to log server stuff independantly of other logs.
+		 * 
+		 * EXAMPLE
+		 * 
+		 * LOG.server("Hello") //this will trace: "[#SERVER#]: Hello"
+		 * 
+		 * LOG.server(12, "Ollie", "Awesome") //this will trace: "[#SERVER#] [0]: 12 \n [#SERVER#] [1]: Ollie \n [#SERVER#] [2]: Awesome"
+		 */
+		public function gamecenter(...args):void{
+			if(showServer){
+				if(args.length > 1){
+					for(var i:int = 0; i < args.length; i++){
+						trace("[#GAMECENTER#] ["+i+"]: " + args[i]);
+					}
+				}
+				else if(args.length != 0){
+					trace("[#GAMECENTER#]: " + args[0]);
+					if(testFlightReady){
+						testFlight.log("[#GAMECENTER#]: " + args[0]);
 					}
 				}
 			}

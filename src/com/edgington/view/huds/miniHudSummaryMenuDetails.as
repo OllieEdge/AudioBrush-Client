@@ -42,6 +42,8 @@ package com.edgington.view.huds
 		
 		public function addListeners():void
 		{
+			LOG.createCheckpoint("MENU: Summary Details");
+			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			superRemoveSignal.addOnce(readyForRemoval);
 		}
@@ -89,7 +91,6 @@ package com.edgington.view.huds
 		}
 		
 		private function destroy(e:Event):void{
-			LOG.createCheckpoint("Score Details Viewed");
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			while(this.numChildren > 0){
 				this.removeChildAt(0);

@@ -3,18 +3,17 @@ package com.edgington.view.game
 	import com.edgington.constants.CanvasConstants;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.GameConstants;
-	import com.edgington.media.MediaManager;
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.SettingsProxy;
-	import com.edgington.model.audio.AudioMainModel;
-	import com.edgington.model.events.BonusEvent;
+	import com.edgington.model.audio.AudioModel;
 	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.types.HandDirectionType;
-	import com.edgington.util.localisation.gettext;
+	import com.edgington.util.debug.LOG;
 	import com.edgington.view.huds.miniHudPauseMenu;
 	import com.edgington.view.huds.elements.element_inGameStarRating;
 	import com.edgington.view.huds.elements.element_multiplier;
+	import com.edgington.view.huds.elements.element_tutorialMessageOverlay;
 	import com.greensock.TweenLite;
 	import com.greensock.easing.Quad;
 	
@@ -43,6 +42,8 @@ package com.edgington.view.game
 		
 		private var trackProgressTimer:Timer;
 		
+		private var tutorials:element_tutorialMessageOverlay;
+		
 		
 		public function InGameHud()
 		{
@@ -54,7 +55,7 @@ package com.edgington.view.game
 			hud = new ui_inGameHud();
 			hud.scaleX = hud.scaleY = DynamicConstants.MESSAGE_SCALE;
 			hud.txt_score.x = DynamicConstants.SCREEN_WIDTH* (1/DynamicConstants.MESSAGE_SCALE) - 242;
-			hud.txt_trackInfo.text = AudioMainModel.getInstance().currentTrackDetails.trackTitle + "\nby " + AudioMainModel.getInstance().currentTrackDetails.artistName;
+			hud.txt_trackInfo.text = AudioModel.getInstance().currentTrackDetails.trackTitle + "\nby " + AudioModel.getInstance().currentTrackDetails.artist;
 			hud.txt_trackInfo.cacheAsBitmap = true;
 			hud.txt_score.text = "0";
 			hud.pauseButton.addEventListener(MouseEvent.MOUSE_UP, pauseGame);
@@ -95,6 +96,14 @@ package com.edgington.view.game
 			
 			trackProgressTimer.start();
 			
+			if(GameProxy.getInstance().isTutorial){
+				hud.visible = false;
+				hudBackground.visible = false;
+				multiplier.visible = false;
+				liveStarRating.visible = false;
+			}
+
+			
 			this.addChild(hudBackground);
 			this.addChild(multiplier);
 			this.addChild(hud);
@@ -102,12 +111,7 @@ package com.edgington.view.game
 		}
 		
 		private function updateProgressBar(e:TimerEvent):void{
-			if(DynamicConstants.isIOSPlatform()){
-				hud.ui_progressbar.bar.scaleX = (AudioMainModel.getInstance().soundChannel.position /  MediaManager.INSTANCE.sound.length);
-			}
-			else{
-				hud.ui_progressbar.bar.scaleX = (AudioMainModel.getInstance().soundChannel.position / AudioMainModel.getInstance().soundObject.length);	
-			}
+			hud.ui_progressbar.bar.scaleX = (AudioModel.getInstance().soundChannel.position / AudioModel.getInstance().soundObject.length);	
 		}
 		
 		private function addListeners():void{
@@ -116,6 +120,7 @@ package com.edgington.view.game
 			GameProxy.getInstance().scoreUpdateSignal.add(updateScore);
 			GameProxy.INSTANCE.activeStarPowerSignal.add(handleStarPower);
 			GameProxy.INSTANCE.pauseSignal.add(handlePause);
+			GameProxy.INSTANCE.tutorialSignal.add(displayTutorialMessage);
 			readyToRemoveSignal = new Signal();
 			readyToRemoveSignal.add(removePauseMenu);
 		}
@@ -141,6 +146,7 @@ package com.edgington.view.game
 		}
 		
 		private function pauseGame(e:MouseEvent):void{
+			LOG.createCheckpoint("GAME: Paused");
 			GameProxy.INSTANCE.pauseSignal.dispatch(true);
 		}
 		
@@ -150,9 +156,35 @@ package com.edgington.view.game
 				pauseMenu = new miniHudPauseMenu(readyToRemoveSignal);
 				this.addChild(pauseMenu);
 			}
-			else if(pauseMenu != null){
+			else if(pauseMenu != null && !isPaused){
+				LOG.createCheckpoint("GAME: Resume");
 				this.removeChild(pauseMenu);
 				pauseMenu = null;
+			}
+		}
+		
+		private function displayTutorialMessage(_pauseGame:Boolean, tutorialMessageID:int = 0):void{
+			if(_pauseGame){
+				hud.pauseButton.removeEventListener(MouseEvent.MOUSE_UP, pauseGame);		
+				if(tutorials == null){
+					tutorials = new element_tutorialMessageOverlay();
+					this.addChild(tutorials);
+				}
+				if(tutorialMessageID == 7){
+					hud.visible = true;
+					hudBackground.visible = true;
+				}
+				if(tutorialMessageID == 9){
+					liveStarRating.visible = true;
+				}
+				if(tutorialMessageID == 10){
+					multiplier.visible = true;
+				}
+				tutorials.displayNewTutorialMessage(tutorialMessageID);
+			}
+			else{
+				hud.pauseButton.addEventListener(MouseEvent.MOUSE_UP, pauseGame);
+				tutorials.removeMessage();
 			}
 		}
 		
@@ -171,6 +203,7 @@ package com.edgington.view.game
 			trackProgressTimer = null;
 			GameProxy.INSTANCE.activeStarPowerSignal.remove(handleStarPower);
 			GameProxy.getInstance().scoreUpdateSignal.remove(updateScore);
+			GameProxy.INSTANCE.tutorialSignal.remove(displayTutorialMessage);
 			readyToRemoveSignal.removeAll();
 			readyToRemoveSignal = null;
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);

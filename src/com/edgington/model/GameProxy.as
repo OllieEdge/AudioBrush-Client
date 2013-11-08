@@ -1,8 +1,8 @@
 package com.edgington.model
 {
-	import com.edgington.NativeMediaManager.NativeMediaVO;
 	import com.edgington.constants.GameConstants;
 	import com.edgington.constants.SoundConstants;
+	import com.edgington.ipodlibrary.ILMediaItem;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.ScoreCalculationsVO;
@@ -16,6 +16,7 @@ package com.edgington.model
 		public static var INSTANCE:GameProxy;
 		
 		public var isTournament:Boolean;
+		public var isTutorial:Boolean;
 		
 		public var pauseSignal:Signal;
 		public var killGameEarlySignal:Signal;
@@ -77,7 +78,8 @@ package com.edgington.model
 		public var longestPerfectsInARow:int = 0;
 		
 		public var beatCollectSignal:Signal;
-		public var scoreUpdateSignal:Signal;
+		public var scoreUpdateSignal:Signal; 
+		public var tutorialSignal:Signal;
 		
 		
 		public var currentPerfectHitStreak:int = 0;
@@ -87,7 +89,7 @@ package com.edgington.model
 		
 		public var totalPerfectBeatsScore:int = 0;
 		
-		public var currentTrackDetails:NativeMediaVO;
+		public var currentTrackDetails:ILMediaItem;
 		public var currentTrackDifficulty:String;
 		public var currentHectiness:int = 0;
 		public var currentBeatRatio:int = 0;
@@ -185,6 +187,7 @@ package com.edgington.model
 			multiplierSignal = new Signal();
 			colourChange = new Signal();
 			notificationSignal = new Signal();
+			tutorialSignal = new Signal();
 		}
 		
 		private function removeListeners():void{
@@ -196,6 +199,7 @@ package com.edgington.model
 			multiplierSignal.removeAll();
 			colourChange.removeAll();
 			notificationSignal.removeAll();
+			tutorialSignal.removeAll();
 		}
 		
 		public function addAdditonalListeners(colourSignal:Signal, starPowerSignal:Signal, addBeatSignal:Signal):void{
@@ -216,6 +220,11 @@ package com.edgington.model
 				wentOffscreen = false;
 			}
 			else if(rogueBeat && beatScale == -2){//A rogue beat has just left the screen.
+				if(isTutorial){
+					if(TutorialManager.getInstance().currentTutorialStage == 5){
+						TutorialManager.getInstance().increaseBeatsOnStage5();
+					}
+				}
 				return;
 			}
 			else if(beatScale == -2){
@@ -353,6 +362,25 @@ package com.edgington.model
 		private function checkStreak(beatScale:Number):int{
 			if(beatScale >= GameConstants.GOOD_THRESHOLD){
 				currentNormalHitStreak++;
+				
+				if(currentNormalHitStreak > 25){
+					if(currentNormalHitStreak == 350){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_4_"+Math.ceil(Math.random()*5)], "", 1);
+					}
+					else if(currentNormalHitStreak == 250){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_4_"+Math.ceil(Math.random()*5)], "", 1);
+					}
+					else if(currentNormalHitStreak == 150){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_3_"+Math.ceil(Math.random()*5)], "", 1);
+					}
+					else if(currentNormalHitStreak == 75){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_2_"+Math.ceil(Math.random()*6)], "", 1);
+					}
+					else if(currentNormalHitStreak == 25){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_1_"+Math.ceil(Math.random()*5)], "", 1);
+					}
+				}
+				
 				longestBeatsInARow = Math.max(currentNormalHitStreak, longestBeatsInARow);
 			}
 			if(currentNormalHitStreak > 0 && beatScale < GameConstants.GOOD_THRESHOLD){
@@ -374,11 +402,32 @@ package com.edgington.model
 		private function checkPerfectStreak(beatScale:Number):int{
 			if(beatScale >= GameConstants.PERFECT_THRESHOLD){
 				currentPerfectHitStreak++;
+				if(currentPerfectHitStreak > 4){
+					if(currentPerfectHitStreak == 125){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_4_"+Math.ceil(Math.random()*5)], "", 1);
+					}
+					else if(currentPerfectHitStreak == 100){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_4_"+Math.ceil(Math.random()*5)], "", 1);
+					}
+					else if(currentPerfectHitStreak == 80){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_4_"+Math.ceil(Math.random()*5)], "", 1);
+					}
+					else if(currentPerfectHitStreak == 50){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_4_"+Math.ceil(Math.random()*5)], "", 1);
+					}
+					else if(currentPerfectHitStreak == 20){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_3_"+Math.ceil(Math.random()*6)], "", 1);
+					}
+					else if(currentPerfectHitStreak == 10){
+						SoundManager.instance.loadAndPlaySFX(SoundConstants.GAME_SFX + SoundConstants.VOICE_SFX_DIRECTORY + SoundConstants["SFX_GOOD_LEVEL_2_"+Math.ceil(Math.random()*5)], "", 1);
+					}
+				}
 				longestPerfectsInARow = Math.max(currentPerfectHitStreak, longestPerfectsInARow);
 			}
 			if(currentPerfectHitStreak > 0 && beatScale < GameConstants.PERFECT_THRESHOLD){
 				var perfectStreakBonus:int = Math.floor(currentPerfectHitStreak/GameConstants.PERFECT_CHAIN_MULTIPLE_BONUS)*GameConstants.PERFECT_CHAIN_BONUS_AMOUNT;
 				if(currentPerfectHitStreak > 1){
+					
 					scorePerfectStreaks += perfectStreakBonus*multiplier;
 					streaksPerfect++;
 					if(perfectStreakBonus != 0){
@@ -401,6 +450,11 @@ package com.edgington.model
 				scorePerfectHits += ((beatScale / 0.05)*GameConstants.POINTS_PER_BEAT_FRAME)*multiplier;
 			}
 			if(beatScale > 0){
+				SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_COLLECT_BEAT_1), "", 1);
+				if(isTutorial && TutorialManager.getInstance().currentTutorialStage == 3){
+					TutorialManager.getInstance().increaseBeatsOnStage3();
+				}
+				
 				hitsAllHits++;
 				scoreNormalBeatHits += ((beatScale / 0.05)*GameConstants.POINTS_PER_BEAT_FRAME)*multiplier;
 			}
@@ -408,12 +462,18 @@ package com.edgington.model
 				return 0;
 			}
 			
+			if(isTutorial && TutorialManager.getInstance().currentTutorialStage == 1){
+				TutorialManager.getInstance().increaseBeatsOnStage1();
+			}
+			
 			return ((beatScale / 0.05)*GameConstants.POINTS_PER_BEAT_FRAME);
 		}
 		
 		private function starPowerBeatsAreActive():void{
-			starPowerBeatsRemainingBeforeActivation = GameConstants.STAR_POWER_BEATS_TO_COLLECT;
-			starPowerBeatsAreOnScreen = true;
+			if(!isTutorial){
+				starPowerBeatsRemainingBeforeActivation = GameConstants.STAR_POWER_BEATS_TO_COLLECT;
+				starPowerBeatsAreOnScreen = true;
+			}
 		}
 		
 		private function handleColourChange():void{
@@ -435,10 +495,12 @@ package com.edgington.model
 			starPowerStarBeatsCollected = 0;
 			starPowerBeatsAreOnScreen = false;
 			beatsHitDuringStarPower -= Math.max(GameConstants.STAR_POWER_ACTIVE_FOR_X_BEATS, -GameConstants.STAR_POWER_MAXIMUM_ALLOWED);
-			starPowerActive = true;
-			SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_STAR_POWER_ON), "", 1);
-			activeStarPowerSignal.dispatch();
-			checkMultiplier();
+			if(!isTutorial){
+				starPowerActive = true;
+				SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_STAR_POWER_ON), "", 1);
+				activeStarPowerSignal.dispatch();
+				checkMultiplier();
+			}
 		}
 		
 		public static function deleteInstance():void{

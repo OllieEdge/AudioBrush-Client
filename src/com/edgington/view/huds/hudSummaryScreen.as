@@ -2,8 +2,12 @@ package com.edgington.view.huds
 {
 	import com.edgington.constants.AchievementConstants;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.SoundConstants;
+	import com.edgington.model.GameLevelInformationHandler;
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.SettingsProxy;
+	import com.edgington.model.SoundManager;
+	import com.edgington.model.calculators.LevelCalculator;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.model.facebook.opengraph.actions.OpenGraphAchieveAction;
 	import com.edgington.model.facebook.opengraph.actions.OpenGraphNewHighscoreAction;
@@ -11,6 +15,7 @@ package com.edgington.view.huds
 	import com.edgington.model.facebook.opengraph.images.OpenGraphImages;
 	import com.edgington.model.facebook.opengraph.objects.OpenGraphHighscoreObject;
 	import com.edgington.model.facebook.opengraph.objects.OpenGraphRankObject;
+	import com.edgington.model.facebook.opengraph.objects.OpenGraphStarRatingObject;
 	import com.edgington.model.facebook.opengraph.objects.OpenGraphTrackObject;
 	import com.edgington.net.AchievementData;
 	import com.edgington.net.HighscoresPostData;
@@ -68,6 +73,8 @@ package com.edgington.view.huds
 		
 		public function addListeners():void
 		{
+			LOG.createCheckpoint("MENU: Summary");
+			SoundManager.getInstance().loadAndPlaySound(SoundConstants.BGM_MENU, SoundConstants.BGM_MENU_VOLUME);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			superRemoveSignal.addOnce(readyForRemoval);
 		}
@@ -149,7 +156,8 @@ package com.edgington.view.huds
 		}
 		
 		private function highscoreInformationReceived(eventType:String = "", highscoreVO:HighscoreServerVO = null):void{
-			
+			UserData.getInstance().getUser();
+			UserData.getInstance().userDataSignal.add(updateLevelInformation);
 			switch(eventType){
 				case "":
 					
@@ -177,10 +185,22 @@ package com.edgington.view.huds
 			checkAchievements();
 		}
 		
+		private function updateLevelInformation():void{
+			if(GameLevelInformationHandler.checkIfAvailable()){
+				GameLevelInformationHandler.getInstance().levelAfterGame = LevelCalculator.getLevel(UserData.getInstance().userProfile.xp);
+				GameLevelInformationHandler.getInstance().xpAfterGame = UserData.getInstance().userProfile.xp;
+			}
+		}
+		
 		private function handleInteraction(buttonOption:String):void{
 			switch(buttonOption){
 				case buttonOptions[0]:
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_MAIN;
+					if(GameLevelInformationHandler.checkIfAvailable() && GameLevelInformationHandler.isReady){
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.SUMMARY_LEVEL;
+					}
+					else{
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_MAIN;
+					}
 					cleanButtons();
 					break;
 				case buttonOptions[1]:
@@ -296,43 +316,46 @@ package com.edgington.view.huds
 		private function destroy(e:Event):void{
 			HighscoresPostData.getInstance().highscoreDataSignal.removeAll();
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
-			if(DynamicConstants.CURRENT_GAME_STATE == GameStateTypes.MENU_MAIN){
+			if(DynamicConstants.CURRENT_GAME_STATE == GameStateTypes.MENU_MAIN || DynamicConstants.CURRENT_GAME_STATE == GameStateTypes.SUMMARY_LEVEL){
 				if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
 					var highscoreVO:HighscoreServerVO = GameProxy.INSTANCE.highscoreVO;
 					if(highscoreVO.rank <= 10 && highscoreVO.newHighscore){
 						if(highscoreVO.rank == 1){
-							var openGraphRank1Object:OpenGraphRankObject = new OpenGraphRankObject(gettext("opengraph_rank_1_title", {artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), gettext("opengraph_rank_1_description", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), OpenGraphImages.IMAGE_URL_RANK_1);
+							var openGraphRank1Object:OpenGraphRankObject = new OpenGraphRankObject(gettext("opengraph_rank_1_title", {artist:GameProxy.INSTANCE.currentTrackDetails.artist}), gettext("opengraph_rank_1_description", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artist}), OpenGraphImages.IMAGE_URL_RANK_1);
 							var openGraphAchieveRank1Action:OpenGraphAchieveAction = new OpenGraphAchieveAction(openGraphRank1Object, summaryOverview.share);	
 						}
 						else if(highscoreVO.rank == 2){
-							var openGraphRank2Object:OpenGraphRankObject = new OpenGraphRankObject(gettext("opengraph_rank_2_title", {artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), gettext("opengraph_rank_2_description", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), OpenGraphImages.IMAGE_URL_RANK_2);
+							var openGraphRank2Object:OpenGraphRankObject = new OpenGraphRankObject(gettext("opengraph_rank_2_title", {artist:GameProxy.INSTANCE.currentTrackDetails.artist}), gettext("opengraph_rank_2_description", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artist}), OpenGraphImages.IMAGE_URL_RANK_2);
 							var openGraphAchieveRank2Action:OpenGraphAchieveAction = new OpenGraphAchieveAction(openGraphRank2Object, summaryOverview.share);	
 						}
 						else if(highscoreVO.rank == 3){
-							var openGraphRank3Object:OpenGraphRankObject = new OpenGraphRankObject(gettext("opengraph_rank_3_title", {artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), gettext("opengraph_rank_3_description", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), OpenGraphImages.IMAGE_URL_RANK_3);
+							var openGraphRank3Object:OpenGraphRankObject = new OpenGraphRankObject(gettext("opengraph_rank_3_title", {artist:GameProxy.INSTANCE.currentTrackDetails.artist}), gettext("opengraph_rank_3_description", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artist}), OpenGraphImages.IMAGE_URL_RANK_3);
 							var openGraphAchieveRank3Action:OpenGraphAchieveAction = new OpenGraphAchieveAction(openGraphRank3Object, summaryOverview.share);	
 						}
 						else{
-							var openGraphRank10Object:OpenGraphRankObject = new OpenGraphRankObject(gettext("opengraph_rank_10_title", {artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), gettext("opengraph_rank_10_description", {rank:highscoreVO.rank, track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), OpenGraphImages.IMAGE_URL_RANK_TOP_10);
+							var openGraphRank10Object:OpenGraphRankObject = new OpenGraphRankObject(gettext("opengraph_rank_10_title", {artist:GameProxy.INSTANCE.currentTrackDetails.artist}), gettext("opengraph_rank_10_description", {rank:highscoreVO.rank, track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artist}), OpenGraphImages.IMAGE_URL_RANK_TOP_10);
 							var openGraphAchieveRank10Action:OpenGraphAchieveAction = new OpenGraphAchieveAction(openGraphRank10Object, summaryOverview.share);	
 						}
 					}
+					if(GameProxy.INSTANCE.starRating >= 7){
+						var openGraphStartRatingObject:OpenGraphStarRatingObject = new OpenGraphStarRatingObject(gettext("opengraph_star_rating_"+GameProxy.INSTANCE.starRating+"_title"), gettext("opengraph_star_rating_"+GameProxy.INSTANCE.starRating+"_title", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artist}), OpenGraphImages["IMAGE_URL_STARRATING_"+GameProxy.INSTANCE.starRating]);
+						var openGraphStartRatingAction:OpenGraphAchieveAction = new OpenGraphAchieveAction(openGraphStartRatingObject, summaryOverview.share);	
+					}
 					if(highscoreVO.newHighscore){
-						var openGraphHighscoreObject:OpenGraphHighscoreObject = new OpenGraphHighscoreObject(gettext("opengraph_new_highscore_title", {artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), gettext("opengraph_new_highscore_description", {score:NumberFormat.addThreeDigitCommaSeperator(highscoreVO.score), track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), OpenGraphImages["IMAGE_URL_HIGHSCORE_"+Math.ceil(Math.random()*6)]);
-						var openGraphHighscoreAction:OpenGraphNewHighscoreAction = new OpenGraphNewHighscoreAction(openGraphHighscoreObject, summaryOverview.share);	
+						var openGraphHighscoreObject:OpenGraphHighscoreObject = new OpenGraphHighscoreObject(gettext("opengraph_new_highscore_title", {artist:GameProxy.INSTANCE.currentTrackDetails.artist}), gettext("opengraph_new_highscore_description", {score:NumberFormat.addThreeDigitCommaSeperator(highscoreVO.score), track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artist}), OpenGraphImages["IMAGE_URL_HIGHSCORE_"+Math.ceil(Math.random()*1)]);
+						var openGraphHighscoreAction:OpenGraphNewHighscoreAction = new OpenGraphNewHighscoreAction(openGraphHighscoreObject, (highscoreVO.rank > 10 && summaryOverview.share));	
 					}
 					else{
-						var openGraphPlayObject:OpenGraphTrackObject = new OpenGraphTrackObject(gettext("opengraph_new_track_played_title", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle}), gettext("opengraph_new_track_played_description", {score:NumberFormat.addThreeDigitCommaSeperator(GameProxy.INSTANCE.score), track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), OpenGraphImages["IMAGE_URL_PLAY_TRACK_"+Math.ceil(Math.random()*6)]);
+						var openGraphPlayObject:OpenGraphTrackObject = new OpenGraphTrackObject(gettext("opengraph_new_track_played_title", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle}), gettext("opengraph_new_track_played_description", {score:NumberFormat.addThreeDigitCommaSeperator(GameProxy.INSTANCE.score), track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artist}), OpenGraphImages["IMAGE_URL_PLAY_TRACK_"+Math.ceil(Math.random()*1)]);
 						var openGraphPlayAction:OpenGraphPlayAction = new OpenGraphPlayAction(openGraphPlayObject, false);
 					}
 				}
-				UserData.getInstance().getUser();
 				GameProxy.deleteInstance();	
 			}
 			while(this.numChildren > 0){
 				this.removeChildAt(0);
 			}
-			LOG.createCheckpoint("Track Played");
+			UserData.getInstance().userDataSignal.remove(updateLevelInformation);
 			viewHighscoresButton = null;
 			viewScoreDetailsButton = null;
 			dismissButton = null;

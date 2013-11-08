@@ -134,6 +134,7 @@ package com.edgington.net
 		}
 		
 		private function sendGiftsWhenReady():void{
+			LOG.createCheckpoint("Gifts Sent");
 			if(facebookIDStored != ""){
 				if(friendsWithAccountStored.length > 0){
 					var obj:Object = new Object();

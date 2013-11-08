@@ -32,6 +32,12 @@ package com.edgington.control
 		
 		private var touchCoordsArray:Vector.<TouchEventVO>;
 		
+		public static var disableMouse:Boolean = false;
+		
+		public static function disableMouseFunc(disable:Boolean):void{
+			disableMouse = disable;
+		}
+		
 		public function Control(e:SingletonEnforcer)
 		{
 			LOG.create(this);

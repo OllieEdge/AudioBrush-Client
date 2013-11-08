@@ -13,12 +13,12 @@ package com.edgington.model.audio
 		
 		public function trackVolume() : Number
 		{
-			peaks = AudioMainModel.getInstance().getSoundChannelPeaks()
+			peaks = AudioModel.getInstance().getSoundChannelPeaks()
 			return (peaks.left + peaks.right) *.5
 		}
 		
 		public static function trackVolume():Number{
-			var peaks:SoundChannelPeaksVO = AudioMainModel.getInstance().getSoundChannelPeaks()
+			var peaks:SoundChannelPeaksVO = AudioModel.getInstance().getSoundChannelPeaks()
 			return (peaks.left + peaks.right) *.5
 		}
 	}

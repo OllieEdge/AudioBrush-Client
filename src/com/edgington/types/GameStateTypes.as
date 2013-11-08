@@ -14,6 +14,12 @@ package com.edgington.types
 		
 		public static const MENU_ACHIEVEMENTS:String = "GameStateTypes::MENU_ACHIEVEMENTS";
 		
+		public static const MENU_CREDITS:String = "GameStateTypes::MENU_CREDITS";
+		
+		public static const MENU_REDEEM:String = "GameStateTypes::MENU_REDEEM";
+		
+		
+		public static const GAME_TRACK_SELECTION:String = "GameStateTypes::GAME_TRACK_SELECTION";
 		
 		public static const GAME_LOADING:String = "GameStateTypes::GAME_LOADING";
 		
@@ -28,6 +34,8 @@ package com.edgington.types
 		public static const SUMMARY_DETAILS:String = "GameStateTypes::SUMMARY_DETAILS";
 		
 		public static const SUMMARY_HIGHSCORES:String = "GameStateTypes::SUMMARY_HIGHSCORES";
+		
+		public static const SUMMARY_LEVEL:String = "GameStateTypes::SUMMARY_LEVEL";
 		
 		
 		public static const SETTINGS_HAND_SELECTION:String = "GameStateTypes::SETTINGS_HAND_SELECTION";
@@ -49,5 +57,8 @@ package com.edgington.types
 		public static const TOURNAMENT_ENTRY:String = "GameStateTypes::TOURNAMENT_ENTRY";
 		
 		public static const TOURNAMENT_DOWNLOAD:String = "GameStateTypes::TOURNAMENT_DOWNLOAD";
+		
+		
+		public static const TUTORIAL_BEGIN:String = " GameStateTypes::TUTORIAL_BEGIN";
 	}
 }

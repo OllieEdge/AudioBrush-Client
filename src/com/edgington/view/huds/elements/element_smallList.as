@@ -6,6 +6,8 @@ package com.edgington.view.huds.elements
 	import com.doitflash.utils.scroll.TouchScroll;
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.SoundConstants;
+	import com.edgington.model.SoundManager;
 	import com.edgington.util.TextFieldManager;
 	import com.edgington.view.huds.vo.SmallListItemVO;
 	
@@ -186,6 +188,7 @@ package com.edgington.view.huds.elements
 		
 		private function itemSelected(e:MouseEvent):void{
 			if(!_scroller._isHoldAreaDone){
+				SoundManager.getInstance().loadAndPlaySFX(SoundConstants.SFX_OPTION_SELECT, "", 1);
 				var currentItem:Object;
 				for(var i:int = 0; i < items.length; i++){
 					if(e.currentTarget == items[i].clip){
@@ -245,7 +248,7 @@ package com.edgington.view.huds.elements
 			_scroller.mouseWheelSpeed = 2;
 			_scroller.isMouseScroll = false;
 			_scroller.isTouchScroll = true;
-			_scroller.bitmapMode = ScrollConst.NORMAL;
+			_scroller.bitmapMode = ScrollConst.WEAK;
 				; // use it for smoother scrolling, special when working on mobile devices, accepted values: "normal", "weak", "strong"
 			_scroller.isStickTouch = false;
 			_scroller.holdArea = 10;

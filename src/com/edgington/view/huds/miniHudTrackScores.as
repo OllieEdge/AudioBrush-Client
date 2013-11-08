@@ -3,6 +3,7 @@ package com.edgington.view.huds
 	import com.edgington.NativeMediaManager.NativeMediaVO;
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.ipodlibrary.ILMediaItem;
 	import com.edgington.model.SearchProxy;
 	import com.edgington.model.calculators.LevelCalculator;
 	import com.edgington.net.HighscoresGetData;
@@ -47,7 +48,7 @@ package com.edgington.view.huds
 		
 		private var loading:ui_loading;
 		
-		private var trackDetails:NativeMediaVO;
+		private var trackDetails:ILMediaItem;
 		
 		private var highscoresData:HighscoresGetData;
 		private var highscores:Vector.<ServerScoreVO>;
@@ -78,6 +79,7 @@ package com.edgington.view.huds
 		
 		public function addListeners():void
 		{
+			LOG.createCheckpoint("MENU: Summary Leaderboard");
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			superRemoveSignal.addOnce(readyForRemoval);
 			highscoresData.responceSignal.add(highscoresHandler);
@@ -90,7 +92,7 @@ package com.edgington.view.huds
 			tabs = new Vector.<String>;
 			tabs.push(gettext("highscores_tab_global"), gettext("highscores_tab_friends"));
 			tabDescriptions = new Vector.<String>;
-			tabDescriptions.push(gettext("highscores_tab_global_description", {topnumber:amountOfListings, track:trackDetails.trackTitle, artist:trackDetails.artistName}), gettext("highscores_tab_friends_description", {track:trackDetails.trackTitle, artist:trackDetails.artistName}));
+			tabDescriptions.push(gettext("highscores_tab_global_description", {topnumber:amountOfListings, track:trackDetails.trackTitle, artist:trackDetails.artist}), gettext("highscores_tab_friends_description", {track:trackDetails.trackTitle, artist:trackDetails.artist}));
 			
 			loading = new ui_loading();
 			tabContainer = new element_tabContainer(tabs, tabChangedSignal, tabDescriptions);
@@ -360,7 +362,6 @@ package com.edgington.view.huds
 		}
 		
 		private function destroy(e:Event):void{
-			LOG.createCheckpoint("Menu Highscores Viewed");
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			tabChangedSignal.removeAll();
 			tabChangedSignal = null;

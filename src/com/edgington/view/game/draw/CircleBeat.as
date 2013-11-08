@@ -6,12 +6,15 @@ package com.edgington.view.game.draw
 	import com.edgington.constants.GameConstants;
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.SettingsProxy;
+	import com.edgington.model.TutorialManager;
 	import com.edgington.util.DrawingShapes;
+	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.game.Canvas;
 	import com.greensock.TweenLite;
 	
 	import flash.display.BlendMode;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.text.TextField;
 	
 	import org.osflash.signals.Signal;
@@ -50,12 +53,24 @@ package com.edgington.view.game.draw
 		private var currentThemeID:String;
 		private var isRogue:Boolean;
 		
+		private var tutorialMessage:ui_tutorial_arrow;
+		
 		public function CircleBeat(beatID:int, isRogue:Boolean = false)
 		{
 			super();
 			this.beatID = beatID;
 			if(isRogue){
 				this.isRogue = isRogue;		
+				if(GameProxy.INSTANCE.isTutorial && TutorialManager.getInstance().currentTutorialStage == 5){
+					tutorialMessage = new ui_tutorial_arrow();
+					tutorialMessage.txt_label.text = gettext("tutorial_gameplay_message_"+TutorialManager.getInstance().currentTutorialStage);
+				}
+			}
+			else{
+				if(GameProxy.INSTANCE.isTutorial && TutorialManager.getInstance().currentTutorialStage == 1 || TutorialManager.getInstance().currentTutorialStage == 2){
+					tutorialMessage = new ui_tutorial_arrow();
+					tutorialMessage.txt_label.text = gettext("tutorial_gameplay_message_"+TutorialManager.getInstance().currentTutorialStage);
+				}
 			}
 		
 			
@@ -124,6 +139,15 @@ package com.edgington.view.game.draw
 			
 			this.addChild(circle);
 			this.addChild(constCircle);
+			if(tutorialMessage != null){
+				tutorialMessage.scaleX = tutorialMessage.scaleY = DynamicConstants.DEVICE_SCALE;
+				this.addEventListener(Event.ADDED_TO_STAGE, addTutorialMessage);
+			}
+		}
+		
+		private function addTutorialMessage(e:Event):void{
+			this.removeEventListener(Event.ADDED_TO_STAGE, addTutorialMessage);
+			parent.addChild(tutorialMessage);
 		}
 		
 		public function updateCircle(beatID:int, beatStrength:Number = 0):void{
@@ -147,6 +171,10 @@ package com.edgington.view.game.draw
 			}
 			else{
 				frameCount++;
+			}
+			if(tutorialMessage){
+				tutorialMessage.x = this.x;
+				tutorialMessage.y = this.y;
 			}
 		}
 		
@@ -214,6 +242,15 @@ package com.edgington.view.game.draw
 		
 		private function removeText():void{
 			TweenLite.delayedCall(1, this.removeChild, [superlativeText]);
+		}
+		
+		public function clean():void{
+			if(tutorialMessage){
+				if(parent.contains(tutorialMessage)){
+					parent.removeChild(tutorialMessage);
+					tutorialMessage = null;
+				}
+			}
 		}
 		
 		public function destroy():void{

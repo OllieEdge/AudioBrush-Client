@@ -19,9 +19,11 @@ package com.edgington.view.huds.elements
 			super();
 			
 			title = new ui_summaryOutcomeTitle();
-			title.txt_artist.text = GameProxy.INSTANCE.currentTrackDetails.artistName;
+			title.txt_artist.text = GameProxy.INSTANCE.currentTrackDetails.artist;
 			title.txt_trackTitle.text = GameProxy.INSTANCE.currentTrackDetails.trackTitle;
 			title.txt_score.text = NumberFormat.addThreeDigitCommaSeperator(GameProxy.INSTANCE.score);
+			
+			title.starrating.gotoAndStop(GameProxy.INSTANCE.starRating);
 			
 			trackImage = new TrackData(new <String>[title.txt_trackTitle.text, title.txt_artist.text], title.background.picture);
 			

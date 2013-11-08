@@ -3,6 +3,7 @@ package com.edgington.view.huds.elements
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.view.assets.AssetCacher;
 	import com.milkmangames.nativeextensions.GoViral;
 	import com.milkmangames.nativeextensions.events.GVFacebookEvent;
 	
@@ -11,6 +12,7 @@ package com.edgington.view.huds.elements
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	
 	public class element_profile_picture extends Sprite
@@ -37,7 +39,19 @@ package com.edgington.view.huds.elements
 				this.addChild(picture);
 			}
 			
+			
 			if(profileID != ""){
+				
+				if(AssetCacher.getInstance().checkForCachedImage("facebookPic_" + profileID)){
+					removeAnyExistingImages();
+					var rect:Rectangle = picture.img.getBounds(picture);
+					picture.img.holder.visible = false;
+					rect.x = 0;
+					rect.y = 0;
+					AssetCacher.getInstance().insertCachedImage("facebookPic_" + profileID, picture.img, rect);
+					return;
+				}
+				
 				var urlRequest:URLRequest = new URLRequest("http://graph.facebook.com/"+profileID+"/picture?width=200&height=200");
 				imageLoader = new Loader();
 				imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded);
@@ -60,6 +74,17 @@ package com.edgington.view.huds.elements
 			}
 			
 			if(profileID != ""){
+				
+				if(AssetCacher.getInstance().checkForCachedImage("facebookPic_" + profileID)){
+					removeAnyExistingImages();
+					var rect:Rectangle = picture.img.getBounds(picture);
+					picture.img.holder.visible = false;
+					rect.x = 0;
+					rect.y = 0;
+					AssetCacher.getInstance().insertCachedImage("facebookPic_" + profileID, picture.img, rect);
+					return;
+				}
+				
 				var urlRequest:URLRequest = new URLRequest("http://graph.facebook.com/"+profileID+"/picture?width=200&height=200");
 				imageLoader = new Loader();
 				imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded);
@@ -91,6 +116,7 @@ package com.edgington.view.huds.elements
 		private function imageLoaded(e:Event):void{
 			
 			imageLoader.contentLoaderInfo.removeEventListener(Event.COMPLETE, imageLoaded);
+			AssetCacher.getInstance().saveImage("facebookPic_" + profileID, e.target.bytes);
 			profileBitmap = new Bitmap(e.target.content.bitmapData.clone());
 			if(picture != null){
 				profileBitmap.width = picture.img.width;
@@ -103,6 +129,7 @@ package com.edgington.view.huds.elements
 			}
 			imageLoader.unload();
 			imageLoader = null;
+			
 		}
 		
 		private function checkFailureResponce(e:GVFacebookEvent):void{

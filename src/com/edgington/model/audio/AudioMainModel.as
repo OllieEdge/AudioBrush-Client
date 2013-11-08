@@ -3,6 +3,7 @@ package com.edgington.model.audio
 	import com.edgington.NativeMediaManager.NativeMediaVO;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.control.Control;
+	import com.edgington.ipodlibrary.ILMediaItem;
 	import com.edgington.media.MediaManager;
 	import com.edgington.model.audio.analysis.MusicAnalyser;
 	import com.edgington.model.audio.analysis.MusicEvent;
@@ -165,7 +166,7 @@ package com.edgington.model.audio
 					parser = new MusicParser(soundObject);
 				}
 				musicAnalyser = new MusicAnalyser(parser);
-				if(AudioCacher.getInstance().checkForCachedVersion(currentTrackDetails, true, tournamentData)){
+				if(AudioCacher.getInstance().checkForCachedVersion(new ILMediaItem(), true, tournamentData)){
 					if(isTournament){
 						musicAnalyser.skipFFTAndUsedCachedData(AudioCacher.CachedTrackVO);
 						trackStatusSignal.dispatch(AudioEvent.TRACK_ANALYSIS_COMPLETE);
@@ -194,14 +195,15 @@ package com.edgington.model.audio
 				Control.getUpdateSignal().remove(checkParse);
 				musicAnalyser.Analyse();
 				
-				AudioCacher.getInstance().saveAudioData(	currentTrackDetails, 
-																						JSON.stringify(musicAnalyser.fluxThresholds), 
-																						JSON.stringify(musicAnalyser.beats),
-																						JSON.stringify(musicAnalyser.beatsDetected),
-																						JSON.stringify(musicAnalyser.sections),
-																						JSON.stringify(musicAnalyser.sectionsAverage),
-																						JSON.stringify(musicAnalyser.starSections));
-				
+				LOG.fatal("The caching of the files code has been stripped, if you use this make sur eyou put it back in");
+//				AudioCacher.getInstance().saveAudioData(	currentTrackDetails, 
+//																						JSON.stringify(musicAnalyser.fluxThresholds), 
+//																						JSON.stringify(musicAnalyser.beats),
+//																						JSON.stringify(musicAnalyser.beatsDetected),
+//																						JSON.stringify(musicAnalyser.sections),
+//																						JSON.stringify(musicAnalyser.sectionsAverage),
+//																						JSON.stringify(musicAnalyser.starSections));
+//				
 				trackStatusSignal.dispatch(AudioEvent.TRACK_ANALYSIS_COMPLETE);
 			}
 		}

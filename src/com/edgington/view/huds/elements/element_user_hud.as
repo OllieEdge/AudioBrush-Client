@@ -2,6 +2,9 @@ package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.FacebookConstants;
+	import com.edgington.constants.SoundConstants;
+	import com.edgington.control.Control;
+	import com.edgington.model.SoundManager;
 	import com.edgington.model.calculators.LevelCalculator;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.GiftData;
@@ -25,7 +28,7 @@ package com.edgington.view.huds.elements
 		private var barBackground:ui_main_menu_bar_background;
 		private var profilePicture:element_profile_picture;
 		
-		private var credits:ui_credits_box;
+		private var credits:credits_box;
 		
 		private var level:ui_level_box;
 		
@@ -96,7 +99,7 @@ package com.edgington.view.huds.elements
 			level.bar.scaleX = LevelCalculator.getNextLevelPercentage(UserData.getInstance().userProfile.xp) * 0.01;
 			level.y = Math.max(barBackground.height - level.height*.5, DynamicConstants.BUTTON_SPACING);
 			
-			credits = new ui_credits_box();
+			credits = new credits_box();
 			credits.height = profilePicture.height*buttonPercentageScale;
 			credits.scaleX = credits.scaleY;
 			credits.txt_label.text = String(UserData.getInstance().userProfile.credits);
@@ -321,28 +324,33 @@ package com.edgington.view.huds.elements
 		}
 		
 		private function handleMouseDown(e:MouseEvent):void{
-			e.currentTarget.gotoAndStop(2);
+			if(!Control.disableMouse){
+				e.currentTarget.gotoAndStop(2);
+			}
 		}
 		private function handleMouseUp(e:MouseEvent):void{
-			e.currentTarget.gotoAndStop(1);
-			switch(e.currentTarget){
-				case credits:
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.PURCHASES;
-					break;
-				case inbox:
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_INBOX;
-					break;
-				case store:
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.PURCHASES;
-					break;
-				case settings:
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_SETTINGS;
-					break;
-				case achievements:
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_ACHIEVEMENTS;
-					break;
+			if(!Control.disableMouse){
+				SoundManager.getInstance().loadAndPlaySFX(SoundConstants.SFX_BUTTON_CLICK, "", 1);
+				e.currentTarget.gotoAndStop(1);
+				switch(e.currentTarget){
+					case credits:
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.PURCHASES;
+						break;
+					case inbox:
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_INBOX;
+						break;
+					case store:
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.PURCHASES;
+						break;
+					case settings:
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_SETTINGS;
+						break;
+					case achievements:
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_ACHIEVEMENTS;
+						break;
+				}
+				currentHudSignal.dispatch();
 			}
-			currentHudSignal.dispatch();
 		}
 		private function handleMouseOut(e:MouseEvent):void{
 			e.currentTarget.gotoAndStop(1);
@@ -418,6 +426,26 @@ package com.edgington.view.huds.elements
 			}
 			
 			barBackground = null;
+			
+			
+			profilePicture = null;
+			
+			credits = null;
+			
+			level = null;
+			
+			inbox = null;
+			inbox_badge = null;
+			
+			store = null;
+			settings = null;
+			
+			achievements = null;
+			
+			currentHudSignal = null;
+			
+			tweens = null;
+			
 		}
 	}
 }

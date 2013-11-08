@@ -1,5 +1,6 @@
 package com.edgington.view.huds.elements
 {
+	import com.adobe.ane.productStore.Product;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.ProductConstants;
 	import com.edgington.model.events.ButtonEvent;
@@ -11,12 +12,13 @@ package com.edgington.view.huds.elements
 	import com.greensock.easing.Back;
 	import com.greensock.easing.Linear;
 	import com.greensock.easing.Quad;
-	import com.milkmangames.nativeextensions.ios.StoreKitProduct;
 	
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.globalization.CurrencyFormatter;
+	import flash.system.Capabilities;
 	import flash.text.TextFieldAutoSize;
 	
 	import org.osflash.signals.Signal;
@@ -47,11 +49,11 @@ package com.edgington.view.huds.elements
 		
 		private var buttonOption:String;
 		
-		public var purchaseData:StoreKitProduct;
+		public var purchaseData:Product;
 		
 		private var purchaseIcon:MovieClip;
 		
-		public function element_purchaseButton(purchaseData:StoreKitProduct, _buttonOption:String, setWidth:int)
+		public function element_purchaseButton(purchaseData:Product, _buttonOption:String, setWidth:int)
 		{
 			super();
 			this.purchaseData = purchaseData;
@@ -62,14 +64,20 @@ package com.edgington.view.huds.elements
 			this.addChild(button);
 			buttonSignal = new Signal();
 			
-			button.txt_container.txt_title.text = gettext("purchase_menu_"+purchaseData.productId+"_title");
+			button.txt_container.txt_title.text = gettext("purchase_menu_"+purchaseData.identifier+"_title");
 			button.txt_container.txt_title.autoSize = TextFieldAutoSize.LEFT;
-			button.txt_container.txt_description.text = gettext("purchase_menu_"+purchaseData.productId+"_description");
+			button.txt_container.txt_description.text = gettext("purchase_menu_"+purchaseData.identifier+"_description");
 			button.txt_container.txt_description.autoSize = TextFieldAutoSize.LEFT;
-			button.txt_container.txt_saving.text = gettext("purchase_menu_"+purchaseData.productId+"_saving");
+			button.txt_container.txt_saving.text = gettext("purchase_menu_"+purchaseData.identifier+"_saving");
 			button.txt_container.txt_saving.autoSize = TextFieldAutoSize.RIGHT;
 			
-			button.txt_container.txt_price.text = purchaseData.localizedPrice;
+			var local:String = purchaseData.priceLocale.split("@")[0];
+			var currencyCode:String = purchaseData.priceLocale.split("=")[1];
+			var cf:CurrencyFormatter = new CurrencyFormatter(local);
+			cf.formattingWithCurrencySymbolIsSafe(currencyCode);
+			
+			
+			button.txt_container.txt_price.text = cf.format(purchaseData.price, true);
 			button.txt_container.txt_price.autoSize = TextFieldAutoSize.RIGHT;
 			
 			setWidth = (setWidth*(1/DynamicConstants.BUTTON_PURCHASE_SCALE));
@@ -79,7 +87,7 @@ package com.edgington.view.huds.elements
 			button.txt_container.txt_price.x = setWidth - button.scaler.x - button.txt_container.txt_price.textWidth - PADDING;
 			button.txt_container.txt_saving.x = setWidth - button.scaler.x - button.txt_container.txt_saving.textWidth - PADDING;
 			
-			switch(purchaseData.productId){
+			switch(purchaseData.identifier){
 				case ProductConstants.ADDITIONAL_CREDITS_25:
 					purchaseIcon = new ui_purchase_icon_small();
 					break;
@@ -88,9 +96,6 @@ package com.edgington.view.huds.elements
 					break;
 				case ProductConstants.ADDITIONAL_CREDITS_310:
 					purchaseIcon = new ui_purchase_icon_large();
-					break;
-				case ProductConstants.ADDITIONAL_UNLIMITED:
-					purchaseIcon = new ui_purchase_icon_unlimited();
 					break;
 			}
 			

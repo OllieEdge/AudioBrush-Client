@@ -11,6 +11,7 @@ package com.greensock.loading {
 	
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
+	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 
@@ -298,7 +299,12 @@ package com.greensock.loading {
 		override protected function _initHandler(event:Event):void {
 			_determineScriptAccess();
 			if (!_scriptAccessDenied) {
-				_content = Bitmap(_loader.content);
+				try{
+					_content = Bitmap(_loader.content);
+				}
+				catch(e:Error){
+					_content = Bitmap(MovieClip(_loader.content).getChildAt(0));
+				}
 				_content.smoothing = Boolean(this.vars.smoothing != false);
 			} else {
 				_content = _loader;

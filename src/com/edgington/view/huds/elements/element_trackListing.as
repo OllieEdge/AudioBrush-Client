@@ -2,7 +2,9 @@ package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.SoundConstants;
 	import com.edgington.control.Control;
+	import com.edgington.model.SoundManager;
 	import com.edgington.model.calculators.PopulatiryCalculator;
 	import com.edgington.net.TrackData;
 	import com.edgington.types.DeviceTypes;
@@ -235,6 +237,7 @@ package com.edgington.view.huds.elements
 		
 		private function trackSelected(e:MouseEvent):void{
 			if(!isScrolling){
+				SoundManager.getInstance().loadAndPlaySFX(SoundConstants.SFX_OPTION_SELECT, "", 1);
 				for(var i:int = 0; i < trackListings.length; i++){
 					trackListings[i].clip.removeEventListener(MouseEvent.MOUSE_DOWN, trackDown);
 					trackListings[i].clip.removeEventListener(MouseEvent.MOUSE_UP, trackSelected);

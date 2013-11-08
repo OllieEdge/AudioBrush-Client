@@ -5,6 +5,7 @@ package com.edgington.view.huds
 	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.types.HandDirectionType;
+	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.huds.base.AbstractHud;
 	import com.edgington.view.huds.base.IAbstractHud;
@@ -42,12 +43,16 @@ package com.edgington.view.huds
 		
 		public function addListeners():void
 		{
+			LOG.createCheckpoint("MENU: Hand Selection");
+			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			superRemoveSignal.addOnce(readyForRemoval);
 		}
 		
 		public function setupVisuals():void
 		{
+			
+			
 			message = new element_handSelection();
 			message.x = DynamicConstants.SCREEN_WIDTH*.5 - message.width*.5;
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){

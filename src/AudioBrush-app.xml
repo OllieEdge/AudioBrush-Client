@@ -27,7 +27,7 @@
 	<!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade. 
 	Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
 	An updated version of application must have a versionNumber value higher than the previous version. Required for namespace >= 2.5 . -->
-	<versionNumber>1.0.2</versionNumber>
+	<versionNumber>1.0.0</versionNumber>
 		         
 	<!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. Optional. -->
 	<!-- <versionLabel></versionLabel> -->
@@ -311,9 +311,9 @@
         <Entitlements>
 			<![CDATA[
 			<key>get-task-allow</key>
-			<true/>
+			<false/>
 			<key>aps-environment</key>
-			<string>development</string>
+			<string>production</string>
 			<key>application-identifier</key>
 			<string>D6U5J2B65E.com.edgington.audiobrush</string>
 			<key>keychain-access-groups</key>
@@ -331,6 +331,8 @@
 				<string>1</string>
 				<string>2</string>
 			</array>
+			<key>MinimumOSVersion</key>
+				<string>7.0</string>
 			<key>FacebookAppID</key>
 				<string>243433722461339</string>
 				<key>CFBundleURLTypes</key>
@@ -349,12 +351,13 @@
 <extensions>
         
     	<extensionID>com.milkmangames.extensions.GoViral</extensionID>
-   		<extensionID>com.milkmangames.extensions.StoreKit</extensionID>
-    	<extensionID>com.haitrinh.NativeMediaPicker.NativeMediaPicker</extensionID>
 	    <extensionID>com.edgington.testflight</extensionID>
-	    
-	    
     	<extensionID>com.milkmangames.extensions.EasyPush</extensionID>
-    	<extensionID>com.edgington.testflightandroid</extensionID>
+   		<extensionID>com.adobe.ane.productStore</extensionID>
+    
+    <extensionID>com.adobe.ane.gameCenter</extensionID>
+    <extensionID>com.edgington.ipodlibrary</extensionID>
+    <extensionID>com.milkmangames.extensions.StoreKit</extensionID>
+        <extensionID>com.edgington.testflightandroid</extensionID>
     </extensions>
 </application>

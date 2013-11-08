@@ -1,6 +1,6 @@
 package com.edgington.model
 {
-	import com.edgington.NativeMediaManager.NativeMediaVO;
+	import com.edgington.ipodlibrary.ILMediaItem;
 	import com.edgington.util.debug.LOG;
 
 	public class SearchProxy
@@ -11,7 +11,7 @@ package com.edgington.model
 		public var currentSearch:String;
 		public var isSearch:Boolean = false;
 		
-		public var currentTrack:NativeMediaVO
+		public var currentTrack:ILMediaItem
 		
 		public function SearchProxy()
 		{

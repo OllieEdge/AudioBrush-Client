@@ -3,10 +3,12 @@ package com.edgington.view.huds.elements
 	import com.doitflash.consts.Easing;
 	import com.doitflash.consts.Orientation;
 	import com.doitflash.consts.ScrollConst;
+	import com.doitflash.events.ScrollEvent;
 	import com.doitflash.utils.scroll.TouchScroll;
 	import com.edgington.constants.AchievementConstants;
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.control.Control;
 	import com.edgington.net.AchievementData;
 	import com.edgington.types.DeviceTypes;
 	import com.edgington.util.localisation.gettext;
@@ -16,6 +18,7 @@ package com.edgington.view.huds.elements
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.geom.Point;
 	
 	public class element_achievementsListing extends Sprite
 	{
@@ -33,6 +36,8 @@ package com.edgington.view.huds.elements
 		private var _scroller:TouchScroll;
 		
 		private var totalCompletion:int = 0;
+		
+		private var origin:Point;
 		
 		//this holds the visible height of this element ( the actuall height may be more depending on the amount of achievements listed.
 		public var _height:int;
@@ -95,6 +100,7 @@ package com.edgington.view.huds.elements
 			loadingIcon = null;
 			
 			achievements = AchievementData.getInstance().userAchievements.concat();
+			var completed:int = 0;
 			
 			
 			temporaryMask = new Sprite();
@@ -108,6 +114,7 @@ package com.edgington.view.huds.elements
 			achievementsContainer = new Sprite();
 			for(var i:int = 0; i < achievements.length; i++){
 				var itemBackground:Sprite = new Sprite();
+				itemBackground.name = "achievement_"+i;
 				if(i % 2 == 0){
 					itemBackground.graphics.beginFill(Constants.NORMAL_WHITE_COLOUR);
 				}
@@ -122,6 +129,9 @@ package com.edgington.view.huds.elements
 				achievement.scaleX = achievement.scaleY;
 				achievement.x = 3*DynamicConstants.DEVICE_SCALE;
 				achievement.y = 3*DynamicConstants.DEVICE_SCALE;
+				if(achievements[i].progress == 100){
+					completed++;
+				}
 				achievement.progress.gotoAndStop((Math.floor(achievement.progress.totalFrames*(achievements[i].progress*.01)))+1);
 				achievement.progress.txt_percentage.text = gettext("user_hud_level_percentage", {percentage:achievements[i].progress});
 				achievement.txt_title.text = achievements[i].name;
@@ -152,13 +162,21 @@ package com.edgington.view.huds.elements
 					itemBackground.addChild(achievementReward);
 				}
 				itemBackground.y = (i*itemBackground.height);
+				itemBackground.cacheAsBitmap = true;
 				itemBackground.addChild(achievement);
 				
 				achievementsContainer.addChild(itemBackground);
 			}
-			achievementsContainer.x = achievementsMainBackground.x + DynamicConstants.BUTTON_SPACING;
-			achievementsContainer.y = achievementsMainBackground.y + DynamicConstants.BUTTON_SPACING;
+			achievementsContainer.x = achievementsMainBackground.x + DynamicConstants.BUTTON_SPACING+10;
+			achievementsContainer.y = achievementsMainBackground.y + DynamicConstants.BUTTON_SPACING+10;
 			achievementsContainer.mask = temporaryMask;
+			
+			origin = new Point(achievementsMainBackground.x + DynamicConstants.BUTTON_SPACING, achievementsMainBackground.y + DynamicConstants.BUTTON_SPACING);
+			
+			totalCompletion = Math.floor((completed/achievements.length)*100);
+			
+			achievementsTitle.txt_percentage_complete.text = gettext("achievements_screen_complete_percentage", {percentage:totalCompletion});
+			achievementsTitle.ui_progressbar.bar.scaleX = totalCompletion*.01;
 			
 			this.addChild(achievementsContainer);
 			this.addChild(temporaryMask);
@@ -176,7 +194,7 @@ package com.edgington.view.huds.elements
 			{
 				_scroller =  new TouchScroll();
 			}
-			
+		
 			//------------------------------------------------------------------------------ set Scroller
 			_scroller.maskContent = achievementsContainer;
 			_scroller.maskWidth = achievementsMainBackground.width - (DynamicConstants.BUTTON_SPACING*2);
@@ -195,13 +213,15 @@ package com.edgington.view.huds.elements
 			_scroller.mouseWheelSpeed = 2;
 			_scroller.isMouseScroll = false;
 			_scroller.isTouchScroll = true;
-			_scroller.bitmapMode = ScrollConst.STRONG;
+			_scroller.bitmapMode = ScrollConst.WEAK;
 			; // use it for smoother scrolling, special when working on mobile devices, accepted values: "normal", "weak", "strong"
 			_scroller.isStickTouch = false;
 			_scroller.holdArea = 10;
 			
 			_scroller.x = achievementsMainBackground.x + DynamicConstants.BUTTON_SPACING;
 			_scroller.y = achievementsMainBackground.y + DynamicConstants.BUTTON_SPACING;
+			
+			origin = new Point(DynamicConstants.SCREEN_MARGIN*2, achievementsMainBackground.y);
 			
 			this.addChild(_scroller);
 		}

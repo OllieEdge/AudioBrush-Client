@@ -27,7 +27,7 @@ package com.edgington.view.model
 			// ordered from specific (iPhone1,1) to general (iPhone)
 				switch(DynamicConstants.SCREEN_WIDTH){
 					case 1136://iPhone 5 - iPhone 5S/5C
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
+						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPHONE;
 						DynamicConstants.DEVICE_NAME = Constants.IPHONE_5PLUS;
 						
 						DynamicConstants.DEVICE_SCALE = 1;
@@ -63,7 +63,7 @@ package com.edgington.view.model
 						return Constants.IPAD_2;
 						break;
 					case 960://iPhone 4 - iPhone 4S
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
+						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPHONE;
 						DynamicConstants.DEVICE_NAME = Constants.IPHONE_4;
 						
 						DynamicConstants.DEVICE_SCALE = 1;
@@ -81,7 +81,7 @@ package com.edgington.view.model
 						return Constants.IPHONE_4S;
 						break;
 					case 480://iPhone 3GS - not compatible on iOS 7
-						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPAD;
+						DynamicConstants.DEVICE_TYPE = DeviceTypes.IPHONE;
 						DynamicConstants.DEVICE_NAME = Constants.IPHONE_3GS;
 						
 						DynamicConstants.DEVICE_SCALE = 0.5;

@@ -19,6 +19,7 @@ package com.edgington.view.huds
 	import com.edgington.view.huds.elements.element_mainButton;
 	import com.edgington.view.huds.elements.element_mainMessage;
 	
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
@@ -55,6 +56,8 @@ package com.edgington.view.huds
 		}
 		
 		public function addListeners():void{
+			LOG.createCheckpoint("MENU: Facebook Login");
+			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			superRemoveSignal.addOnce(readyForRemoval);
 			facebookStartupSignal = new Signal();
@@ -86,11 +89,11 @@ package com.edgington.view.huds
 					UserData.getInstance().getUser();
 					break;
 				case FacebookEvent.FACEBOOK_REQUIRES_LOGIN:
-					loginMessage.changeMessage(gettext("facebook_sign_in_message"), false);
+					loginMessage.changeMessage(gettext("facebook_sign_in_message"), false, new ui_message_image_facebook() as MovieClip);
 					loadCompleteAddButtons();
 					break;
 				case FacebookEvent.FACEBOOK_LOGIN_FAILED:
-					loginMessage.changeMessage(errorMessage);
+					loginMessage.changeMessage(errorMessage, false, new ui_message_image_error() as MovieClip);
 					addDismissButton();
 					break;
 				case FacebookEvent.FACEBOOK_NO_FACEBOOK:
@@ -156,13 +159,11 @@ package com.edgington.view.huds
 		private function handleInteraction(buttonOption:String):void{
 			switch(buttonOption){
 				case buttonOptions[0]:
-					LOG.createCheckpoint("Facebook Logged In");
 					loginMessage.changeMessage(gettext("facebook_connecting"), true);
 					cleanButtons(false);
 					facebookStartupCheck.loginToFacebook();
 					break;
 				case buttonOptions[1]:
-					LOG.createCheckpoint("No Facebook Used");
 					var fbProfile:FacebookProfileVO = new FacebookProfileVO();
 					fbProfile.name = "Guest";
 					fbProfile.id = null;

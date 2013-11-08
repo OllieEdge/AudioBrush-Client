@@ -3,6 +3,7 @@ package com.edgington.view.huds
 	import com.edgington.NativeMediaManager.NativeMediaVO;
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.ipodlibrary.ILMediaItem;
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.calculators.LevelCalculator;
 	import com.edgington.net.HighscoresGetData;
@@ -47,7 +48,7 @@ package com.edgington.view.huds
 		
 		private var loading:ui_loading;
 		
-		private var trackDetails:NativeMediaVO;
+		private var trackDetails:ILMediaItem;
 		
 		private var highscoresData:HighscoresGetData;
 		private var highscores:Vector.<ServerScoreVO>;
@@ -90,7 +91,7 @@ package com.edgington.view.huds
 			tabs = new Vector.<String>;
 			tabs.push(gettext("highscores_tab_global"), gettext("highscores_tab_friends"));
 			tabDescriptions = new Vector.<String>;
-			tabDescriptions.push(gettext("highscores_tab_global_description", {topnumber:amountOfListings, track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artistName}), gettext("highscores_tab_friends_description", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artistName}));
+			tabDescriptions.push(gettext("highscores_tab_global_description", {topnumber:amountOfListings, track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artist}), gettext("highscores_tab_friends_description", {track:GameProxy.INSTANCE.currentTrackDetails.trackTitle, artist:GameProxy.INSTANCE.currentTrackDetails.artist}));
 			
 			loading = new ui_loading();
 			tabContainer = new element_tabContainer(tabs, tabChangedSignal, tabDescriptions);
@@ -360,7 +361,6 @@ package com.edgington.view.huds
 		}
 		
 		private function destroy(e:Event):void{
-			LOG.createCheckpoint("Highscores Viewed");
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			tabChangedSignal.removeAll();
 			tabChangedSignal = null;

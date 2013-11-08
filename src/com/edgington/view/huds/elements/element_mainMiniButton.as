@@ -1,6 +1,9 @@
 package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.SoundConstants;
+	import com.edgington.control.Control;
+	import com.edgington.model.SoundManager;
 	import com.edgington.model.events.ButtonEvent;
 	import com.edgington.view.huds.interfaces.IAudioBrushButton;
 	import com.greensock.TweenLite;
@@ -89,14 +92,17 @@ package com.edgington.view.huds.elements
 		}
 		
 		private function mouseUp(e:MouseEvent):void{
-			if(canTween){
-				canTween = false;
-				cleanTween(scalerTween);
-				cleanTween(textTween);
-				rotateTween = TweenLite.to(button.rotater.getChildAt(0), 0.6, {scaleX:2, scaleY:2, alpha:0, ease:Quad.easeIn});
-				scalerTween = TweenLite.to(button.scaler, 0.6, {scaleX:0, ease:Back.easeIn, onComplete:cleanButton});
-				textTween = TweenLite.to(button.txt_label, 0.2, {alpha:0});
-				buttonSignal.dispatch(ButtonEvent.BUTTON_PRESSED, buttonOption);
+			if(!Control.disableMouse){
+				if(canTween){
+					SoundManager.getInstance().loadAndPlaySFX(SoundConstants.SFX_BUTTON_CLICK, "", 1);
+					canTween = false;
+					cleanTween(scalerTween);
+					cleanTween(textTween);
+					rotateTween = TweenLite.to(button.rotater.getChildAt(0), 0.6, {scaleX:2, scaleY:2, alpha:0, ease:Quad.easeIn});
+					scalerTween = TweenLite.to(button.scaler, 0.6, {scaleX:0, ease:Back.easeIn, onComplete:cleanButton});
+					textTween = TweenLite.to(button.txt_label, 0.2, {alpha:0});
+					buttonSignal.dispatch(ButtonEvent.BUTTON_PRESSED, buttonOption);
+				}
 			}
 		}
 		

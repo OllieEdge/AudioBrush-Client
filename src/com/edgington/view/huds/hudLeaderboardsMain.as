@@ -2,6 +2,7 @@ package com.edgington.view.huds
 {
 	import com.edgington.NativeMediaManager.NativeMediaVO;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.ipodlibrary.ILMediaItem;
 	import com.edgington.model.SearchProxy;
 	import com.edgington.net.HighscoresTrackListings;
 	import com.edgington.net.events.HighscoreEvent;
@@ -84,6 +85,7 @@ package com.edgington.view.huds
 		
 		public function addListeners():void
 		{
+			LOG.createCheckpoint("MENU: Leaderboards");
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			superRemoveSignal.addOnce(readyForRemoval);
 			tabChangedSignal = new Signal();
@@ -99,7 +101,6 @@ package com.edgington.view.huds
 		
 		public function setupVisuals():void
 		{
-			LOG.createCheckpoint("Viewed Leaderboards");
 			tabLabels = new Vector.<String>;
 			tabDescriptions = new Vector.<String>;
 			tabLabels.push(gettext("highscores_tab_latest_popular"), gettext("highscores_tab_latest"), gettext("highscores_tab_latest_friends"));
@@ -177,18 +178,21 @@ package com.edgington.view.huds
 				case HighscoreEvent.TRACK_LISTING_POPULAR:
 						popularTrackListing = tracks.concat();
 						if(currentTab == 0){
+							LOG.createCheckpoint("MENU: Leaderboards - Popular Tab");
 							addTrackListing();
 						}
 					break;
 				case HighscoreEvent.TRACK_LISTING_LATEST:
 						latestTrackListing = tracks.concat();
 						if(currentTab == 1){
+							LOG.createCheckpoint("MENU: Leaderboards - Latest Tab");
 							addTrackListing();
 						}
 					break;
 				case HighscoreEvent.TRACK_LISTING_FRIENDS:
 						freindTrackListing = tracks.concat();
 						if(currentTab == 2){
+							LOG.createCheckpoint("MENU: Leaderboards - Friends Tab");
 							addTrackListing();
 						}
 					break;
@@ -309,7 +313,6 @@ package com.edgington.view.huds
 					cleanButtons();
 					break;
 				case buttonOptions[3]:
-					LOG.createCheckpoint("Searched for Artist/Track");
 					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.HIGHSCORES_IPHONE_SEARCH;
 					cleanButtons();
 					break;
@@ -327,8 +330,8 @@ package com.edgington.view.huds
 		}
 		
 		private function trackSelected(trackDetails:TrackListingVO):void{
-			var trackDetailsVO:NativeMediaVO = new NativeMediaVO();
-			trackDetailsVO.artistName = trackDetails.artist;
+			var trackDetailsVO:ILMediaItem = new ILMediaItem();
+			trackDetailsVO.artist = trackDetails.artist;
 			trackDetailsVO.trackTitle = trackDetails.trackName;
 			SearchProxy.getInstance().currentTrack = trackDetailsVO;
 			

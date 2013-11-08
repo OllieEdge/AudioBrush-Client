@@ -26,6 +26,4 @@ package com.edgington.types
 			NORMAL_THEME.themeName = gettext(NORMAL_THEME.themeID+"_name");
 		}
 	}
-	
-	
 }

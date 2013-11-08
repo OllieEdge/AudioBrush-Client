@@ -87,6 +87,7 @@ package com.edgington.view.huds
 					bitmaps[i].y += Math.round((onScreenState.y-lastPositionY)*1.2);
 				}
 				if(onScreenState.x == lastPositionX && onScreenState.y == lastPositionY){
+					LOG.debug("Background Stopped Moving");
 					isMoving = false;
 				}
 				else{

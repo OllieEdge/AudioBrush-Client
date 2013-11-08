@@ -29,6 +29,8 @@ package com.edgington.constants
 		
 		public static var IS_CONNECTED:Boolean = true;
 		
+		public static var DISABLE_RELOAD:Boolean = true;
+		
 		public static var SERVER_TIME_DIFFERENCE:Number = 0;
 		
 		public static function isMobileOS():Boolean{
@@ -46,7 +48,7 @@ package com.edgington.constants
 			}
 			str = str.substr(0, 1);
 			switch(str.toLowerCase()){
-				case "win":
+				case "w":
 					return Constants.OS_WINDOWS;
 					break;
 				case "m":
@@ -55,7 +57,7 @@ package com.edgington.constants
 				case "l":
 					return Constants.OS_ANDRIOD;
 					break;
-				case "and":
+				case "a":
 					return Constants.OS_ANDRIOD;
 					break;
 				case "i":
@@ -74,5 +76,11 @@ package com.edgington.constants
 		public static function isDebug():Boolean{
 			return new Error().getStackTrace().search(/:[0-9]+\]$/m) > -1;
 		}
+		
+		
+		//for imports
+		theme_normal_thumb;
+		theme_ice_thumb;
+		theme_fire_thumb;
 	}
 }

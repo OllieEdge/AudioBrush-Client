@@ -42,6 +42,7 @@ package com.edgington.view.huds
 		
 		public function setupVisuals():void
 		{
+			DynamicConstants.DISABLE_RELOAD = true;
 			resumeButton = new element_mainButton(gettext("pause_menu_resume_button"), buttonOptions[1]);
 			resumeButton.x = DynamicConstants.SCREEN_WIDTH*.5 - resumeButton.width*.5;
 			resumeButton.y = DynamicConstants.SCREEN_HEIGHT*.5 - resumeButton.height;
@@ -78,6 +79,7 @@ package com.edgington.view.huds
 		}
 		
 		private function destroy(e:Event):void{
+			DynamicConstants.DISABLE_RELOAD = false;
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			while(this.numChildren > 0){
 				this.removeChildAt(0);

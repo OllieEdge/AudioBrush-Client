@@ -6,6 +6,7 @@ package com.edgington.view.huds
 	import com.edgington.net.events.TournamentEvent;
 	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.GameStateTypes;
+	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.huds.base.AbstractHud;
 	import com.edgington.view.huds.base.IAbstractHud;
@@ -41,6 +42,7 @@ package com.edgington.view.huds
 		
 		public function addListeners():void
 		{
+			LOG.createCheckpoint("MENU: Download Tournament");
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			superRemoveSignal.addOnce(readyForRemoval);
 			TournamentAssetsManager.getInstance().downloadSignal.add(handleDownloadComplete);

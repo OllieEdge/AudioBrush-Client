@@ -4,6 +4,7 @@ package com.edgington.view.huds.elements
 	import com.edgington.net.TournamentData;
 	import com.edgington.net.events.TournamentEvent;
 	import com.edgington.util.NumberFormat;
+	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.TournamentVO;
 	
@@ -17,11 +18,16 @@ package com.edgington.view.huds.elements
 		
 		private var tournamentData:TournamentData;
 		
+		private var tournamentIndex:int;
 		private var tournamentVO:TournamentVO;
 		
-		public function element_tournamentEntryHud()
+		private var scoreFound:Boolean = false;
+		
+		public function element_tournamentEntryHud(tournamentIndex:int)
 		{
 			super();
+			
+			this.tournamentIndex = tournamentIndex;
 			
 			hud = new ui_tournament_entry();
 			hud.details.visible = false;
@@ -35,11 +41,11 @@ package com.edgington.view.huds.elements
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 		}
 		
-		public function displayTournamentData():void{
+		public function displayTournamentData(currentIndex:int):void{
 			tournamentData = TournamentData.getInstance();
-			tournamentVO = tournamentData.currentActiveTournament;
+			tournamentVO = tournamentData.currentActiveTournaments[tournamentIndex];
 			
-			new element_artwork(hud.picture_artist, tournamentData.currentActiveTournament.ARTWORK_URL);
+			new element_artwork(hud.picture_artist, tournamentData.currentActiveTournaments[tournamentIndex].ARTWORK_URL);
 			
 			hud.details.txt_trackTitle.text = tournamentVO.TRACK;
 			hud.details.txt_artist.text = tournamentVO.ARTIST;
@@ -61,24 +67,37 @@ package com.edgington.view.huds.elements
 		private function leaderHandle(eventType:String):void{
 			switch(eventType){
 				case TournamentEvent.TOURNAMENT_LEADER_RECEIVED:
-					if(tournamentData.currentLeader.userId != null){
-						hud.details.txt_player_name.text = tournamentData.currentLeader.userId.username;
-						hud.details.txt_score.text = NumberFormat.addThreeDigitCommaSeperator(int(tournamentData.currentLeader.score));
-						new element_profile_picture(hud.details.picture_user, tournamentData.currentLeader.userId.fb_id);
+					var updated:Boolean = false;
+					for(var i:int = 0; i < tournamentData.currentLeader.length; i++){
+						if(tournamentData.currentLeader[i].trackkey != null && tournamentData.currentLeader[i].trackkey != ""){
+							var str:Array = String(tournamentData.currentLeader[i].trackkey).split("_");
+							var id:String = str[1];
+							LOG.debug(str);
+							LOG.debug(tournamentVO.ID);
+							if(id == tournamentVO.ID){
+								hud.details.txt_player_name.text = tournamentData.currentLeader[i].userId.username;
+								hud.details.txt_score.text = NumberFormat.addThreeDigitCommaSeperator(int(tournamentData.currentLeader[i].score));
+								new element_profile_picture(hud.details.picture_user, tournamentData.currentLeader[i].userId.fb_id);
+								updated = true;		
+								scoreFound = true;
+							}
+						}
 					}
-					else{
+					if(!updated && !scoreFound){
 						hud.details.txt_player_name.text = gettext("tournament_entry_no_leader");
 						hud.details.txt_score.text = 0;
 					}
+					
 					break;
 				case TournamentEvent.TOURNAMENT_LEADER_FAILED:
 					hud.details.txt_player_name.text = gettext("tournament_entry_error_finding_leader");
 					break;
 			}
-			tournamentData.responceSignal.remove(leaderHandle);
+
 		}
 		
 		private function destroy(e:Event):void{
+			tournamentData.responceSignal.remove(leaderHandle);
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			if(tournamentData != null){
 				tournamentData.responceSignal.remove(leaderHandle);

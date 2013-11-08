@@ -1,8 +1,10 @@
 package com.edgington.view.game.analysis
 {
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.SoundConstants;
 	import com.edgington.media.MediaManager;
-	import com.edgington.model.audio.AudioMainModel;
+	import com.edgington.model.SoundManager;
+	import com.edgington.model.audio.AudioModel;
 	import com.edgington.model.events.AudioEvent;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.TournamentData;
@@ -14,11 +16,13 @@ package com.edgington.view.game.analysis
 	import com.edgington.view.huds.base.IAbstractHud;
 	import com.edgington.view.huds.elements.element_mainButton;
 	import com.edgington.view.huds.elements.element_mainMessage;
-	import com.greensock.TweenLite;
 	
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.net.SharedObject;
+	import flash.utils.Timer;
 	
 	import org.osflash.signals.Signal;
 	
@@ -27,13 +31,14 @@ package com.edgington.view.game.analysis
 		
 		private var progress:ui_LoadAndAnalysisProgress;
 		
-		private var audioManager:AudioMainModel;
+		private var audioManager:AudioModel;
 		
 		private var readyToRemoveSignal:Signal;
 		
 		private var progressStepCount:int = -1;
 		
 		private var didYouKnow:element_mainMessage;
+		private var changeMessageTimer:Timer;
 		
 		private var loadAnalytics:SharedObject = SharedObject.getLocal("ab_loading");
 		
@@ -44,25 +49,22 @@ package com.edgington.view.game.analysis
 		
 		public function ViewLoadAndAnalysisProgress(removeSignal:Signal)
 		{
+			
+			
 			super();
 			if(loadAnalytics.data.didYouKnow == null){
-				loadAnalytics.data.didYouKnow = 4;
+				loadAnalytics.data.didYouKnow = 0;
 				loadAnalytics.flush();
 			}
 			loadAnalytics.data.didYouKnow++;
-			if(loadAnalytics.data.didYouKnow == 5){
+			if(loadAnalytics.data.didYouKnow == 14){
 				loadAnalytics.data.didYouKnow = 1;
 			}
 			loadAnalytics.flush();
 			
-			readyToRemoveSignal = removeSignal;
+			changeMessageTimer = new Timer(11000, 0);
 			
-			if(TournamentData.getInstance().isThisGameATournamentGame){
-				AudioMainModel.getInstance().selectTrackToLoad(true);
-			}
-			else{
-				AudioMainModel.getInstance().selectTrackToLoad();
-			}
+			readyToRemoveSignal = removeSignal;
 			
 			addListeners();
 			
@@ -70,16 +72,31 @@ package com.edgington.view.game.analysis
 			
 			addElements();
 			
+			if(TournamentData.getInstance().isThisGameATournamentGame){
+				audioManager.loadNewTrack("", true);
+			}
+			else if(audioManager.isTutorial){
+				audioManager.loadNewTrack("", false, true);
+			}
+			else{
+				audioManager.loadNewTrack(audioManager.currentTrackDetails.ipodID);	
+			}
 			
+			if(!audioManager.isTutorial){ 
+				SoundManager.getInstance().loadAndPlaySound(SoundConstants.BGM_LOADING, SoundConstants.BGM_LOADING_VOLUME);
+			}
 		}
 		
 		public function addListeners():void{
+			LOG.createCheckpoint("MENU: Track Loading");
+			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
-			audioManager = AudioMainModel.getInstance();
+			audioManager = AudioModel.getInstance();
 			//TODO can be removed when there is a menu at the end of a track
 			audioManager.trackStatusSignal.add(trackProgress);
 			//audioManager.trackStatusSignal.add(trackProgress);
 			superRemoveSignal.addOnce(readyForRemoval);
+			changeMessageTimer.addEventListener(TimerEvent.TIMER, changeDidYouKnowMessage);
 		}
 		
 		public function setupVisuals():void{
@@ -94,7 +111,7 @@ package com.edgington.view.game.analysis
 				progress.y = DynamicConstants.SCREEN_MARGIN;
 			}
 			
-			didYouKnow = new element_mainMessage(gettext("menu_loading_did_you_know_"+loadAnalytics.data.didYouKnow));
+			didYouKnow = new element_mainMessage(gettext("menu_loading_did_you_know_"+loadAnalytics.data.didYouKnow), false, getHintImage());
 			didYouKnow.scaleX = didYouKnow.scaleY = DynamicConstants.MESSAGE_SCALE;
 			didYouKnow.x = DynamicConstants.SCREEN_WIDTH*.5 - didYouKnow.width*.5;
 			didYouKnow.y = DynamicConstants.SCREEN_HEIGHT - DynamicConstants.SCREEN_MARGIN - didYouKnow.height;
@@ -119,11 +136,12 @@ package com.edgington.view.game.analysis
 					if(progressPercentage < 0.2 && progressStepCount == 0){
 						if(audioManager.currentTrackDetails.trackTitle != null){
 							progress.txt_trackInformation.text = audioManager.currentTrackDetails.trackTitle;
-							if(audioManager.currentTrackDetails.artistName != null){
-								progress.txt_trackInformation.text += " by " + audioManager.currentTrackDetails.artistName;
+							if(audioManager.currentTrackDetails.artist != null){
+								progress.txt_trackInformation.text += " by " + audioManager.currentTrackDetails.artist;
 							}
 						}
 						didYouKnow.visible = true;
+						changeMessageTimer.start();
 						progress.txt_analising.text = gettext("menu_loading_section_1_"+Math.ceil(Math.random()*5));
 						progressStepCount++;
 					}
@@ -158,9 +176,14 @@ package com.edgington.view.game.analysis
 					progress.ui_progressbar.bar.scaleX = progressPercentage;
 					break;
 				case AudioEvent.TRACK_ANALYSIS_COMPLETE:
+					if(!audioManager.isTutorial){
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.GAME_ANALYSIS;
+					}
+					else{
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.GAME_MAIN;
+					}
 					audioManager.parser.destroy();
 					audioManager.parser = null;
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.GAME_ANALYSIS;
 					removeElements();
 					break;
 				case AudioEvent.TRACK_SELECTION_CANCELED:
@@ -176,6 +199,63 @@ package com.edgington.view.game.analysis
 					displayErrorMessage(gettext("menu_loading_error_protected"));
 					break;
 			}
+		}
+		
+		private function changeDidYouKnowMessage(e:TimerEvent):void{
+			if(didYouKnow != null){
+				loadAnalytics.data.didYouKnow++;
+				if(loadAnalytics.data.didYouKnow == 14){
+					loadAnalytics.data.didYouKnow = 1;
+				}
+				loadAnalytics.flush();
+				didYouKnow.changeMessage(gettext("menu_loading_did_you_know_"+loadAnalytics.data.didYouKnow), false, getHintImage());
+			}
+		}
+		
+		private function getHintImage():MovieClip{
+			var mc:MovieClip
+			switch(loadAnalytics.data.didYouKnow){
+				case 1:
+					mc = new ui_message_image_hint() as MovieClip;
+					break;
+				case 2:
+					mc = new ui_message_image_beats() as MovieClip;
+					break;
+				case 3:
+					mc = new ui_message_image_rogue() as MovieClip;
+					break;
+				case 4:
+					mc = new ui_message_image_headphones() as MovieClip;
+					break;
+				case 5:
+					mc = new ui_message_image_achievement() as MovieClip;
+					break;
+				case 6:
+					mc = new ui_message_image_addfriends() as MovieClip;
+					break;
+				case 7:
+					mc = new ui_message_image_hint() as MovieClip;
+					break;
+				case 8:
+					mc = new ui_message_image_bonus() as MovieClip;
+					break;
+				case 9:
+					mc = new ui_message_image_send() as MovieClip;
+					break;
+				case 10:
+					mc = new ui_message_image_hint() as MovieClip;
+					break;
+				case 11:
+					mc = new ui_message_image_beats() as MovieClip;
+					break;
+				case 12:
+					mc = new ui_message_image_hint() as MovieClip;
+					break;
+				case 13:
+					mc = new ui_message_image_multiplier() as MovieClip;
+					break;
+			}
+			return mc;
 		}
 		
 		private function displayErrorMessage(errorMessage:String):void{
@@ -213,6 +293,10 @@ package com.edgington.view.game.analysis
 		}
 		
 		private function destroy(e:Event):void{
+			changeMessageTimer.stop();
+			changeMessageTimer.removeEventListener(TimerEvent.TIMER, changeDidYouKnowMessage);
+			changeMessageTimer = null;
+			audioManager.trackStatusSignal.remove(trackProgress);
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			readyToRemoveSignal = null;
 			while(this.numChildren > 0){

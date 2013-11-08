@@ -1,11 +1,14 @@
 package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.SoundConstants;
+	import com.edgington.model.SoundManager;
 	import com.edgington.view.huds.events.TabContainerEvent;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Back;
 	import com.greensock.easing.Linear;
 	
+	import flash.display.BlendMode;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -108,6 +111,7 @@ package com.edgington.view.huds.elements
 		
 		private function tabClicked(e:MouseEvent):void{
 			if(e.currentTarget != tabs[activeTab]){
+				SoundManager.getInstance().loadAndPlaySFX(SoundConstants.SFX_TAB_SELECT, "", 1);
 				cleanTweens();
 				for(var i:int = 0; i < tabs.length; i++){
 					if(tabs[i] == e.currentTarget){

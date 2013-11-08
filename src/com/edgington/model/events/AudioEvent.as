@@ -46,6 +46,10 @@ package com.edgington.model.events
 		 * When the song file is being imported from the iOS music library, parsed with a progress (0 - 1)
 		 */
 		public static var TRACK_IMPORTING:String = "AudioEvent::TRACK_IMPORTING";
+		/**
+		 * When the song file is being imported from the iOS music library, parsed with a progress (0 - 1)
+		 */
+		public static var TRACK_IMPORTED:String = "AudioEvent::TRACK_IMPORTED";
 		
 		/**
 		 * When the song file is being analised, this will parse a progress value (0 - 1)

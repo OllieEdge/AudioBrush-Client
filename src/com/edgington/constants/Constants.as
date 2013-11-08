@@ -50,6 +50,9 @@ package com.edgington.constants
 		
 		public static const TRACK_PLAY_COST:int = 5;
 		
-		public static const BONUS_DELAY:Number = 20000;//14400000;
+		public static const BONUS_DELAY:Number = 14400000;
+		
+		
+		public static const CREDITS_PER_LEVEL:int = 2;
 	}
 }

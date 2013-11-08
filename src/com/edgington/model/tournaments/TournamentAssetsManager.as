@@ -46,7 +46,7 @@ package com.edgington.model.tournaments
 		}
 		
 		public function checkForCachedTournamentData(tournamentID:String):Boolean{
-			var cacheFolder:File = new File(CACHE_DIRECTORY + "/tournaments/" + tournamentID);	
+			var cacheFolder:File = new File(CACHE_DIRECTORY + "/audiobrush/tournaments/" + tournamentID);	
 			if(cacheFolder.isDirectory){
 				var contents:Array = cacheFolder.getDirectoryListing(); 
 				if(contents.length >= 7){
@@ -96,7 +96,7 @@ package com.edgington.model.tournaments
 		private function handleDownloadChildComplete(e:LoaderEvent):void{
 			var extension:String = e.target.url.substring(e.target.url.lastIndexOf(".")+1, e.target.url.length);
 				
-			var file:File = new File(CACHE_DIRECTORY + "/tournaments/"+ currentDownloadData.ID +"/" + currentDownloadData.ID + "." +  extension);
+			var file:File = new File(CACHE_DIRECTORY + "/audiobrush/tournaments/"+ currentDownloadData.ID +"/" + currentDownloadData.ID + "." +  extension);
 			var fileStream:FileStream = new FileStream();
 			fileStream.open(file, FileMode.WRITE);
 			fileStream.writeBytes(e.target.content, 0, e.target.content.length);

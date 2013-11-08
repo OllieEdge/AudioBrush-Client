@@ -54,7 +54,7 @@ package com.edgington.net
 			
 			var regExp:RegExp=new RegExp(/[^a-zA-Z 0-9]+|\s/g);
 			var track:String = GameProxy.INSTANCE.currentTrackDetails.trackTitle.replace(regExp, "").toLowerCase();
-			var artist:String = GameProxy.INSTANCE.currentTrackDetails.artistName.replace(regExp, "").toLowerCase();
+			var artist:String = GameProxy.INSTANCE.currentTrackDetails.artist.replace(regExp, "").toLowerCase();
 			var score:int = GameProxy.INSTANCE.score;
 			var difficulty:int = GameProxy.INSTANCE.difficulty;
 			
@@ -87,7 +87,7 @@ package com.edgington.net
 				obj.fb_id = facebookID;
 				obj.score = score;
 				obj.trackname = GameProxy.INSTANCE.currentTrackDetails.trackTitle;
-				obj.artist = GameProxy.INSTANCE.currentTrackDetails.artistName;
+				obj.artist = GameProxy.INSTANCE.currentTrackDetails.artist;
 				obj.difficulty = GameProxy.INSTANCE.difficulty;
 				obj.starrating = GameProxy.INSTANCE.starRating;
 				obj.precisestarrating = GameProxy.INSTANCE.preciseStarRating;
@@ -97,7 +97,7 @@ package com.edgington.net
 			else if(shouldPostScoreToServer){
 				localHighscore.score = score;
 				localHighscore.requiresSyncWithServer = true;
-				localHighscore.artist = GameProxy.INSTANCE.currentTrackDetails.artistName;
+				localHighscore.artist = GameProxy.INSTANCE.currentTrackDetails.artist;
 				localHighscore.track = GameProxy.INSTANCE.currentTrackDetails.trackTitle;
 				localHighscore.newHighscore = true;
 				localHighscore.rank = -1;
@@ -149,13 +149,13 @@ package com.edgington.net
 			try{
 				var regExp:RegExp=new RegExp(/[^a-zA-Z 0-9]+|\s/g);
 				var track:String = GameProxy.INSTANCE.currentTrackDetails.trackTitle.replace(regExp, "").toLowerCase();
-				var artist:String = GameProxy.INSTANCE.currentTrackDetails.artistName.replace(regExp, "").toLowerCase();
+				var artist:String = GameProxy.INSTANCE.currentTrackDetails.artist.replace(regExp, "").toLowerCase();
 				var score:int = GameProxy.INSTANCE.score;
 				var difficulty:int = GameProxy.INSTANCE.difficulty;
 				var localHighscore:HighscoreServerVO = new HighscoreServerVO();
 				localHighscore.score = score;
 				localHighscore.requiresSyncWithServer = true;
-				localHighscore.artist = GameProxy.INSTANCE.currentTrackDetails.artistName;
+				localHighscore.artist = GameProxy.INSTANCE.currentTrackDetails.artist;
 				localHighscore.track = GameProxy.INSTANCE.currentTrackDetails.trackTitle;
 				localHighscore.newHighscore = true;
 				localHighscore.rank = -1;

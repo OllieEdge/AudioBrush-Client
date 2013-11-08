@@ -4,10 +4,12 @@ package com.edgington.net
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.FacebookConstants;
 	import com.edgington.model.facebook.FacebookManager;
+	import com.edgington.model.gamecenter.GameCenterManager;
 	import com.edgington.net.helpers.NetResponceHandler;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.valueobjects.net.ServerAchievementVO;
 	import com.edgington.view.huds.vo.AchievementVO;
+	import com.milkmangames.nativeextensions.GoViral;
 	
 	import flash.net.SharedObject;
 	
@@ -61,6 +63,7 @@ package com.edgington.net
 			for(var i:int = 0; i < INSTANCE.userAchievements.length; i++){
 				if(INSTANCE.userAchievements[i].ID == achievementID){
 					if(INSTANCE.userAchievements[i].progress < 100 || INSTANCE.userAchievements[i].completed == null){
+						LOG.createCheckpoint("ACHIEVEMENT: " + INSTANCE.userAchievements[i].name);
 						INSTANCE.updateAchievement(achievementID, 100);
 					}
 					break;
@@ -135,10 +138,12 @@ package com.edgington.net
 					if(serverAchievementVO.achievementID == userAchievements[i].ID){
 						userAchievements[i].credits = serverAchievementVO.credits;
 						if(userAchievements[i].progress != serverAchievementVO.progress){
+							GameCenterManager.getInstance().reportAchievement(AchievementConstants.getAppleAchievementID(serverAchievementVO.achievementID), serverAchievementVO.progress);
 							if(serverAchievementVO.progress == 100){
 								AchievementConstants["ach_"+i+1] = true;
 								achievememtUnlockedSignal.dispatch(serverAchievementVO.achievementID);
 								LOG.server("New Achievement Unlocked: " + userAchievements[i].name);
+								updateFacebookAchievements(i+1);
 							}
 						}
 						userAchievements[i].progress = serverAchievementVO.progress;
@@ -164,6 +169,12 @@ package com.edgington.net
 		}
 		private function onAchievementUpdateFailed(e:Object = null):void{
 			LOG.error("There was a problem when trying to update the user achievement");
+		}
+		
+		private function updateFacebookAchievements(facebookAchievementID:int):void{
+			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
+				GoViral.goViral.facebookGraphRequest("me/achievements", "POST", {achievement:"http://audiobrush.com/achievements/achievement_"+facebookAchievementID+".html"});
+			}
 		}
 		
 		private function saveData():void{

@@ -6,6 +6,8 @@ package com.edgington.model.facebook
 	import com.milkmangames.nativeextensions.GoViral;
 	import com.milkmangames.nativeextensions.events.GVFacebookEvent;
 	
+	import flash.net.SharedObject;
+	
 	import org.osflash.signals.Signal;
 	
 	public class FacebookManager
@@ -14,6 +16,8 @@ package com.edgington.model.facebook
 		private static var INSTANCE:FacebookManager;
 		
 		public var isSupported:Boolean = false;
+		
+		public var facebookData:SharedObject;
 		
 		public var currentLoggedInUser:FacebookProfileVO;
 		
@@ -31,7 +35,15 @@ package com.edgington.model.facebook
 			if(GoViral.isSupported())
 			{
 				GoViral.create();
+				GoViral.goViral.logCallback = LOG.facebook;
 				GoViral.goViral.initFacebook(FacebookConstants.APP_ID,"");
+				
+				
+				facebookData = SharedObject.getLocal("abFacebookData");
+				if(facebookData.data.requestAmount == null){
+					facebookData.data.requestAmount = 0;
+					facebookData.flush();
+				}
 				
 				GoViral.goViral.addEventListener(GVFacebookEvent.FB_DIALOG_CANCELED,onFacebookEvent);
 				GoViral.goViral.addEventListener(GVFacebookEvent.FB_DIALOG_FAILED,onFacebookEvent);
@@ -62,6 +74,10 @@ package com.edgington.model.facebook
 			}
 		}
 		
+		public function logout():void{
+			GoViral.goViral.logoutFacebook();
+		}
+		
 		public function checkIfUserIsLoggedIn():Boolean{
 			if(isSupported){
 				return GoViral.goViral.isFacebookAuthenticated();
@@ -77,7 +93,11 @@ package com.edgington.model.facebook
 		
 		public function requestPostPermissions():void{
 			if(isSupported){
-				GoViral.goViral.requestNewFacebookPublishPermissions("publish_actions");
+				if(facebookData.data.requestAmount % 5 == 0){
+					GoViral.goViral.requestNewFacebookPublishPermissions("publish_actions");
+				}
+				facebookData.data.requestAmount++;
+				facebookData.flush();
 			}
 		}
 		
@@ -97,6 +117,7 @@ package com.edgington.model.facebook
 			switch(e.type){
 				case GVFacebookEvent.FB_LOGGED_IN:
 						LOG.facebook("LOGGED IN");
+						requestPostPermissions();
 					break;
 				case GVFacebookEvent.FB_LOGGED_OUT:
 						LOG.facebook("LOGGED OUT");

@@ -26,7 +26,7 @@ package com.edgington.view.huds.elements
 			
 			
 			
-			trackImage = new TrackData(new <String>[GameProxy.INSTANCE.currentTrackDetails.trackTitle, GameProxy.INSTANCE.currentTrackDetails.artistName], title.background.picture);
+			trackImage = new TrackData(new <String>[GameProxy.INSTANCE.currentTrackDetails.trackTitle, GameProxy.INSTANCE.currentTrackDetails.artist], title.background.picture);
 			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 		}

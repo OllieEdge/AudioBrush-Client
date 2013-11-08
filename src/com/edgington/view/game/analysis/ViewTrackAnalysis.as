@@ -1,10 +1,12 @@
 package com.edgington.view.game.analysis
 {
-	import com.edgington.NativeMediaManager.NativeMediaVO;
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.ipodlibrary.ILMediaItem;
 	import com.edgington.model.SettingsProxy;
-	import com.edgington.model.audio.AudioMainModel;
+	import com.edgington.model.SoundManager;
+	import com.edgington.model.audio.AudioModel;
+	import com.edgington.net.TournamentData;
 	import com.edgington.net.TrackData;
 	import com.edgington.net.UserData;
 	import com.edgington.types.DeviceTypes;
@@ -21,9 +23,7 @@ package com.edgington.view.game.analysis
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
 	
 	import org.osflash.signals.Signal;
 	
@@ -35,7 +35,7 @@ package com.edgington.view.game.analysis
 		
 		private var graphScreenMarginPercentage:Number = 0.2;
 		
-		private var trackData:NativeMediaVO;
+		private var trackData:ILMediaItem;
 		
 		private var hecticnessLineGraph:MovieClip;
 		private var sectionsDisplay:MovieClip;
@@ -73,6 +73,8 @@ package com.edgington.view.game.analysis
 		{
 			super();
 			
+			SoundManager.instance.pauseBGM();
+
 			addListeners();
 			
 			setupVisuals();
@@ -83,18 +85,20 @@ package com.edgington.view.game.analysis
 		}
 		
 		public function addListeners():void{
+			LOG.createCheckpoint("MENU: Track Analysis");
+			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			superRemoveSignal.addOnce(readyForRemoval);
 		}
 		
 		public function setupVisuals():void{
-			trackData = AudioMainModel.getInstance().currentTrackDetails;
+			trackData = AudioModel.getInstance().currentTrackDetails;
 			
 			trackTitle = new ui_trackAnalysisTitle();
 			
 			if(trackData != null && trackData.trackTitle != null){
 				trackTitle.txt_title.text = trackData.trackTitle;
-				trackTitle.txt_artist.text = trackData.artistName;
+				trackTitle.txt_artist.text = trackData.artist;
 			}
 			else{
 				trackTitle.txt_title.text = "Debug Mode";
@@ -105,7 +109,7 @@ package com.edgington.view.game.analysis
 			trackTitle.x = (DynamicConstants.SCREEN_WIDTH*.5) - (trackTitle.width *.5);
 			trackTitle.y = DynamicConstants.SCREEN_MARGIN;
 			
-			trackImage = new TrackData(new <String>[trackData.trackTitle, trackData.artistName], trackTitle.picture);
+			trackImage = new TrackData(new <String>[trackData.trackTitle, trackData.artist], trackTitle.picture);
 			
 			
 			
@@ -149,7 +153,12 @@ package com.edgington.view.game.analysis
 				playButton = new element_mainButton(gettext("analysis_play_button"), buttonOptions[1]);
 			}
 			else{
-				playButton = new element_mainButton(gettext("analysis_play_button"), buttonOptions[1], Constants.TRACK_PLAY_COST);
+				if(AudioModel.getInstance().isTournament){
+					playButton = new element_mainButton(gettext("analysis_play_button"), buttonOptions[1], TournamentData.getInstance().currentActiveTournament.COST);			
+				}
+				else{
+					playButton = new element_mainButton(gettext("analysis_play_button"), buttonOptions[1], Constants.TRACK_PLAY_COST);	
+				}
 			}
 			
 			playButton.x = sprite.x + sprite.width - playButton.width;
@@ -169,7 +178,7 @@ package com.edgington.view.game.analysis
 			drawTrackAnalysis();
 			var difficultyIcon:MovieClip;
 		
-			switch(AudioMainModel.getInstance().difficulty){
+			switch(AudioModel.getInstance().difficulty){
 				case DifficultyTypes.DIFFICULTY_EASY:
 					trackTitle.txt_difficulty.text = gettext("difficulty_name_easy").toUpperCase();
 					trackTitle.difficulty_icon.gotoAndStop(1);
@@ -214,7 +223,12 @@ package com.edgington.view.game.analysis
 					break
 				case buttonOptions[1]:
 					if(!UserData.getInstance().unlimited){
-						UserData.getInstance().useCredits(Constants.TRACK_PLAY_COST);
+						if(AudioModel.getInstance().isTournament){
+							UserData.getInstance().useCredits(TournamentData.getInstance().currentActiveTournament.COST);
+						}
+						else{
+							UserData.getInstance().useCredits(Constants.TRACK_PLAY_COST);
+						}
 					}
 					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.GAME_MAIN;
 					cleanButtons();
@@ -224,9 +238,9 @@ package com.edgington.view.game.analysis
 		
 		private function drawTrackAnalysis():void{
 			
-			var fluxThresholds:Vector.<Vector.<Number>> = AudioMainModel.getInstance().analyser.fluxThresholds;
-			var sections:Array = AudioMainModel.getInstance().analyser.sections;
-			var starSections:Array = AudioMainModel.getInstance().analyser.starSections;
+			var fluxThresholds:Vector.<Vector.<Number>> = AudioModel.getInstance().analyser.fluxThresholds;
+			var sections:Array = AudioModel.getInstance().analyser.sections;
+			var starSections:Array = AudioModel.getInstance().analyser.starSections;
 			var currentSection:int = 0;
 			stepAmount = Math.floor(fluxThresholds.length/graphWidth);
 			
@@ -285,9 +299,10 @@ package com.edgington.view.game.analysis
 			
 			allValues = (allValues / graphWidth)*-1;
 			
-			AudioMainModel.getInstance().difficulty = DifficultyTypes.getDifficultyOfGame(averageFluxThresholds, AudioMainModel.getInstance().analyser.beatRatio);
-			AudioMainModel.getInstance().hecticness = DifficultyTypes.getHecticnessRating(averageFluxThresholds);
-			AudioMainModel.getInstance().beatRatio = DifficultyTypes.getBeatRatioRating(AudioMainModel.getInstance().analyser.beatRatio);
+			AudioModel.getInstance().difficulty = DifficultyTypes.getDifficultyOfGame(averageFluxThresholds, AudioModel.getInstance().analyser.beatRatio);
+			AudioModel.getInstance().updateTrackDifficultyCache();
+			AudioModel.getInstance().hecticness = DifficultyTypes.getHecticnessRating(averageFluxThresholds);
+			AudioModel.getInstance().beatRatio = DifficultyTypes.getBeatRatioRating(AudioModel.getInstance().analyser.beatRatio);
 
 			hecticnessLineGraph.cacheAsBitmap = true;
 		}
@@ -319,7 +334,6 @@ package com.edgington.view.game.analysis
 		}
 		
 		private function destroy(e:Event):void{
-			LOG.createCheckpoint("Track Analysis Viewed");
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			while(this.numChildren > 0){
 				this.removeChildAt(0);
@@ -332,6 +346,15 @@ package com.edgington.view.game.analysis
 			readyToRemoveSignal = null;
 			playButton = null;
 			cancelButton = null;
+			
+			trackData = null;
+			
+			readyToRemoveSignal = null;
+			
+			buttonOptions = null;
+			
+			trackImage = null;
+			
 		}
 	}
 }

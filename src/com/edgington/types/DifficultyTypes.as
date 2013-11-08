@@ -1,10 +1,7 @@
 package com.edgington.types
 {
 	import com.edgington.util.debug.LOG;
-	import com.edgington.util.localisation.gettext;
 	
-	import flash.display.MovieClip;
-
 	public class DifficultyTypes
 	{
 		public static const DIFFICULTY_EASY:String = "DifficultyTypes::DIFFICULTY_EASY";

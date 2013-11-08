@@ -6,6 +6,7 @@ package com.edgington.view.huds.elements
 	import com.greensock.easing.Back;
 	import com.greensock.easing.Linear;
 	
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.text.TextFormat;
@@ -23,15 +24,23 @@ package com.edgington.view.huds.elements
 		private var textTween:TweenMax;
 		private var rotaterTween:TweenMax;
 		
+		private var customLogo:MovieClip;
+		
 		private var _width:Number;
 		
-		public function element_mainMessage(_str:String, _showRotater:Boolean = false)
+		public function element_mainMessage(_str:String, _showRotater:Boolean = false, customLogo:MovieClip = null)
 		{
 			super();
 			
+			this.customLogo = customLogo;
 			showRotater = _showRotater;
 			message = new ui_mainMessage();
-			
+			if(customLogo){
+				customLogo.cacheAsBitmap = true;
+				customLogo.width = message.background.imgBackground.width;
+				customLogo.height = message.background.imgBackground.height;
+				message.background.imgBackground.addChild(customLogo);
+			}
 			this.addChild(message);
 			
 			
@@ -73,12 +82,25 @@ package com.edgington.view.huds.elements
 			textTween = TweenMax.to(message.txt_label, 0.3, {alpha:1, ease:Linear.easeIn});
 		}
 		
-		public function changeMessage(_str:String, _showRotater:Boolean = false):void{
+		public function changeMessage(_str:String, _showRotater:Boolean = false, _customLogo:MovieClip = null):void{
 			showRotater = _showRotater;
 			cleanTween(scalerTween);
 			cleanTween(textTween);
 			scalerTween = TweenLite.to(message.background.scaler, 0.6, {scaleX:0, ease:Back.easeIn, onComplete:executeMessageChange, onCompleteParams:[_str]});
 			textTween = TweenMax.to(message.txt_label, 0.2, {alpha:0, ease:Linear.easeIn});
+			
+			if(customLogo){
+				message.background.imgBackground.removeChild(customLogo);
+				customLogo = null;
+			}
+			
+			if(_customLogo){
+				customLogo = _customLogo;
+				customLogo.cacheAsBitmap = true;
+				customLogo.width = message.background.imgBackground.width;
+				customLogo.height = message.background.imgBackground.height;
+				message.background.imgBackground.addChild(customLogo);
+			}
 		}
 		
 		private function executeMessageChange(_str:String):void{

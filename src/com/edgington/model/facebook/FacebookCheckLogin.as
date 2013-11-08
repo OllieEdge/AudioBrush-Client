@@ -4,6 +4,7 @@ package com.edgington.model.facebook
 	import com.edgington.constants.FacebookConstants;
 	import com.edgington.model.events.FacebookEvent;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.gettext;
 	import com.milkmangames.nativeextensions.GoViral;
 	import com.milkmangames.nativeextensions.events.GVFacebookEvent;
 	
@@ -60,7 +61,7 @@ package com.edgington.model.facebook
 				getUserProfile();
 			}
 			else{
-				facebookSignal.dispatch(FacebookEvent.FACEBOOK_LOGIN_FAILED, "You haven't accepted the developer request on Facebook. Look at your recent Facebook notifications to join the AudioBrush test team.");
+				facebookSignal.dispatch(FacebookEvent.FACEBOOK_LOGIN_FAILED, gettext("facebook_unknown_error"));
 			}
 		}
 		
@@ -87,7 +88,12 @@ package com.edgington.model.facebook
 			}
 			else{
 				LOG.facebook("There was a problem downloading the users Facebook Profile");
-				facebookSignal.dispatch(FacebookEvent.FACEBOOK_LOGIN_FAILED, "You haven't accepted the developer request on Facebook. Look at your recent Facebook notifications to join the AudioBrush test team.");
+				if(e.errorCode == 5){
+					facebookSignal.dispatch(FacebookEvent.FACEBOOK_LOGIN_FAILED, gettext("facebook_no_internet"));
+				}
+				else{
+					facebookSignal.dispatch(FacebookEvent.FACEBOOK_LOGIN_FAILED, gettext("facebook_unknown_error"));		
+				}
 			}
 		}
 		

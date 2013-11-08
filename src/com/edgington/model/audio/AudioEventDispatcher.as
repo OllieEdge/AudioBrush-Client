@@ -1,13 +1,14 @@
 package com.edgington.model.audio
 {
 	import com.edgington.model.GameProxy;
+	import com.edgington.model.TutorialManager;
 	
 	import org.osflash.signals.Signal;
 
 	public class AudioEventDispatcher
 	{
 		
-		private var audioModel:AudioMainModel
+		private var audioModel:AudioModel
 		
 		private var colourSignal:Signal;
 		private var preColourSignal:Signal;
@@ -30,11 +31,13 @@ package com.edgington.model.audio
 		
 		private var band:int = 0;
 		private var trackHeading:int = 15;
+		
+		private var tutorialPlayed:Boolean = false;
 				
 		public function AudioEventDispatcher(colourSignal:Signal, starPowerSignal:Signal, preColourSignal:Signal, beatSignal:Signal, addBeatSignal:Signal, rogueBeatSignal:Signal, addRogueBeatSignal:Signal)
 		{
 			
-			audioModel = AudioMainModel.getInstance();
+			audioModel = AudioModel.getInstance();
 			
 			switch(GameProxy.INSTANCE.currentHectiness){
 				case 0:
@@ -127,6 +130,24 @@ package com.edgington.model.audio
 					}
 					else if(audioModel.analyser.beats[trackPosition][band+1] != 0){
 						rogueBeatSignal.dispatch(trackPosition);
+					}
+				}
+				if(GameProxy.INSTANCE.isTutorial){
+					if(!tutorialPlayed && trackPosition >= 10){
+						tutorialPlayed = true;
+						GameProxy.INSTANCE.tutorialSignal.dispatch(true, 0);
+					}
+					if(TutorialManager.getInstance().currentTutorialStage < 1){
+						if(audioModel.soundChannel.position/audioModel.soundObject.length >= TutorialManager.getInstance().soundPositionStage_2){
+							audioModel.soundChannel.stop();
+							audioModel.soundChannel = audioModel.soundObject.play(TutorialManager.getInstance().soundPositionStage_1 * AudioModel.getInstance().soundObject.length);
+						}
+					}
+					else if(TutorialManager.getInstance().currentTutorialStage < 12){
+						if(audioModel.soundChannel.position/audioModel.soundObject.length >= TutorialManager.getInstance().soundPositionStage_3){
+							audioModel.soundChannel.stop();
+							audioModel.soundChannel = audioModel.soundObject.play(TutorialManager.getInstance().soundPositionStage_2 * AudioModel.getInstance().soundObject.length);
+						}
 					}
 				}
 			}

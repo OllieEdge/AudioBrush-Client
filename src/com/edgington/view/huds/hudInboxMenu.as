@@ -1,9 +1,12 @@
 package com.edgington.view.huds
 {
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.FacebookConstants;
+	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.GiftData;
 	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.GameStateTypes;
+	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.huds.base.AbstractHud;
 	import com.edgington.view.huds.base.IAbstractHud;
@@ -12,6 +15,7 @@ package com.edgington.view.huds
 	import com.edgington.view.huds.elements.element_sendItemsScreen;
 	import com.edgington.view.huds.elements.element_tabContainer;
 	import com.edgington.view.huds.events.TabContainerEvent;
+	import com.milkmangames.nativeextensions.GoViral;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -55,6 +59,8 @@ package com.edgington.view.huds
 		}
 		
 		public function addListeners():void{
+			LOG.createCheckpoint("MENU: Inbox");
+			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			superRemoveSignal.addOnce(readyForRemoval);
 			
@@ -127,6 +133,7 @@ package com.edgington.view.huds
 					switch(tabLabel)
 					{
 						case tabLabels[0]:
+							LOG.createCheckpoint("MENU: Inbox");
 							if(sendItems != null){
 								removeSeperateElements(sendItems);
 								sendItems = null;
@@ -143,6 +150,7 @@ package com.edgington.view.huds
 							addAdditionalElements(new <Sprite>[inboxItems]);
 							break;
 						case tabLabels[1]:
+							LOG.createCheckpoint("MENU: Send Gifts");
 							if(inboxItems != null){
 								inboxItems.readyForRemoval();
 								removeSeperateElements(inboxItems);
@@ -165,6 +173,12 @@ package com.edgington.view.huds
 								sendItems = null;
 								sendButtonHandler(false);
 							}
+							
+							if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
+								LOG.createCheckpoint("MENU: Invite Friends");
+								GoViral.goViral.showFacebookRequestDialog(gettext("facebook_invite_friends_message"), gettext("facebook_invite_friends_dialog_title"));
+							}
+							
 							break;
 					}
 				break;

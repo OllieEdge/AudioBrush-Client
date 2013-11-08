@@ -1,6 +1,7 @@
 package com.edgington.model.audio
 {
-	import com.edgington.NativeMediaManager.NativeMediaVO;
+	import com.edgington.ipodlibrary.ILMediaItem;
+	import com.edgington.model.TutorialManager;
 	import com.edgington.types.AudioCachedFileTypes;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.valueobjects.AudioCachedVO;
@@ -27,7 +28,7 @@ package com.edgington.model.audio
 			CACHE_DIRECTORY = File.cacheDirectory.url;
 		}
 		
-		public function checkForCachedVersion(trackDetails:NativeMediaVO, loadCache:Boolean = true, tournamentVO:TournamentVO = null):Boolean{
+		public function checkForCachedVersion(trackDetails:ILMediaItem, loadCache:Boolean = true, tournamentVO:TournamentVO = null, isTutorial:Boolean = false):Boolean{
 			cachedTrackVO = new AudioCachedVO();
 			
 			var filePrefix:String;
@@ -35,7 +36,7 @@ package com.edgington.model.audio
 			
 			if(tournamentVO != null){
 				filePrefix = tournamentVO.ID
-				cacheFolder = new File(CACHE_DIRECTORY + "/tournaments/"+ tournamentVO.ID);	
+				cacheFolder = new File(CACHE_DIRECTORY + "/audiobrush/tournaments/"+ tournamentVO.ID);	
 				if(cacheFolder.isDirectory){
 					if(loadCache){
 						try{
@@ -51,9 +52,13 @@ package com.edgington.model.audio
 					}
 				}
 			}
+			else if(isTutorial){
+				loadTutorialData();
+				return true;
+			}
 			else{
 				filePrefix = getFilePrefix(trackDetails);
-				cacheFolder = new File(CACHE_DIRECTORY + "/"+filePrefix);	
+				cacheFolder = new File(CACHE_DIRECTORY + "/audiobrush/cacheABFiles/"+filePrefix);	
 				if(cacheFolder.isDirectory){
 					if(loadCache){
 						try{
@@ -70,6 +75,49 @@ package com.edgington.model.audio
 				}
 			}
 			return false;
+		}
+		
+		private function loadTutorialData():void{
+			var filePrefix:String = TutorialManager.getInstance().getCurrentTutorialID();
+			
+			LOG.info("Loading Cached FluxThresholds");
+			var fluxThresholdsObject:Object = loadTutorialSongData(filePrefix, AudioCachedFileTypes.EXTENSIONS_FLUX_THRESHOLDS);
+			var fluxThresholds:Vector.<Vector.<Number>> = new Vector.<Vector.<Number>>;
+			for(var i:int = 0; i < fluxThresholdsObject.length; i++){
+				var fftWindow:Vector.<Number> = Vector.<Number>(fluxThresholdsObject[i]);
+				fluxThresholds.push(fftWindow);
+			}
+			
+			LOG.info("Loading Cached Beats");
+			var beatsObject:Object = loadTutorialSongData(filePrefix, AudioCachedFileTypes.EXTENSIONS_BEATS);
+			var beats:Vector.<Vector.<Number>> = new Vector.<Vector.<Number>>;
+			for(i = 0; i < beatsObject.length; i++){
+				var beatWindow:Vector.<Number> = Vector.<Number>(beatsObject[i]);
+				beats.push(beatWindow);
+			}
+			
+			LOG.info("Loading Cached Beats Detected");
+			var beatsDetectedObject:Object = loadTutorialSongData(filePrefix, AudioCachedFileTypes.EXTENSIONS_BEATS_DETECTED);
+			var beatsDetected:Vector.<Number> = Vector.<Number>(beatsDetectedObject);
+			
+			LOG.info("Loading Cached Sections");
+			var sectionsObject:Object = loadTutorialSongData(filePrefix, AudioCachedFileTypes.EXTENSIONS_SECTIONS);
+			var sections:Array = sectionsObject as Array;
+			
+			LOG.info("Loading Cached Sections Average");
+			var sectionsAverageObject:Object = loadTutorialSongData(filePrefix, AudioCachedFileTypes.EXTENSIONS_SECTIONS_AVERAGE);
+			var sectionsAverage:Array = sectionsAverageObject as Array;
+			
+			LOG.info("Loading Cached Star Sections");
+			var starSectionsObject:Object = loadTutorialSongData(filePrefix, AudioCachedFileTypes.EXTENSIONS_STAR_SECTIONS);
+			var starSections:Array = starSectionsObject as Array;
+			
+			cachedTrackVO.fluxThresholds = fluxThresholds;
+			cachedTrackVO.beats = beats;
+			cachedTrackVO.beatsDetected = beatsDetected;
+			cachedTrackVO.sections = sections;
+			cachedTrackVO.sectionsAverage = sectionsAverage;
+			cachedTrackVO.starSections = starSections;
 		}
 		
 		private function loadTournamentAudioData(tournamentVO:TournamentVO):void{
@@ -115,7 +163,7 @@ package com.edgington.model.audio
 			cachedTrackVO.starSections = starSections;
 		}
 		
-		public function loadAudioData(filename:NativeMediaVO):void{
+		public function loadAudioData(filename:ILMediaItem):void{
 			
 			var filePrefix:String = getFilePrefix(filename);
 			
@@ -159,7 +207,7 @@ package com.edgington.model.audio
 			cachedTrackVO.starSections = starSections;
 		}
 		
-		public function saveAudioData(filename:NativeMediaVO, fluxThresholds:String, beats:String, beatsDetected:String, sections:String, sectionsAverage:String, starSections:String):void{
+		public function saveAudioData(filename:ILMediaItem, fluxThresholds:String, beats:String, beatsDetected:String, sections:String, sectionsAverage:String, starSections:String):void{
 			
 			var filePrefix:String = getFilePrefix(filename);
 			
@@ -172,7 +220,7 @@ package com.edgington.model.audio
 		}
 		
 		private function saveSongData(fileName:String, dataType:String, data:String, fileExtension:String):void{
-			var cacheFile:File = new File(CACHE_DIRECTORY + "/"+fileName+"/" + fileName + fileExtension);	
+			var cacheFile:File = new File(CACHE_DIRECTORY + "/audiobrush/cacheABFiles/"+fileName+"/" + fileName + fileExtension);	
 			LOG.info("Cached file - " + fileName + fileExtension);
 			
 			var fs:FileStream = new FileStream();
@@ -186,8 +234,22 @@ package com.edgington.model.audio
 			fs.close();
 		}
 		
+		private function loadTutorialSongData(fileName:String, fileExtension:String):Object{
+			var cacheFile:File = File.applicationDirectory.resolvePath("audio/Tutorial/"+ fileName +"/" + fileName + fileExtension);	
+			
+			var fs:FileStream = new FileStream();
+			fs.open(cacheFile, FileMode.READ);   
+			var byteArray:ByteArray = new ByteArray();
+			fs.readBytes(byteArray);
+			byteArray.uncompress();
+			var obj:String = byteArray.readUTFBytes(byteArray.bytesAvailable);
+			fs.close();
+			
+			return JSON.parse(obj);
+		}
+		
 		private function loadTournamentSongData(fileName:String, fileExtension:String):Object{
-			var cacheFile:File = new File(CACHE_DIRECTORY + "/tournaments/"+ fileName +"/" + fileName + fileExtension);	
+			var cacheFile:File = new File(CACHE_DIRECTORY + "/audiobrush/tournaments/"+ fileName +"/" + fileName + fileExtension);	
 			
 			var fs:FileStream = new FileStream();
 			fs.open(cacheFile, FileMode.READ);   
@@ -201,7 +263,7 @@ package com.edgington.model.audio
 		}
 		
 		private function loadSongData(fileName:String, fileExtension:String):Object{
-			var cacheFile:File = new File(CACHE_DIRECTORY + "/"+fileName+"/" + fileName + fileExtension);	
+			var cacheFile:File = new File(CACHE_DIRECTORY + "/audiobrush/cacheABFiles/"+fileName+"/" + fileName + fileExtension);	
 			
 			var fs:FileStream = new FileStream();
 			fs.open(cacheFile, FileMode.READ);   
@@ -221,7 +283,7 @@ package com.edgington.model.audio
 			return INSTANCE;
 		}
 		
-		private function getFilePrefix(trackDetails:NativeMediaVO):String{
+		private function getFilePrefix(trackDetails:ILMediaItem):String{
 			var filePrefix:String;
 			if(trackDetails.trackTitle != "" && trackDetails.trackTitle != null){
 				var rex:RegExp = /[\s\r\n]*/gim;

@@ -103,7 +103,7 @@ package com.edgington.view.huds.base
 				}
 			}
 			else{
-				LOG.fatal("There was something that went wrong with the removal of the hud.");
+				//LOG.fatal("There was something that went wrong with the removal of the hud.");
 			}
 		}
 		
@@ -158,7 +158,7 @@ package com.edgington.view.huds.base
 								removeElements();
 							}
 							catch(e:Error){
-								LOG.error("Tried to remove a hud that was already removed");
+								//LOG.error("Tried to remove a hud that was already removed");
 							}
 						}
 					break;
@@ -198,13 +198,13 @@ package com.edgington.view.huds.base
 									onScreenTweens[i] = null;
 								}
 								catch(e:Error){
-									LOG.error("AbstractHud attempted to clean a tween that doesn't exist");
+									//LOG.error("AbstractHud attempted to clean a tween that doesn't exist");
 								}
 							}
 						}
 					}
 					catch(e:Error){
-						LOG.error("Tried to clean tweens of a empty tween array");
+						//LOG.error("Tried to clean tweens of a empty tween array");
 					}
 				}
 				onScreenTweens = new Vector.<TweenMax>;

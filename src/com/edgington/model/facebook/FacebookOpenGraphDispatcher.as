@@ -27,6 +27,10 @@ package com.edgington.model.facebook
 					openGraphObject["fb:explicitly_shared"] = openGraphAction.explicitlyShared;
 					openGraphObject[openGraphAction.actionObject.objectType] = FacebookConstants.OPEN_GRAPH_RANK_OBJECT_URL + openGraphAction.actionObject.objectType + "&ABurl=http://google.com&ABtitle=" + openGraphAction.actionObject.title + "&ABimage=" + openGraphAction.actionObject.imageURL + "&ABdescription=" + openGraphAction.actionObject.description;
 					break;
+				case ObjectTypes.OPEN_GRAPH_THEME_OBJECT:
+					openGraphObject["fb:explicitly_shared"] = openGraphAction.explicitlyShared;
+					openGraphObject[openGraphAction.actionObject.objectType] = FacebookConstants.OPEN_GRAPH_RANK_OBJECT_URL + openGraphAction.actionObject.objectType + "&ABurl=http://google.com&ABtitle=" + openGraphAction.actionObject.title + "&ABimage=" + openGraphAction.actionObject.imageURL + "&ABdescription=" + openGraphAction.actionObject.description;
+					break;
 			}
 			
 			GoViral.goViral.facebookGraphRequest("me/audiobrush:"+openGraphAction.actionType, "POST", openGraphObject);

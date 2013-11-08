@@ -7,7 +7,6 @@ package com.edgington.net
 	import com.edgington.net.events.TournamentEvent;
 	import com.edgington.net.helpers.NetResponceHandler;
 	import com.edgington.util.debug.LOG;
-	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.TournamentVO;
 	import com.edgington.valueobjects.net.ServerScoreVO;
 	import com.edgington.valueobjects.net.ServerTournamentDataVO;
@@ -38,7 +37,7 @@ package com.edgington.net
 		public var currentActiveTournaments:Vector.<TournamentVO>;
 		
 		public var currentActiveTournament:TournamentVO;
-		public var currentLeader:ServerScoreVO;
+		public var currentLeader:Vector.<ServerScoreVO>;
 		
 		public var currentTournamentDataDownloaded:Boolean = false;
 		
@@ -48,6 +47,8 @@ package com.edgington.net
 		{
 			super("tournament", "tournaments");
 			LOG.create(this);
+			
+			currentLeader = new Vector.<ServerScoreVO>
 			
 			responceSignal = new Signal();
 			
@@ -103,18 +104,20 @@ package com.edgington.net
 		private function onLeaderReceived(e:Object = null):void{
 			if(e != null){
 				if(ServerScoreVO.checkObject(e)){
-					currentLeader = new ServerScoreVO(e);
+					var leaderVo:ServerScoreVO = new ServerScoreVO(e);
+					var updated:Boolean = false;
+					for(var i:int = 0; i < currentLeader.length; i++){
+						if(currentLeader[i].trackkey == leaderVo.trackkey){
+							currentLeader[i] = leaderVo;
+							updated = true;
+							break;
+						}
+					}
+					if(!updated){
+						currentLeader.push(leaderVo);
+					}
+					
 				}
-				else{
-					currentLeader = new ServerScoreVO();
-					currentLeader.score = 0;
-					currentLeader.userId.username = gettext("tournament_entry_no_entries");
-				}
-			}
-			else{
-				currentLeader = new ServerScoreVO();
-				currentLeader.score = 0;
-				currentLeader.userId.username = gettext("tournament_entry_no_entries");
 			}
 			responceSignal.dispatch(TournamentEvent.TOURNAMENT_LEADER_RECEIVED);
 		}

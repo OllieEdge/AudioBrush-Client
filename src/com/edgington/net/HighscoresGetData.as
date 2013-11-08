@@ -3,6 +3,7 @@ package com.edgington.net
 	import com.edgington.NativeMediaManager.NativeMediaVO;
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.FacebookConstants;
+	import com.edgington.ipodlibrary.ILMediaItem;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.events.HighscoreEvent;
 	import com.edgington.net.helpers.NetResponceHandler;
@@ -36,12 +37,12 @@ package com.edgington.net
 			responceSignal = new Signal();
 		}
 		
-		public function getTopX(amountOfResults:int, trackDetails:NativeMediaVO, difficulty:int):void{
+		public function getTopX(amountOfResults:int, trackDetails:ILMediaItem, difficulty:int):void{
 			if(DynamicConstants.IS_CONNECTED){
 				
 				var regExp:RegExp=new RegExp(/[^a-zA-Z 0-9]+|\s/g);
 				var track:String = trackDetails.trackTitle.replace(regExp, "").toLowerCase();
-				var artist:String = trackDetails.artistName.replace(regExp, "").toLowerCase();
+				var artist:String = trackDetails.artist.replace(regExp, "").toLowerCase();
 				
 				var obj:Object = new Object();
 				obj.limit = amountOfResults;
@@ -50,7 +51,7 @@ package com.edgington.net
 			}
 		}
 		
-		public function getFriendsScores(amountOfResults:int, trackDetails:NativeMediaVO, difficulty:int):void{
+		public function getFriendsScores(amountOfResults:int, trackDetails:ILMediaItem, difficulty:int):void{
 			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				var friendIDs:Array = new Array();
 				
@@ -66,7 +67,7 @@ package com.edgington.net
 				
 				var regExp:RegExp=new RegExp(/[^a-zA-Z 0-9]+|\s/g);
 				var track:String = trackDetails.trackTitle.replace(regExp, "").toLowerCase();
-				var artist:String = trackDetails.artistName.replace(regExp, "").toLowerCase();
+				var artist:String = trackDetails.artist.replace(regExp, "").toLowerCase();
 				
 				var obj:Object = new Object();
 				obj.friends = friendIDs;

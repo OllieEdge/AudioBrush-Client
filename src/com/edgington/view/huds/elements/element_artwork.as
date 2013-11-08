@@ -1,5 +1,7 @@
 package com.edgington.view.huds.elements
 {
+	import com.edgington.view.assets.AssetCacher;
+	
 	import flash.display.Bitmap;
 	import flash.display.Loader;
 	import flash.display.Sprite;
@@ -15,11 +17,14 @@ package com.edgington.view.huds.elements
 		private var imageURLRequest:URLRequest;
 		private var profileBitmap:Bitmap;
 		
-		public function element_artwork(profilePicture:ui_profile_artwork = null, imageURL:String = "")
+		private var image_id:String;
+		
+		public function element_artwork(profilePicture:ui_profile_artwork = null, imageURL:String = "", image_id:String = "")
 		{
 			super();
 			
 			this.profileID = profileID;
+			this.image_id = image_id;
 			
 			if(profilePicture != null){
 				picture = profilePicture as ui_profile_artwork;
@@ -41,6 +46,7 @@ package com.edgington.view.huds.elements
 		
 		private function imageLoaded(e:Event):void{
 			imageLoader.contentLoaderInfo.removeEventListener(Event.COMPLETE, imageLoaded);
+			AssetCacher.getInstance().saveImage(image_id, e.target.bytes);
 			profileBitmap = new Bitmap(e.target.content.bitmapData.clone());
 			profileBitmap.width = picture.img.width;
 			profileBitmap.height = picture.img.height;

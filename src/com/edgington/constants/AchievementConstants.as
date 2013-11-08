@@ -57,5 +57,80 @@ package com.edgington.constants
 				new AchievementVO(22, 0, "", 0)
 				);
 		}
+		
+		public static function getAppleAchievementID(achievementID:int):String{
+			var str:String;
+			
+			switch(achievementID){
+				case 1:
+					str = "com.edgington.audiobrush.achievement.500k";
+					break;
+				case 2:
+					str = "com.edgington.audiobrush.achievement.1mill";
+					break;
+				case 3:
+					str = "com.edgington.audiobrush.achievement.2mill";
+					break;
+				case 4:
+					str = "com.edgington.audiobrush.achievement.5fingers";
+					break;
+				case 5:
+					str = "com.edgington.audiobrush.achievement.5toes";
+					break;
+				case 6:
+					str = "com.edgington.audiobrush.achievement.5senses";
+					break;
+				case 7:
+					str = "com.edgington.audiobrush.achievement.5alive";
+					break;
+				case 8:
+					str = "com.edgington.audiobrush.achievement.5hundredmiles";
+					break;
+				case 9:
+					str = "com.edgington.audiobrush.achievement.perfect";
+					break;
+				case 10:
+					str = "com.edgington.audiobrush.achievement.ninja";
+					break;
+				case 11:
+					str = "com.edgington.audiobrush.achievement.davinci";
+					break;
+				case 12:
+					str = "com.edgington.audiobrush.achievement.100streak";
+					break;
+				case 13:
+					str = "com.edgington.audiobrush.achievement.500streak";
+					break;
+				case 14:
+					str = "com.edgington.audiobrush.achievement.100perfect";
+					break;
+				case 15:
+					str = "com.edgington.audiobrush.achievement.5tracks";
+					break;
+				case 16:
+					str = "com.edgington.audiobrush.achievement.10tracks";
+					break;
+				case 17:
+					str = "com.edgington.audiobrush.achievement.50tracks";
+					break;
+				case 18:
+					str = "com.edgington.audiobrush.achievement.thismighttakeawhile";
+					break;
+				case 19:
+					str = "com.edgington.audiobrush.achievement.hendrix";
+					break;
+				case 20:
+					str = "com.edgington.audiobrush.achievement.starryeyed";
+					break;
+				case 21:
+					str = "com.edgington.audiobrush.achievement.artistatheart";
+					break;
+				case 22:
+					str = "com.edgington.audiobrush.achievement.imin";
+					break;
+			}
+			
+			return str;
+		}
 	}
 }
