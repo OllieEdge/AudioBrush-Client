@@ -5,11 +5,13 @@ package com.edgington.net
 	import com.edgington.model.facebook.FacebookCheckLogin;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.gettext;
 	import com.greensock.TweenLite;
 	import com.milkmangames.nativeextensions.GoViral;
 	import com.milkmangames.nativeextensions.events.GVFacebookEvent;
 	
 	import flash.events.TimerEvent;
+	import flash.text.TextField;
 	import flash.utils.Timer;
 	
 	import org.osflash.signals.Signal;
@@ -23,17 +25,26 @@ package com.edgington.net
 		private var isFacebookLoggedIn:Boolean = false;
 		private var loginToFacebook:FacebookCheckLogin;
 		
-		private var mainOverloadTimer:Timer = new Timer(20000, 1);
+		private var mainOverloadTimer:Timer;
 		
-		public function SingleSignOnManager():void{
+		private var startupLoadingText:TextField;
+		
+		public function SingleSignOnManager(startupLoadingText:TextField):void{
+			
+			this.startupLoadingText = startupLoadingText;
+			
 			statusSignal = new Signal();
+			
+			mainOverloadTimer = new Timer(15000, 1);
 			mainOverloadTimer.addEventListener(TimerEvent.TIMER_COMPLETE, handleOverload);
 			mainOverloadTimer.start();
+			
 			if(GoViral.isSupported() && GoViral.goViral.isFacebookAuthenticated()){
 				//do user download here
 				beginProfileAndFriendsDownload();
 			}
 			else{
+				changeLoadStatusText(gettext("single_signon_contacting_facebook"));
 				//If we actually can use this system...
 				if(DynamicConstants.isMobileOS()){
 					TweenLite.delayedCall(5, checkFacebookManually);
@@ -70,11 +81,13 @@ package com.edgington.net
 			}
 			else{
 				LOG.debug("Facebook is not Authenticated");
+				changeLoadStatusText(gettext("single_signon_manual_required"));
 				statusSignal.dispatch(false);
 			}
 		}
 		
 		private function beginProfileAndFriendsDownload():void{
+			changeLoadStatusText(gettext("single_signon_connecting_to_facebook"));
 			facebookSignInSignal = new Signal();
 			facebookSignInSignal.add(handleFacebookSignIn);
 			loginToFacebook = new FacebookCheckLogin(facebookSignInSignal);
@@ -92,6 +105,8 @@ package com.edgington.net
 				loginToServer();
 			}
 			else{
+				changeLoadStatusText(gettext("single_signon_manual_required"));
+				
 				LOG.error("Single Sign On Failed: " + error);
 				//Login failed for some reason - manual login is necessary
 				statusSignal.dispatch(false);
@@ -103,6 +118,7 @@ package com.edgington.net
 		 * If we've done all the facebook jazz and it was successful, lets get the user profile.
 		 */
 		private function loginToServer():void{
+			changeLoadStatusText(gettext("single_signon_downloading_profile"));
 			UserData.getInstance().userDataSignal.add(handleUserDataDownloaded);
 			UserData.getInstance().getUser();
 		}
@@ -125,6 +141,11 @@ package com.edgington.net
 		 */
 		private function handleOverload(e:TimerEvent):void{
 			statusSignal.dispatch(false);
+		}
+		
+		private function changeLoadStatusText(loadStatusString:String):void{
+			startupLoadingText.text = loadStatusString;
+			startupLoadingText.x = startupLoadingText.parent.stage.fullScreenWidth*.5 - startupLoadingText.textWidth*.5;
 		}
 		
 		public function destroy():void{

@@ -11,7 +11,9 @@ package com.edgington.model
 		public var currentSearch:String;
 		public var isSearch:Boolean = false;
 		
-		public var currentTrack:ILMediaItem
+		public var currentTrack:ILMediaItem;
+		public var isTournamentTrack:Boolean = false;
+		public var tournamentID:String;
 		
 		public function SearchProxy()
 		{

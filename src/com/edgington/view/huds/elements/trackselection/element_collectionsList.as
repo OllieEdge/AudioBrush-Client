@@ -3,6 +3,7 @@ package com.edgington.view.huds.elements.trackselection
 	import com.doitflash.consts.Easing;
 	import com.doitflash.consts.Orientation;
 	import com.doitflash.consts.ScrollConst;
+	import com.doitflash.events.ScrollEvent;
 	import com.doitflash.utils.scroll.TouchScroll;
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
@@ -59,6 +60,13 @@ package com.edgington.view.huds.elements.trackselection
 		private var maximumItemsToLoadInView:int = 20;
 		
 		private var currentCollectionType:String = CollectionType.ARTISTS;
+		
+		
+		private var deviceItemHeight:Number = 0;
+		
+		private var visibleStartIndex:int = 0;
+		private var maximumVisibleRows:int = 4;
+		
 		
 		public function element_collectionsList(itemStrings:Vector.<CollectionListingItemVO>, maximumItemsToShow:int, itemHeight:int, _width:int, itemHandlerSignal:Signal, selectedCollectionType:String)
 		{
@@ -118,6 +126,11 @@ package com.edgington.view.huds.elements.trackselection
 			var listing:ui_listItem;
 			var trackArtwork:ui_profile_artwork;
 			var trackData:TrackData;
+			
+			deviceItemHeight = itemHeight;
+			
+			maximumVisibleRows = maximumItemsToShow+2;
+			
 			for(var i:int = 0; i < itemList.length; i++){
 				clip = new Sprite();
 				
@@ -382,12 +395,36 @@ package com.edgington.view.huds.elements.trackselection
 			itemList.sort(orderLastName); 
 		}
 		
+		
+		private function checkVisibility(e:ScrollEvent):void{
+			
+			trace(_scroller.yPerc);
+			
+			var visualPosition:int = Math.floor(((itemContainer.height-(_scroller.maskHeight*(_scroller.yPerc*0.01))) * (_scroller.yPerc*0.01)) / deviceItemHeight);
+			visualPosition--;
+			visualPosition = Math.max(visualPosition, 0);
+			visualPosition = Math.min(visualPosition, items.length - maximumVisibleRows);
+			if(visualPosition != visibleStartIndex){
+				for(var i:int = 0; i < maximumVisibleRows; i++){
+					items[i+visibleStartIndex].clip.visible = false;
+				}
+				visibleStartIndex = visualPosition;
+				for(i = 0; i < maximumVisibleRows; i++){
+					items[i+visibleStartIndex].clip.visible = true;
+				}
+			}
+		}
+		
 		private function setScroller():void
 		{
 			if (!_scroller) 
 			{
 				_scroller =  new TouchScroll();
 			}
+			
+			_scroller.addEventListener(ScrollEvent.MOUSE_MOVE, checkVisibility);
+			_scroller.addEventListener(ScrollEvent.TOUCH_TWEEN_UPDATE, checkVisibility);
+			
 			//------------------------------------------------------------------------------ set Scroller
 			_scroller.maskContent = itemContainer;
 			_scroller.maskWidth = _width;
@@ -414,12 +451,20 @@ package com.edgington.view.huds.elements.trackselection
 			_scroller.x = 0;
 			_scroller.y = 0;
 			
+			for(var i:int = maximumVisibleRows; i < items.length; i++){
+				items[i].clip.visible = false;
+			}
+			
 			this.addChild(_scroller);
+			
+			
 		}
 		
 		
 		protected function destroy(event:Event):void
 		{
+			_scroller.removeEventListener(ScrollEvent.MOUSE_MOVE, checkVisibility);
+			_scroller.removeEventListener(ScrollEvent.TOUCH_TWEEN_UPDATE, checkVisibility);
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			while(this.numChildren > 0){
 				this.removeChildAt(0);

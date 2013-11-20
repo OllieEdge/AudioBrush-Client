@@ -44,13 +44,13 @@ package com.edgington.net
 		 * Get products for user
 		 */
 		public function getProducts():void{
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-					GET(new NetResponceHandler(onProductsReceived, onProductsFailed), false, FacebookConstants.DEBUG_USER_ID);
-				}
-				else{
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+//					GET(new NetResponceHandler(onProductsReceived, onProductsFailed), false, FacebookConstants.DEBUG_USER_ID);
+//				}
+//				else{
 					GET(new NetResponceHandler(onProductsReceived, onProductsFailed), false, FacebookManager.getInstance().currentLoggedInUser.id);
-				}
+//				}
 			}
 		}
 		
@@ -96,17 +96,17 @@ package com.edgington.net
 		 */
 		public function createNewPurchase(productID:String, quantity:int = 1 ):void{
 			var serverProductsVO:ServerProductsVO = new ServerProductsVO();
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-					serverProductsVO.productID = productID;
-					serverProductsVO.fb_id = FacebookConstants.DEBUG_USER_ID;
-					serverProductsVO.quantity = quantity;
-				}
-				else{
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+//					serverProductsVO.productID = productID;
+//					serverProductsVO.fb_id = FacebookConstants.DEBUG_USER_ID;
+//					serverProductsVO.quantity = quantity;
+//				}
+//				else{
 					serverProductsVO.productID = productID;
 					serverProductsVO.fb_id = FacebookManager.getInstance().currentLoggedInUser.id;
 					serverProductsVO.quantity = quantity;
-				}
+//				}
 				PUT(new NetResponceHandler(onItemPurchaseSuccess, onItemPurchaseFailed), serverProductsVO.fb_id, JSON.parse(JSON.stringify(serverProductsVO)));
 			}
 		}
@@ -144,7 +144,7 @@ package com.edgington.net
 			if(amountToUse > serverProductsVO.quantity){
 				LOG.fatal("User does not have enough of this product ("+productID+"), please make sure that you have checked there is enough before calling this method. (ProductsData.doesUserHaveProduct) will return quantity");
 			}
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
 				serverProductsVO.quantity -= amountToUse;
 				for(i = 0; i < userProducts.length; i++){
 					if(userProducts[i].productID == productID){

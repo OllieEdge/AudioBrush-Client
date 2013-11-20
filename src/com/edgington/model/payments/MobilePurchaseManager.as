@@ -5,7 +5,6 @@ package com.edgington.model.payments
 	import com.adobe.ane.productStore.ProductStore;
 	import com.adobe.ane.productStore.Transaction;
 	import com.adobe.ane.productStore.TransactionEvent;
-	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.ProductConstants;
 	import com.edgington.model.events.TransactionABEvent;
 	import com.edgington.net.UserData;
@@ -32,7 +31,7 @@ package com.edgington.model.payments
 		
 		public var avaliable:Boolean = false;
 		
-		private var allowOnDesktop:Boolean = true; //debug
+		private const allowOnDesktop:Boolean = false; //debug
 		
 		private var AppStoreProducts:Vector.<String> = new <String>[ProductConstants.ADDITIONAL_CREDITS_25, ProductConstants.ADDITIONAL_CREDITS_55, ProductConstants.ADDITIONAL_CREDITS_310];
 		private var loadedProducts:Vector.<Product>;
@@ -50,18 +49,21 @@ package com.edgington.model.payments
 				
 		private var waitingForPendingTransactions:Boolean = false;
 		
+		public var isLoaded:Boolean = false;
+		public var errorLoading:Boolean = false;
+		
 		public function MobilePurchaseManager(e:SingletonEnforcer)
 		{
 			super(null);
 			
-			if(DynamicConstants.isIOSPlatform()){
-				allowOnDesktop = false;
-			}
+//			if(DynamicConstants.isIOSPlatform()){
+//				allowOnDesktop = false;
+//			}
 			
 			LOG.create(this);
 			transactionSignal = new Signal();
 			creditsUpdate = new Signal();
-			checkStoreAvailability();
+			TweenLite.delayedCall(0.1, checkStoreAvailability);
 		}
 		
 		
@@ -75,6 +77,8 @@ package com.edgington.model.payments
 				if(!storeKit.available)
 				{
 					trace("this device has purchases disabled.");
+					dispatchEvent(new Event(Event.COMPLETE));
+					isLoaded = true;
 				}
 				else{
 				
@@ -103,7 +107,8 @@ package com.edgington.model.payments
 				loadedProducts.push(new Product("25 Credits", "Description", ProductConstants.ADDITIONAL_CREDITS_25, "en_GB@currency=GBP", 0.69));
 				loadedProducts.push(new Product("55 Credits", "Description", ProductConstants.ADDITIONAL_CREDITS_55, "en_GB@currency=GBP", 1.49));
 				loadedProducts.push(new Product("310 Credits", "Description", ProductConstants.ADDITIONAL_CREDITS_310, "en_GB@currency=GBP", 6.99));
-				TweenLite.delayedCall(1, dispatchEvent, [new Event(Event.COMPLETE)]);
+				dispatchEvent(new Event(Event.COMPLETE));
+				isLoaded = true;
 			}
 			return avaliable;
 		}
@@ -167,6 +172,7 @@ package com.edgington.model.payments
 			
 			if(storeKit.pendingTransactions == null || storeKit.pendingTransactions.length == 0){
 				dispatchEvent(new Event(Event.COMPLETE));
+				isLoaded = true;
 			}
 			else{
 				storeKit.dispatchEvent(new TransactionEvent(TransactionEvent.PURCHASE_TRANSACTION_FAIL, false, false, storeKit.pendingTransactions));
@@ -179,6 +185,7 @@ package com.edgington.model.payments
 			LOG.error("Loading products failed");
 			if(storeKit.pendingTransactions == null || storeKit.pendingTransactions.length == 0){
 				dispatchEvent(new Event(Event.COMPLETE));
+				isLoaded = true;
 			}
 			else{
 				waitingForPendingTransactions = true;
@@ -247,6 +254,7 @@ package com.edgington.model.payments
 			if(waitingForPendingTransactions && storeKit.pendingTransactions == null || storeKit.pendingTransactions.length == 0){
 				waitingForPendingTransactions = false;
 				dispatchEvent(new Event(Event.COMPLETE));
+				isLoaded = true;
 			}
 		}
 		

@@ -25,6 +25,9 @@ package com.edgington.view.assets
 		
 		private var mainLoader:LoaderMax;
 		
+		public var isLoaded:Boolean = false;
+		public var errorLoading:Boolean = false;
+		
 		public function AssetLoader()
 		{
 			AssetLoader._imageDictionary = new Dictionary();
@@ -73,10 +76,12 @@ package com.edgington.view.assets
 		
 		private function loadFailed(e:LoaderEvent):void{
 			LOG.error("Failed Loading an Asset");
+			errorLoading = true;
 		}
 		
 		private function allLoadsComplete(e:LoaderEvent):void{
 			dispatchEvent(new Event(Event.COMPLETE));
+			isLoaded = true;
 		}
 		
 		public static function get imageDictionary():Dictionary{

@@ -46,6 +46,10 @@ package com.edgington.view.huds.elements
 		private var selectSignal:Signal;
 		
 		private var listingItemHeight:int = 75;
+		private var deviceItemHeight:Number = 0;
+		
+		private var visibleStartIndex:int = 0;
+		private var maximumVisibleRows:int = 4;
 		
 		public function element_trackListing(height:int, width:int, selectSignal:Signal)
 		{
@@ -90,6 +94,11 @@ package com.edgington.view.huds.elements
 		
 		public function addTrackListing(items:Vector.<ServerTrackVO>):void{
 			mouseEvents.DOWN_Signal.add(trackScrolling);
+			
+			deviceItemHeight = listingItemHeight*DynamicConstants.DEVICE_SCALE;
+			
+			maximumVisibleRows = Math.ceil(_height / deviceItemHeight) + 1;
+			
 			this.items = items.concat();
 			if(trackListings != null){
 				for(var t:int = 0; t < trackListings.length; t++){
@@ -104,6 +113,7 @@ package com.edgington.view.huds.elements
 				for(var i:int = 0; i < items.length; i++){
 					var trackListingVO:TrackListingVO = new TrackListingVO();
 					trackListingVO.clip = new Sprite();
+					trackListingVO.serverData = items[i];
 					
 					trackListingVO.background = new Sprite();
 					if(i%2 == 0){
@@ -178,6 +188,11 @@ package com.edgington.view.huds.elements
 					trackListingVO.clip.y = i*(listingItemHeight*DynamicConstants.DEVICE_SCALE);
 					trackListingVO.clip.addEventListener(MouseEvent.MOUSE_UP, trackSelected);
 					trackListingVO.clip.addEventListener(MouseEvent.MOUSE_DOWN, trackDown);
+					
+					if(i >= maximumVisibleRows ){
+						trackListingVO.clip.visible = false;
+					}
+					
 					trackListings.push(trackListingVO);
 				}
 			}
@@ -316,6 +331,24 @@ package com.edgington.view.huds.elements
 			}
 			if(listingsContainer.y > 0){
 				listingsContainer.y = 0;
+			}
+			checkVisibility();
+		}
+		
+		private function checkVisibility():void{
+			var visualPosition:int = Math.floor((listingsContainer.y*-1) / deviceItemHeight);
+			
+			visualPosition = Math.max(visualPosition, 0);
+			visualPosition = Math.min(visualPosition, trackListings.length - maximumVisibleRows);
+			
+			if(visualPosition != visibleStartIndex){
+				for(var i:int = 0; i < maximumVisibleRows; i++){
+					trackListings[i+visibleStartIndex].clip.visible = false;
+				}
+				visibleStartIndex = visualPosition;
+				for(i = 0; i < maximumVisibleRows; i++){
+					trackListings[i+visibleStartIndex].clip.visible = true;
+				}
 			}
 		}
 		

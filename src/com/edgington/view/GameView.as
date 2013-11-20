@@ -18,6 +18,8 @@ package com.edgington.view
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.media.AudioPlaybackMode;
+	import flash.media.SoundMixer;
 	
 	import org.osflash.signals.Signal;
 	
@@ -41,6 +43,7 @@ package com.edgington.view
 			readyToRemoveSignal = removeSignal;
 			
 			SoundManager.instance.pauseBGM();
+			SoundMixer.audioPlaybackMode = AudioPlaybackMode.MEDIA;
 			
 			if(GameLevelInformationHandler.checkIfAvailable()){
 				GameLevelInformationHandler.deleteInstance();
@@ -128,6 +131,7 @@ package com.edgington.view
 		}
 		
 		private function destroy(e:Event):void{
+			SoundMixer.audioPlaybackMode = AudioPlaybackMode.AMBIENT;
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			gameProxy.tutorialSignal.remove(tutorialPause);
 			TutorialManager.deleteInstance();

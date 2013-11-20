@@ -4,6 +4,7 @@ package com.edgington.model.gamecenter
 	import com.adobe.ane.gameCenter.GameCenterAchievementEvent;
 	import com.adobe.ane.gameCenter.GameCenterAuthenticationEvent;
 	import com.adobe.ane.gameCenter.GameCenterController;
+	import com.edgington.net.AchievementData;
 	import com.edgington.util.debug.LOG;
 	
 	public class GameCenterManager
@@ -19,7 +20,7 @@ package com.edgington.model.gamecenter
 		{
 			LOG.create(GameCenterManager);
 			
-			if(false/**GameCenterController.isSupported*/){
+			if(GameCenterController.isSupported){
 				isGameCenterAvailable = true;
 				gcController = new GameCenterController();
 				addListeners();
@@ -67,7 +68,8 @@ package com.edgington.model.gamecenter
 		
 		protected function authTrue(event:GameCenterAuthenticationEvent):void
 		{
-			gcController.resetAchievements();
+			//gcController.resetAchievements();
+			AchievementData.getInstance().syncGamecenterAchievements();
 			if(gcController.localPlayer!=null)
 				LOG.gamecenter("Localplayer:" + gcController.localPlayer.alias+"playerID:"+gcController.localPlayer.id + "playerIsFriend"+gcController.localPlayer.isFriend);
 			else LOG.gamecenter("Didn't authenticate.");

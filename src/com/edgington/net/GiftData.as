@@ -41,7 +41,7 @@ package com.edgington.net
 		 * Get all gifts for this user
 		 */
 		public function getGifts():void{
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
 				GET(new NetResponceHandler(onGiftsReceived, onGiftsReceivedFailed), false,	UserData.getInstance().userProfile._id);
 			}
 		}
@@ -75,13 +75,13 @@ package com.edgington.net
 			//this can be used to post a request to Facebook
 			var friendsWithoutAccount:Array = new Array();
 			
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-					facebookID = FacebookConstants.DEBUG_USER_ID;
-					friendsWithAccount.push(FacebookConstants.DEBUG_USER_ID, 0);//This is Ollie
-					friendsWithoutAccount.push("100005846082918");//This is Spok Reborn
-				}
-				else{
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+//					facebookID = FacebookConstants.DEBUG_USER_ID;
+//					friendsWithAccount.push(FacebookConstants.DEBUG_USER_ID, 0);//This is Ollie
+//					friendsWithoutAccount.push("100005846082918");//This is Spok Reborn
+//				}
+//				else{
 					//Store the friends wiht install so we dont have to reference the FBManager all the time.
 					var actualFriendsWithInstall:Vector.<FacebookProfileVO> = new Vector.<FacebookProfileVO>;
 					actualFriendsWithInstall = FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.concat();
@@ -105,7 +105,7 @@ package com.edgington.net
 					GoViral.goViral.addEventListener(GVFacebookEvent.FB_DIALOG_CANCELED, facebookRequestsSent);
 					GoViral.goViral.addEventListener(GVFacebookEvent.FB_DIALOG_FAILED, facebookRequestsSent);
 					GoViral.goViral.showFacebookRequestDialog("Hey! I've sent you some free credits, can you help me out by sending some back? Thanks!", "Send your free credits!", null, GVFacebookRequestFilter.ALL, friends.toString(), null, true);
-				}
+//				}
 				facebookIDStored = facebookID;
 				friendsWithAccountStored = friendsWithAccount.concat();
 				friendsWithoutAccountStored = friendsWithoutAccount.concat();
@@ -113,9 +113,9 @@ package com.edgington.net
 				productQuantityStored = productQuantity;
 				productStored = productID;
 				
-				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-					sendGiftsWhenReady();
-				}
+//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+//					sendGiftsWhenReady();
+//				}
 			}
 		}
 		

@@ -175,6 +175,85 @@ package com.edgington.model
 			}
 			
 			percentageOfBeatsHit = Math.floor((hitsAllHits / totalBeats)*100);
+			
+			if(starRating < 5){
+				if(percentageOfBeatsHit > 98){
+					if(starRating == 4){
+						preciseStarRating+=1;
+						starRating = 5;
+					}
+					if(starRating == 3){
+						preciseStarRating+=2;
+						starRating = 5;
+					}
+					if(starRating == 2){
+						preciseStarRating+=2;
+						starRating = 4;
+					}
+					if(starRating == 1){
+						preciseStarRating+=2
+						starRating = 3;
+					}
+					if(starRating == 0){
+						preciseStarRating+=2;
+						starRating = 2;
+					}
+				}
+				else if(percentageOfBeatsHit > 95){
+					if(starRating == 4){
+						preciseStarRating+=1;
+						starRating = 5;
+					}
+					if(starRating == 3){
+						preciseStarRating+=1;
+						starRating = 4;
+					}
+					if(starRating == 2){
+						preciseStarRating+=1;
+						starRating = 3;
+					}
+					if(starRating == 1){
+						preciseStarRating+=1;
+						starRating = 2;
+					}
+					if(starRating == 0){
+						preciseStarRating+=1;
+						starRating = 1;
+					}
+				}
+				else if(percentageOfBeatsHit > 90){
+					if(starRating == 3){
+						preciseStarRating+=1;
+						starRating = 4;
+					}
+					if(starRating == 2){
+						preciseStarRating+=1;
+						starRating = 3;
+					}
+					if(starRating == 1){
+						preciseStarRating+=1;
+						starRating = 2;
+					}
+					if(starRating == 0){
+						preciseStarRating+=1;
+						starRating = 1;
+					}
+				}
+				else if(percentageOfBeatsHit > 85){
+					if(starRating == 2){
+						preciseStarRating+=1;
+						starRating = 3;
+					}
+					if(starRating == 1){
+						preciseStarRating+=1;
+						starRating = 2;
+					}
+					if(starRating == 0){
+						preciseStarRating+=1;
+						starRating = 1;
+					}
+				}
+			}
 		}
 		
 		private function addListeners():void{
@@ -214,7 +293,7 @@ package com.edgington.model
 		
 		public function beatCollected(beatScale:Number, starBeat:Boolean, beatID:int, rogueBeat:Boolean):void{
 			if(rogueBeat && beatScale != -2){
-				SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_COLLECT_ROGUE_BEAT), "", 1);
+				SoundManager.instance.loadAndPlaySFX(SoundConstants.getGameThemeSFXDirectory(SoundConstants.SFX_COLLECT_ROGUE_BEAT), "", 0.5);
 				beatScale = 0;
 				rogueBeatsHit++;
 				wentOffscreen = false;

@@ -58,10 +58,10 @@ package com.edgington.view.huds.elements
 				friendProfilePic.push(ipadSendItemSurround.img_friend_1);
 				friendProfilePic.push(ipadSendItemSurround.img_friend_2);
 				
-				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-					userProfilePicElement = new element_profile_picture(userProfilePicture, FacebookConstants.DEBUG_USER_ID); 	
-				}
-				else if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
+//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+//					userProfilePicElement = new element_profile_picture(userProfilePicture, FacebookConstants.DEBUG_USER_ID); 	
+//				}
+				if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
 					userProfilePicElement = new element_profile_picture(userProfilePicture, FacebookManager.getInstance().currentLoggedInUser.id);
 				}
 				

@@ -4,6 +4,7 @@ package com.edgington.view.huds
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.SoundConstants;
 	import com.edgington.model.SoundManager;
+	import com.edgington.model.TournamentTrackPreviewer;
 	import com.edgington.net.TournamentData;
 	import com.edgington.net.UserData;
 	import com.edgington.net.events.TournamentEvent;
@@ -207,6 +208,9 @@ package com.edgington.view.huds
 		
 		private function handleArrowClick(e:MouseEvent):void{
 			e.currentTarget.gotoAndStop(1);
+			if(TournamentTrackPreviewer.getInstance().isPlaying){
+				TournamentTrackPreviewer.getInstance().stopTrack();
+			}
 			if(!disableArrows){
 				SoundManager.getInstance().loadAndPlaySFX(SoundConstants.SFX_TAB_SELECT, "", 1);
 				disableArrows = true;

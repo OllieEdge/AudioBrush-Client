@@ -26,6 +26,9 @@ package com.edgington.util
 		
 		private var tags:Vector.<String>;
 		
+		public var isLoaded:Boolean = false;
+		public var errorLoading:Boolean = false;
+		
 		public function PushNotificationsManager()
 		{
 			PushNotificationsObject = SharedObject.getLocal("ab_tags");
@@ -49,6 +52,7 @@ package com.edgington.util
 				else{
 					EasyPush.initAirship(PushNotificationsConstants.PROD_AIRSHIP_KEY, PushNotificationsConstants.PROD_AIRSHIP_SECRET, "airship", false, true, false);
 				}
+				complete();
 				EasyPush.airship.addEventListener(PNAEvent.TOKEN_REGISTERED,onTokenRegistered);
 				EasyPush.airship.addEventListener(PNAEvent.TOKEN_REGISTRATION_FAILED,onRegFailed);
 				EasyPush.airship.addEventListener(PNAEvent.TYPES_DISABLED,onTokenTypesDisabled);
@@ -102,7 +106,8 @@ package com.edgington.util
 		}
 		
 		private function complete():void{
-			this.dispatchEvent(new Event(Event.COMPLETE));
+			dispatchEvent(new Event( Event.COMPLETE ));
+			isLoaded = true;
 		}
 		
 		/**

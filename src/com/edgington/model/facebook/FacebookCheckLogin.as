@@ -16,6 +16,8 @@ package com.edgington.model.facebook
 		
 		private var debug:Boolean = false;
 		
+		private var profileSet:Boolean = false;
+		
 		public function FacebookCheckLogin(facebookSignal:Signal)
 		{
 			this.facebookSignal = facebookSignal;
@@ -66,33 +68,36 @@ package com.edgington.model.facebook
 		}
 		
 		private function onProfileReceived(e:GVFacebookEvent):void{
-			if(e.type == GVFacebookEvent.FB_REQUEST_RESPONSE){
-				var fbProfileVO:FacebookProfileVO;
-				if(e.friends.length > 0){
-					LOG.facebook(e.data.name + " is now logged into Facebook");
-					fbProfileVO = new FacebookProfileVO(e.friends[0]);
+			if(!profileSet){
+				if(e.type == GVFacebookEvent.FB_REQUEST_RESPONSE){
+					var fbProfileVO:FacebookProfileVO;
+					if(e.friends.length > 0){
+						LOG.facebook(e.data.name + " is now logged into Facebook");
+						fbProfileVO = new FacebookProfileVO(e.friends[0]);
+					}
+					else{
+						fbProfileVO = new FacebookProfileVO(null, e.data);
+					}
+					profileSet = true;
+					FacebookManager.getInstance().currentLoggedInUser = fbProfileVO;
+					
+					GoViral.goViral.removeEventListener(GVFacebookEvent.FB_REQUEST_FAILED,onProfileReceived);
+					GoViral.goViral.removeEventListener(GVFacebookEvent.FB_REQUEST_RESPONSE,onProfileReceived);
+					
+					GoViral.goViral.addEventListener(GVFacebookEvent.FB_REQUEST_RESPONSE, facebookFriendsDownloaded);
+					GoViral.goViral.addEventListener(GVFacebookEvent.FB_REQUEST_FAILED, facebookFriendsDownloadFailed);
+					GoViral.goViral.requestFacebookFriends({fields:"installed,name,gender"});
+					LOG.facebook("Requesting Friends");
+					
 				}
 				else{
-					fbProfileVO = new FacebookProfileVO(null, e.data);
-				}
-				FacebookManager.getInstance().currentLoggedInUser = fbProfileVO;
-				
-				GoViral.goViral.removeEventListener(GVFacebookEvent.FB_REQUEST_FAILED,onProfileReceived);
-				GoViral.goViral.removeEventListener(GVFacebookEvent.FB_REQUEST_RESPONSE,onProfileReceived);
-				
-				GoViral.goViral.addEventListener(GVFacebookEvent.FB_REQUEST_RESPONSE, facebookFriendsDownloaded);
-				GoViral.goViral.addEventListener(GVFacebookEvent.FB_REQUEST_FAILED, facebookFriendsDownloadFailed);
-				GoViral.goViral.requestFacebookFriends({fields:"installed,name,gender"});
-				LOG.facebook("Requesting Friends");
-				
-			}
-			else{
-				LOG.facebook("There was a problem downloading the users Facebook Profile");
-				if(e.errorCode == 5){
-					facebookSignal.dispatch(FacebookEvent.FACEBOOK_LOGIN_FAILED, gettext("facebook_no_internet"));
-				}
-				else{
-					facebookSignal.dispatch(FacebookEvent.FACEBOOK_LOGIN_FAILED, gettext("facebook_unknown_error"));		
+					LOG.facebook("There was a problem downloading the users Facebook Profile");
+					if(e.errorCode == 5){
+						facebookSignal.dispatch(FacebookEvent.FACEBOOK_LOGIN_FAILED, gettext("facebook_no_internet"));
+					}
+					else{
+						facebookSignal.dispatch(FacebookEvent.FACEBOOK_LOGIN_FAILED, gettext("facebook_unknown_error"));		
+					}
 				}
 			}
 		}

@@ -12,13 +12,13 @@ package com.edgington.util.debug
 		
 		private var showCreate:Boolean = false;
 		private var showDestroy:Boolean = false;
-		private var showInfo:Boolean = false;
-		private var showDebug:Boolean = false;
-		private var showWarning:Boolean = false;
+		private var showInfo:Boolean = true;
+		private var showDebug:Boolean = true;
+		private var showWarning:Boolean = true;
 		private var showError:Boolean = true;
 		private var showFatal:Boolean = true;
-		private var showServer:Boolean = false;
-		private var showFacebook:Boolean = false;
+		private var showServer:Boolean = true;
+		private var showFacebook:Boolean = true;
 		
 		
 		private var testFlight:TestFlight;

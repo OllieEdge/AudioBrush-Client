@@ -44,14 +44,14 @@ package com.edgington.net
 		
 		
 		public function postHighscore():void{
-			if(FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
 				var facebookID:String
-				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-					facebookID = FacebookConstants.DEBUG_USER_ID;
-				}
-				else{
+//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+//					facebookID = FacebookConstants.DEBUG_USER_ID;
+//				}
+//				else{
 					facebookID = FacebookManager.getInstance().currentLoggedInUser.id;
-				}
+//				}
 				
 			}
 			else{
@@ -71,6 +71,8 @@ package com.edgington.net
 				postObject.trackname = TournamentData.getInstance().currentActiveTournament.TRACK;
 				postObject.artist = TournamentData.getInstance().currentActiveTournament.ARTIST;
 				postObject.difficulty = GameProxy.INSTANCE.difficulty;
+				postObject.starrating = GameProxy.INSTANCE.starRating;
+				postObject.precisestarrating = GameProxy.INSTANCE.preciseStarRating;
 				
 				PUT(new NetResponceHandler(onHighscorePosted, onHighscorePostFailed), postObject.trackkey, postObject);
 			}

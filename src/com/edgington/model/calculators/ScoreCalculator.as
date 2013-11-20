@@ -13,10 +13,10 @@ package com.edgington.model.calculators
 			var total:int = (scoreForBeats + normalStreakBonus + perfectStreakBonus)*6;
 			
 			var scoreVO:ScoreCalculationsVO = new ScoreCalculationsVO();
-			scoreVO.star_5 = total*0.75;
-			scoreVO.star_4 = total*0.65;
-			scoreVO.star_3 = total*0.5;
-			scoreVO.star_2 = total*0.3;
+			scoreVO.star_5 = total*0.65;
+			scoreVO.star_4 = total*0.5;
+			scoreVO.star_3 = total*0.35;
+			scoreVO.star_2 = total*0.2;
 			scoreVO.star_1 = total*0.1;
 			
 			return scoreVO;

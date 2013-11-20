@@ -39,6 +39,13 @@ package com.edgington.view.huds.elements
 		
 		private var origin:Point;
 		
+		private var deviceItemHeight:Number = 0;
+		
+		private var visibleStartIndex:int = 0;
+		private var maximumVisibleRows:int = 4;
+		
+		private var achievementItems:Vector.<Sprite>;
+		
 		//this holds the visible height of this element ( the actuall height may be more depending on the amount of achievements listed.
 		public var _height:int;
 		
@@ -112,6 +119,12 @@ package com.edgington.view.huds.elements
 			temporaryMask.y = achievementsMainBackground.y + (3*DynamicConstants.DEVICE_SCALE);
 			
 			achievementsContainer = new Sprite();
+			achievementItems = new Vector.<Sprite>;
+			
+			deviceItemHeight = 76*DynamicConstants.DEVICE_SCALE;
+			
+			maximumVisibleRows = Math.ceil(temporaryMask.height/deviceItemHeight)+1;
+			
 			for(var i:int = 0; i < achievements.length; i++){
 				var itemBackground:Sprite = new Sprite();
 				itemBackground.name = "achievement_"+i;
@@ -165,6 +178,8 @@ package com.edgington.view.huds.elements
 				itemBackground.cacheAsBitmap = true;
 				itemBackground.addChild(achievement);
 				
+				achievementItems.push(itemBackground);
+				
 				achievementsContainer.addChild(itemBackground);
 			}
 			achievementsContainer.x = achievementsMainBackground.x + DynamicConstants.BUTTON_SPACING+10;
@@ -184,6 +199,23 @@ package com.edgington.view.huds.elements
 			TweenLite.delayedCall(0.7, setScroller);
 		}
 		
+		private function checkVisibility(e:ScrollEvent):void{
+			
+			var visualPosition:int = Math.floor(((achievementsContainer.height-(_scroller.maskHeight*(_scroller.yPerc*0.01))) * (_scroller.yPerc*0.01)) / deviceItemHeight);
+			visualPosition--;
+			visualPosition = Math.max(visualPosition, 0);
+			visualPosition = Math.min(visualPosition, achievementItems.length - maximumVisibleRows);
+			if(visualPosition != visibleStartIndex){
+				for(var i:int = 0; i < maximumVisibleRows; i++){
+					achievementItems[i+visibleStartIndex].visible = false;
+				}
+				visibleStartIndex = visualPosition;
+				for(i = 0; i < maximumVisibleRows; i++){
+					achievementItems[i+visibleStartIndex].visible = true;
+				}
+			}
+		}
+		
 		private function setScroller():void
 		{
 			this.removeChild(temporaryMask);
@@ -194,7 +226,10 @@ package com.edgington.view.huds.elements
 			{
 				_scroller =  new TouchScroll();
 			}
-		
+			
+			_scroller.addEventListener(ScrollEvent.MOUSE_MOVE, checkVisibility);
+			_scroller.addEventListener(ScrollEvent.TOUCH_TWEEN_UPDATE, checkVisibility);
+			
 			//------------------------------------------------------------------------------ set Scroller
 			_scroller.maskContent = achievementsContainer;
 			_scroller.maskWidth = achievementsMainBackground.width - (DynamicConstants.BUTTON_SPACING*2);
@@ -224,9 +259,15 @@ package com.edgington.view.huds.elements
 			origin = new Point(DynamicConstants.SCREEN_MARGIN*2, achievementsMainBackground.y);
 			
 			this.addChild(_scroller);
+			
+			for(var i:int = maximumVisibleRows; i < achievementItems.length; i++){
+				achievementItems[i].visible = false;
+			}
 		}
 		
 		private function destroy(e:Event):void{
+			_scroller.removeEventListener(ScrollEvent.MOUSE_MOVE, checkVisibility);
+			_scroller.removeEventListener(ScrollEvent.TOUCH_TWEEN_UPDATE, checkVisibility);
 			TweenLite.killDelayedCallsTo(setScroller);
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			while(this.numChildren > 0){

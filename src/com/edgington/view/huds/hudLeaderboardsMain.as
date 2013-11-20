@@ -54,6 +54,7 @@ package com.edgington.view.huds
 		private var latestTrackListing:Vector.<ServerTrackVO>;
 		private var popularTrackListing:Vector.<ServerTrackVO>;
 		private var	freindTrackListing:Vector.<ServerTrackVO>;
+		private var	tournamentTrackListing:Vector.<ServerTrackVO>;
 		
 		private var searchLatestTrackListing:Vector.<ServerTrackVO>;
 		private var searchPopularTrackListing:Vector.<ServerTrackVO>;
@@ -103,8 +104,8 @@ package com.edgington.view.huds
 		{
 			tabLabels = new Vector.<String>;
 			tabDescriptions = new Vector.<String>;
-			tabLabels.push(gettext("highscores_tab_latest_popular"), gettext("highscores_tab_latest"), gettext("highscores_tab_latest_friends"));
-			tabDescriptions.push(gettext("highscores_tab_latest_popular_description"), gettext("highscores_tab_latest_description"), gettext("highscores_tab_latest_friends_description"));
+			tabLabels.push(gettext("highscores_tab_latest_popular"), gettext("highscores_tab_latest"), gettext("highscores_tab_latest_friends"), gettext("highscores_tab_tournaments"));
+			tabDescriptions.push(gettext("highscores_tab_latest_popular_description"), gettext("highscores_tab_latest_description"), gettext("highscores_tab_latest_friends_description"), gettext("highscores_tab_tournaments_description"));
 			
 			loading = new ui_loading();
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
@@ -196,6 +197,13 @@ package com.edgington.view.huds
 							addTrackListing();
 						}
 					break;
+				case HighscoreEvent.TRACK_LISTING_TOURNAMENT:
+						tournamentTrackListing = tracks.concat();
+						if(currentTab == 3){
+							LOG.createCheckpoint("MENU: Leaderboards - Tournaments Tab");
+							addTrackListing();
+						}
+					break;
 				case HighscoreEvent.TRACK_LISTING_POPULAR_SEARCH:
 						searchPopularTrackListing = tracks.concat();
 						if(currentTab == 0){
@@ -262,6 +270,15 @@ package com.edgington.view.huds
 								addTrackListing();
 							}
 							break;
+						case tabLabels[3]:
+							currentTab = 3;
+							if(tournamentTrackListing == null){
+								highscoresTrackListingGetter.getTournamentTracks();
+							}
+							else{
+								addTrackListing();
+							}
+							break;
 					}
 					break;
 			}
@@ -280,6 +297,9 @@ package com.edgington.view.huds
 					case 2:
 						currentArray = searchFreindTrackListing.concat();
 						break;
+					case 3:
+						currentArray = tournamentTrackListing.concat();
+						break;
 				}
 			}
 			else{
@@ -292,6 +312,9 @@ package com.edgington.view.huds
 						break;
 					case 2:
 						currentArray = freindTrackListing.concat();
+						break;
+					case 3:
+						currentArray = tournamentTrackListing.concat();
 						break;
 				}
 			}
@@ -333,6 +356,13 @@ package com.edgington.view.huds
 			var trackDetailsVO:ILMediaItem = new ILMediaItem();
 			trackDetailsVO.artist = trackDetails.artist;
 			trackDetailsVO.trackTitle = trackDetails.trackName;
+			if(currentTab == 3){
+				SearchProxy.getInstance().isTournamentTrack = true;
+				SearchProxy.getInstance().tournamentID = trackDetails.serverData.trackkey;
+			}
+			else{
+				SearchProxy.getInstance().isTournamentTrack = false;
+			}
 			SearchProxy.getInstance().currentTrack = trackDetailsVO;
 			
 			DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.HIGHSCORES_TRACK;

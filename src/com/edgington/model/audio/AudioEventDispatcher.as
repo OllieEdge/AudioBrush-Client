@@ -1,7 +1,9 @@
 package com.edgington.model.audio
 {
+	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.TutorialManager;
+	import com.edgington.types.DeviceTypes;
 	
 	import org.osflash.signals.Signal;
 
@@ -41,22 +43,40 @@ package com.edgington.model.audio
 			
 			switch(GameProxy.INSTANCE.currentHectiness){
 				case 0:
-					trackHeading = 30;
+					trackHeading = 40;
+					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+						trackHeading = 60;
+					}
 					break;
 				case 1:
-					trackHeading = 25;
+					trackHeading = 35;
+					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+						trackHeading = 50;
+					}
 					break;
 				case 2:
-					trackHeading = 20;
+					trackHeading = 30;
+					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+						trackHeading = 40;
+					}
 					break;
 				case 3:
-					trackHeading = 15;
+					trackHeading = 25;
+					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+						trackHeading = 35;
+					}
 					break;
 				case 4:
-					trackHeading = 15;
+					trackHeading = 25;
+					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+						trackHeading = 30;
+					}
 					break;
 				case 5:
 					trackHeading = 10;
+					if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
+						trackHeading = 15;
+					}
 					break;
 			}
 			

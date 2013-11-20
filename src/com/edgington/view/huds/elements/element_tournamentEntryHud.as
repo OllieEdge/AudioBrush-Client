@@ -1,8 +1,10 @@
 package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.model.TournamentTrackPreviewer;
 	import com.edgington.net.TournamentData;
 	import com.edgington.net.events.TournamentEvent;
+	import com.edgington.util.DateStringFormatter;
 	import com.edgington.util.NumberFormat;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.util.localisation.gettext;
@@ -10,6 +12,11 @@ package com.edgington.view.huds.elements
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
+	import org.osflash.signals.Signal;
 	
 	public class element_tournamentEntryHud extends Sprite
 	{
@@ -22,6 +29,11 @@ package com.edgington.view.huds.elements
 		private var tournamentVO:TournamentVO;
 		
 		private var scoreFound:Boolean = false;
+		
+		private var tournamentTimer:Timer;
+		
+		private var isPreviewing:Boolean = false;
+		private var previewSignal:Signal;
 		
 		public function element_tournamentEntryHud(tournamentIndex:int)
 		{
@@ -57,8 +69,27 @@ package com.edgington.view.huds.elements
 			hud.details.txt_player_name.text = gettext("tournament_entry_loading_leader");
 			hud.details.txt_score.text = gettext("tournament_entry_loading_score");
 			
+			hud.details.txt_titleFinishes.text = gettext("tournament_finishes_in");
+			hud.previewBox.txt_preview.text = gettext("tournament_preview");
+			hud.previewBox.bar.visible = false;
+			
 			hud.details.visible = true;
 			hud.removeChild(hud.loader);
+			
+			updateTournamentDuration(null);
+			
+			tournamentTimer = new Timer(1000, 0);
+			tournamentTimer.addEventListener(TimerEvent.TIMER, updateTournamentDuration);
+			tournamentTimer.start();
+			
+			if(!tournamentVO.CACHED){
+				hud.previewBox.visible = false;
+			}
+			else{
+				hud.picture_artist.addEventListener(MouseEvent.MOUSE_UP, previewTrackHandle);
+				hud.previewBox.mouseChildren = false;
+				hud.previewBox.mouseEnabled = false;
+			}
 			
 			tournamentData.responceSignal.add(leaderHandle);
 			tournamentData.getLeader(tournamentVO.ID);
@@ -96,7 +127,62 @@ package com.edgington.view.huds.elements
 
 		}
 		
+		private function previewTrackHandle(e:MouseEvent):void{
+			if(isPreviewing){
+				isPreviewing = false;
+				hud.previewBox.bar.visible = false;
+				hud.previewBox.txt_preview.text = gettext("tournament_preview");
+				hud.previewBox.playButton.gotoAndStop(1);
+				TournamentTrackPreviewer.getInstance().stopTrack();
+			}
+			else{
+				hud.previewBox.txt_preview.text = "0:30";
+				hud.previewBox.bar.visible = true;
+				hud.previewBox.bar.scaleX = 0;
+				isPreviewing = true;
+				previewSignal = new Signal();
+				previewSignal.add(updatePreviewTimer);
+				TournamentTrackPreviewer.getInstance().previewTrack(tournamentVO.ID, previewSignal);
+				hud.previewBox.playButton.gotoAndPlay(2);
+			}
+		}
+		
+		private function updatePreviewTimer(time:int):void{
+			
+			var secondsRemaining:String =  (30 - time) < 10 ? "0" + (30 - time) : "" + (30 - time);
+			
+			hud.previewBox.txt_preview.text = "0:" + secondsRemaining;
+			hud.previewBox.bar.scaleX = time/30;
+			if(time == 30){
+				isPreviewing = false;
+				hud.previewBox.bar.visible = false;
+				previewSignal.removeAll();
+				previewSignal = null;
+				hud.previewBox.txt_preview.text = gettext("tournament_preview");
+				hud.previewBox.playButton.gotoAndStop(1);
+				TournamentTrackPreviewer.getInstance().stopTrack();
+			}
+		}
+		
+		private function updateTournamentDuration(e:TimerEvent):void{
+			hud.details.txt_finishes.text = DateStringFormatter.getDurationBetweenDatesString(new Date(), tournamentVO.END_DATE);
+			
+			
+			var tournamentMax:Number = tournamentVO.END_DATE.time - tournamentVO.ACTIVE_DATE.time;
+			var currentTime:Number = new Date().time - tournamentVO.ACTIVE_DATE.time;
+			hud.details.bar.scaleX = currentTime / tournamentMax;
+		}
+		
 		private function destroy(e:Event):void{
+			hud.picture_artist.removeEventListener(MouseEvent.MOUSE_UP, previewTrackHandle);
+			
+			if(previewSignal != null){
+				previewSignal.removeAll();
+				previewSignal = null;
+			}
+			tournamentTimer.removeEventListener(TimerEvent.TIMER, updateTournamentDuration);
+			tournamentTimer.stop();
+			tournamentTimer = null;
 			tournamentData.responceSignal.remove(leaderHandle);
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			if(tournamentData != null){

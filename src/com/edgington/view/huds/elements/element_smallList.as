@@ -3,6 +3,7 @@ package com.edgington.view.huds.elements
 	import com.doitflash.consts.Easing;
 	import com.doitflash.consts.Orientation;
 	import com.doitflash.consts.ScrollConst;
+	import com.doitflash.events.ScrollEvent;
 	import com.doitflash.utils.scroll.TouchScroll;
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
@@ -51,7 +52,10 @@ package com.edgington.view.huds.elements
 		private var _scroller:TouchScroll;
 		private var isScrolling:Boolean;
 		
-		private var maximumItemsToLoadInView:int = 20;
+		private var deviceItemHeight:Number = 0;
+		
+		private var visibleStartIndex:int = 0;
+		private var maximumVisibleRows:int = 4;
 		
 		public function element_smallList(itemStrings:Vector.<SmallListItemVO>, maximumItemsToShow:int, itemHeight:int, _width:int, itemHandlerSignal:Signal)
 		{
@@ -93,10 +97,6 @@ package com.edgington.view.huds.elements
 			//this.addChild(mask);
 			
 			generateItems();
-			//itemContainer.x = margin;
-			//itemContainer.y = margin;
-			//this.addChild(itemContainer);
-			//itemContainer.mask = mask;
 		}
 		
 		private function generateItems():void{
@@ -104,6 +104,11 @@ package com.edgington.view.huds.elements
 				itemContainer = new Sprite();
 			}
 			items = new Vector.<Object>;
+			
+			deviceItemHeight = itemHeight
+			
+			maximumVisibleRows = Math.ceil(_height/deviceItemHeight)+1;
+			
 			for(var i:int = 0; i < itemList.length; i++){
 				var bm:Bitmap;
 				var bmd:BitmapData;
@@ -223,12 +228,32 @@ package com.edgington.view.huds.elements
 			itemList.sort(orderLastName); 
 		}
 		
+		private function checkVisibility(e:ScrollEvent):void{
+			
+			var visualPosition:int = Math.floor(((itemContainer.height-(_scroller.maskHeight*(_scroller.yPerc*0.01))) * (_scroller.yPerc*0.01)) / deviceItemHeight);
+			visualPosition--;
+			visualPosition = Math.max(visualPosition, 0);
+			visualPosition = Math.min(visualPosition, items.length - maximumVisibleRows);
+			if(visualPosition != visibleStartIndex){
+				for(var i:int = 0; i < maximumVisibleRows; i++){
+					items[i+visibleStartIndex].clip.visible = false;
+				}
+				visibleStartIndex = visualPosition;
+				for(i = 0; i < maximumVisibleRows; i++){
+					items[i+visibleStartIndex].clip.visible = true;
+				}
+			}
+		}
+		
 		private function setScroller():void
 		{
 			if (!_scroller) 
 			{
 				_scroller =  new TouchScroll();
 			}
+			
+			_scroller.addEventListener(ScrollEvent.MOUSE_MOVE, checkVisibility);
+			_scroller.addEventListener(ScrollEvent.TOUCH_TWEEN_UPDATE, checkVisibility);
 			
 			//------------------------------------------------------------------------------ set Scroller
 			_scroller.maskContent = itemContainer;
@@ -257,11 +282,17 @@ package com.edgington.view.huds.elements
 			_scroller.y = margin;
 			
 			this.addChild(_scroller);
+			
+			for(var i:int = maximumVisibleRows; i < items.length; i++){
+				items[i].clip.visible = false;
+			}
 		}
 		
 		
 		protected function destroy(event:Event):void
 		{
+			_scroller.removeEventListener(ScrollEvent.MOUSE_MOVE, checkVisibility);
+			_scroller.removeEventListener(ScrollEvent.TOUCH_TWEEN_UPDATE, checkVisibility);
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			while(this.numChildren > 0){
 				this.removeChildAt(0);

@@ -62,7 +62,7 @@ package com.edgington.net
 		}
 		
 		public function getCurrentTournamentData():void{
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
 				GET(new NetResponceHandler(onTournamentReceived, onTournamentFailed), true, "", "active");
 			}
 		}

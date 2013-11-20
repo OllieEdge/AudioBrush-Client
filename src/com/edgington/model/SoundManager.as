@@ -35,8 +35,6 @@ package com.edgington.model
 		
 		public function SoundManager(e:SingletonEnforcer)
 		{
-			SoundMixer.audioPlaybackMode = AudioPlaybackMode.AMBIENT;
-			
 			soundPreferences = SharedObject.getLocal("ngSoundPrefs");
 			if(soundPreferences.data.BGMOn == null){
 				soundPreferences.data.BGMVolume = 1;

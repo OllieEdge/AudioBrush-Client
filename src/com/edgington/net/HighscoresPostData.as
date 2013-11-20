@@ -48,9 +48,9 @@ package com.edgington.net
 			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
 				facebookID = FacebookManager.getInstance().currentLoggedInUser.id;
 			}
-			if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-				facebookID = FacebookConstants.DEBUG_USER_ID;
-			}
+//			if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+//				facebookID = FacebookConstants.DEBUG_USER_ID;
+//			}
 			
 			var regExp:RegExp=new RegExp(/[^a-zA-Z 0-9]+|\s/g);
 			var track:String = GameProxy.INSTANCE.currentTrackDetails.trackTitle.replace(regExp, "").toLowerCase();
@@ -80,7 +80,7 @@ package com.edgington.net
 				}
 			}
 
-			if(DynamicConstants.IS_CONNECTED && shouldPostScoreToServer && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+			if(DynamicConstants.IS_CONNECTED && shouldPostScoreToServer && FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
 				
 				var obj:Object = new Object();
 				obj.trackkey = artist+"_"+track;

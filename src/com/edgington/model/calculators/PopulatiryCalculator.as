@@ -5,9 +5,9 @@ package com.edgington.model.calculators
 		//Popularity must range from 1 - 11, 11 being the highest possible.
 		private static var MAX_POPULARITY:int = 11;
 		
-		private static var PLAY_STEPPER:int = 10;
+		private static var PLAY_STEPPER:int = 2;
 		
-		private static var DAY_STEPPER:int = 5;
+		private static var DAY_STEPPER:int = 11;
 		
 		public static function calculatePopularity(plays:int, lastPlayed:Date):int{
 			var popularity:int = 1;

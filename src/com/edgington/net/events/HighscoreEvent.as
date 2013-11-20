@@ -15,6 +15,7 @@ package com.edgington.net.events
 		public static const TRACK_LISTING_POPULAR:String = "HighscoreEvent::TRACK_LISTING_POPULAR";
 		public static const TRACK_LISTING_LATEST:String = "HighscoreEvent::TRACK_LISTING_LATEST";
 		public static const TRACK_LISTING_FRIENDS:String = "HighscoreEvent::TRACK_LISTING_FRIENDS";
+		public static const TRACK_LISTING_TOURNAMENT:String = "HighscoreEvent::TRACK_LISTING_TOURNAMENT";
 		
 		public static const TRACK_LISTING_POPULAR_SEARCH:String = "HighscoreEvent::TRACK_LISTING_POPULAR_SEARCH";
 		public static const TRACK_LISTING_LATEST_SEARCH:String = "HighscoreEvent::TRACK_LISTING_LATEST_SEARCH";

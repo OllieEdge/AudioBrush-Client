@@ -113,7 +113,7 @@ package com.edgington.view.huds.elements
 			
 			var giftType:int;
 			
-			if(gift.from != null && !(gift.from is String)){//If the from user is not a string
+			if(gift.from != null && !(gift.from is String) && gift.admin == ""){//If the from user is not a string
 				var picture:element_profile_picture = new element_profile_picture(null, gift.from.fb_id);
 				picture.width = picture.height = itemHeight - (DynamicConstants.DEVICE_SCALE*8);
 				picture.y = picture.x = 4*DynamicConstants.DEVICE_SCALE;
@@ -137,6 +137,21 @@ package com.edgington.view.huds.elements
 						tfSentance = TextFieldManager.createTextField("NEED TO DO REDEEM CODE", FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, itemHeight*.3, false, TextFieldAutoSize.LEFT);
 						tfSentance.x = 4*DynamicConstants.DEVICE_SCALE;
 						giftType = 2;
+					}
+					else if(strings[0] == "tournament"){
+						tfSentance = TextFieldManager.createTextField(gettext("inbox_tournament_item_description"), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, itemHeight*.3, false, TextFieldAutoSize.LEFT);
+						tfSentance.x = 4*DynamicConstants.DEVICE_SCALE;
+						giftType = 1;
+					}
+					else if(strings[0] == "admin"){
+						tfSentance = TextFieldManager.createTextField(gettext("inbox_admin_item_description"), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, itemHeight*.3, false, TextFieldAutoSize.LEFT);
+						tfSentance.x = 4*DynamicConstants.DEVICE_SCALE;
+						giftType = 1;
+					}
+					else if(strings[0] == "update"){
+						tfSentance = TextFieldManager.createTextField(gettext("inbox_updating_item_description"), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, itemHeight*.3, false, TextFieldAutoSize.LEFT);
+						tfSentance.x = 4*DynamicConstants.DEVICE_SCALE;
+						giftType = 1;
 					}
 				}
 			}

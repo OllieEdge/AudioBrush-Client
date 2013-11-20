@@ -50,18 +50,22 @@ package com.edgington.net
 			GET(new NetResponceHandler(onTrackListingPopularSuccess, onTrackListingPopularSuccess), true, "", "popular");
 		}
 		
+		public function getTournamentTracks():void{
+			GET(new NetResponceHandler(onTrackListingTournamentSuccess, onTrackListingTournamentFailed), true, "", "tournaments");
+		}
+		
 		public function getFriendsTracks(searchCriteria:String = ""):void{
-			if(FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+			if(FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
 				var friends:Array = new Array();
 				
-				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-					friends = FacebookConstants.DEBUG_USER_FRIENDS;
-				}
-				else{
+//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+//					friends = FacebookConstants.DEBUG_USER_FRIENDS;
+//				}
+//				else{
 					for(var i:int = 0; i < FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.length; i++){
 						friends.push(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].id);
 					}
-				}
+//				}
 				
 				if(friends.length > 0){
 					if(friends.length == 1){
@@ -195,6 +199,32 @@ package com.edgington.net
 		}
 		
 		private function onTrackListingPopularFailed():void{
+			LOG.error("There was a problem getting the track listing");
+		}
+		
+		
+		private function onTrackListingTournamentSuccess(e:Array):void{
+			if(e && e.length > 0){
+				latestTrackListing = new Vector.<ServerTrackVO>;
+				for(var i:int = 0; i < e.length; i++){
+					if(ServerTrackVO.checkObject(e[i])){
+						latestTrackListing.push(new ServerTrackVO(e[i]));
+					}
+				}
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_TOURNAMENT, latestTrackListing);
+			}
+			else{
+				if(e.length == 0){
+					LOG.warning("There were no tracks to return form the server");
+				}
+				else{
+					LOG.error("Something went wrong with the response from the server.");
+				}
+				responceSignal.dispatch(HighscoreEvent.TRACK_LISTING_TOURNAMENT, new Vector.<ServerTrackVO>);
+			}
+		}
+		
+		private function onTrackListingTournamentFailed():void{
 			LOG.error("There was a problem getting the track listing");
 		}
 		

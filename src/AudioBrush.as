@@ -1,28 +1,22 @@
 package
 {
+		import com.edgington.constants.Constants;
 		import com.edgington.constants.DynamicConstants;
-		import com.edgington.constants.FacebookConstants;
 		import com.edgington.control.Control;
 		import com.edgington.model.GameProxy;
+		import com.edgington.model.InitialLoadManager;
 		import com.edgington.model.SettingsProxy;
-		import com.edgington.model.SoundManager;
 		import com.edgington.model.audio.AudioModel;
 		import com.edgington.model.calculators.LevelCalculator;
 		import com.edgington.model.facebook.FacebookCheckIfStillAuthenicated;
 		import com.edgington.model.facebook.FacebookManager;
-		import com.edgington.model.gamecenter.GameCenterManager;
-		import com.edgington.model.payments.MobilePurchaseManager;
 		import com.edgington.net.SingleSignOnManager;
 		import com.edgington.net.UserData;
 		import com.edgington.types.GameStateTypes;
 		import com.edgington.types.ThemeTypes;
-		import com.edgington.util.PushNotificationsManager;
 		import com.edgington.util.TextFieldManager;
 		import com.edgington.util.debug.LOG;
-		import com.edgington.util.localisation.LOCALE_INSTANCE;
-		import com.edgington.util.localisation.Locale;
 		import com.edgington.view.GameStateHandler;
-		import com.edgington.view.assets.AssetLoader;
 		import com.edgington.view.model.ScreenManager;
 		import com.greensock.TweenLite;
 		
@@ -34,6 +28,9 @@ package
 		import flash.display.StageScaleMode;
 		import flash.events.Event;
 		import flash.events.StageOrientationEvent;
+		import flash.media.AudioPlaybackMode;
+		import flash.media.SoundMixer;
+		import flash.text.TextField;
 	
 	[SWF(backgroundColor='#000000', frameRate='60')]
 	
@@ -44,12 +41,11 @@ package
 		
 		private var audioBrushStateManager:GameStateHandler;
 		
-		private var loadsComplete:int = 0;
-		
 		private var screenManager:ScreenManager;
 		
 		private var startupImage:MovieClip;
 		private var startupLoader:ui_loading;
+		private var startupLoadingText:TextField
 		
 		private var singleSignOnManager:SingleSignOnManager;
 		
@@ -57,6 +53,8 @@ package
 		
 		//When the player quits the app, set the time so we can find how long they have been away.
 		private var inactivityTime:Date;
+		
+		private var initialLoadManager:InitialLoadManager;
 		
 		public function AudioBrush()
 		{
@@ -66,37 +64,23 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.quality = StageQuality.LOW;
 			
+			SoundMixer.audioPlaybackMode = AudioPlaybackMode.AMBIENT;
 			
 			addLoadingScreen();
 			
-			TweenLite.delayedCall(1, startLoadingGame);
+			TweenLite.delayedCall(1.5, startLoadingGame);
 		}
 		
 		private function startLoadingGame():void{
-			LOCALE_INSTANCE = Locale.getInstance();
-			LOCALE_INSTANCE.loadXML("languages/" + DynamicConstants.CURRENT_LANGUAGE + ".xml");
-			LOCALE_INSTANCE.addEventListener(Event.COMPLETE, setupGame);
-			
-			MobilePurchaseManager.INSTANCE;
-			MobilePurchaseManager.INSTANCE.addEventListener(Event.COMPLETE, setupGame);
-			PushNotificationsManager.getInstance();
-			PushNotificationsManager.getInstance().addEventListener(Event.COMPLETE, setupGame);
-			PushNotificationsManager.getInstance().setupPN();
-			
-			SoundManager.getInstance();
-			
-			GameCenterManager.getInstance();
 			
 			TextFieldManager.createCentrallyAllignedTextField("Warm-up fonts", FONT_audiobrush_content, 0xFFFFFF, 10);
-			
-			FacebookManager.getInstance();
-			AssetLoader.getInstance().addEventListener(Event.COMPLETE, setupGame);
+			LOG.createCheckpoint("APP: Initial Load Started"); 
+			initialLoadManager = new InitialLoadManager(startupLoadingText);
+			initialLoadManager.addEventListener(Event.COMPLETE, setupGame);
 		}
 		
 		private function setupGame(e:Event):void{
-			if(loadsComplete == 3){
-				
-				LOG.createCheckpoint("APP: Opened"); 
+				LOG.createCheckpoint("APP: Initial Load Complete");	
 				
 				AudioModel.getInstance();
 				AudioModel.getInstance().getIpodLibrary();
@@ -104,9 +88,7 @@ package
 				//Make sure that we have the levels calculated.
 				LevelCalculator.calculateLevels();
 				
-				LOCALE_INSTANCE.removeEventListener(Event.COMPLETE, setupGame);
 				this.removeEventListener(Event.ADDED_TO_STAGE, setupGame);
-				PushNotificationsManager.getInstance().removeEventListener(Event.COMPLETE, setupGame);
 
 				//set the screen size
 				DynamicConstants.SCREEN_WIDTH = stage.fullScreenWidth;
@@ -120,48 +102,48 @@ package
 				setupMobileStuff();
 				setupListeners();
 				
-				singleSignOnManager = new SingleSignOnManager();
+				singleSignOnManager = new SingleSignOnManager(startupLoadingText);
 				singleSignOnManager.statusSignal.add(signSignOnAvailable);
-			}
-			loadsComplete++;
 		}
 		
 		/**
 		 * If Facebook is already Authenticated and the server data has been downloaded this will parse as true
 		 */
 		private function signSignOnAvailable(isAvailable:Boolean):void{
-			singleSignOnManager.destroy();
-			singleSignOnManager = null;
-			ThemeTypes.populateThemes();
-			this.addEventListener(Event.ACTIVATE, handleReActivation);
-			this.addEventListener(Event.DEACTIVATE, handleDeActivation);
-			if(isAvailable){
-				FacebookConstants.DEBUG_FACEBOOK_ALLOWED = false;
-				if(SettingsProxy.getInstance().handSelection == null){
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.SETTINGS_HAND_SELECTION;
+			if(singleSignOnManager != null){
+				singleSignOnManager.destroy();
+				singleSignOnManager = null;
+				ThemeTypes.populateThemes();
+				this.addEventListener(Event.ACTIVATE, handleReActivation);
+				this.addEventListener(Event.DEACTIVATE, handleDeActivation);
+				if(isAvailable){
+					//FacebookConstants.DEBUG_FACEBOOK_ALLOWED = false;
+					if(SettingsProxy.getInstance().handSelection == null){
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.SETTINGS_HAND_SELECTION;
+					}
+					else{
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_MAIN;
+					}
 				}
 				else{
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_MAIN;
+					if(DynamicConstants.isMobileOS()){
+						//If this is being run on mobile lets double check that we are using the proper facebook.
+						//FacebookConstants.DEBUG_FACEBOOK_ALLOWED = false;
+						
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MESSAGE_FACEBOOK_LOGIN;
+					}
+					else{
+						UserData.getInstance().getUser();
+						
+						DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_MAIN;
+						
+						
+					}
 				}
+				audioBrushStateManager = new GameStateHandler(this);
+				TweenLite.delayedCall(1, audioBrushStateManager.loadState);
+				TweenLite.delayedCall(0.9, removeLoadScreen);
 			}
-			else{
-				if(DynamicConstants.isMobileOS()){
-					//If this is being run on mobile lets double check that we are using the proper facebook.
-					FacebookConstants.DEBUG_FACEBOOK_ALLOWED = false;
-					
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MESSAGE_FACEBOOK_LOGIN;
-				}
-				else{
-					UserData.getInstance().getUser();
-					
-					DynamicConstants.CURRENT_GAME_STATE = GameStateTypes.MENU_MAIN;
-					
-					
-				}
-			}
-			audioBrushStateManager = new GameStateHandler(this);
-			TweenLite.delayedCall(1.5, audioBrushStateManager.loadState);
-			TweenLite.delayedCall(1.4, removeLoadScreen);
 		}
 		
 		/**
@@ -171,8 +153,10 @@ package
 			if(startupImage != null){
 				this.removeChild(startupImage);
 				this.removeChild(startupLoader);
+				this.removeChild(startupLoadingText);
 				startupImage = null;
 				startupLoader = null;
+				startupLoadingText = null;
 			}
 		}
 		
@@ -301,8 +285,13 @@ package
 			startupLoader.x = stage.fullScreenWidth*.5;
 			startupLoader.y = stage.fullScreenHeight*.8;
 			
+			startupLoadingText = TextFieldManager.createCentrallyAllignedTextField("by Ollie Edgington", FONT_audiobrush_content_bold, Constants.NORMAL_WHITE_COLOUR, 18);
+			startupLoadingText.y = startupLoader.y + (startupLoader.height*.5) + 40;
+			startupLoadingText.x = startupLoader.x - startupLoadingText.textWidth*.5;
+			
 			this.addChild(startupImage);
 			this.addChild(startupLoader);
+			this.addChild(startupLoadingText);
 		}
 		
 		private function removeLoadingScreen():void{
