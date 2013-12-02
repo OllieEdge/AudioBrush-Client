@@ -4,9 +4,11 @@ package com.edgington.view.huds.elements
 	import com.edgington.model.TournamentTrackPreviewer;
 	import com.edgington.net.TournamentData;
 	import com.edgington.net.events.TournamentEvent;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.util.DateStringFormatter;
 	import com.edgington.util.NumberFormat;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.TournamentVO;
 	
@@ -58,6 +60,18 @@ package com.edgington.view.huds.elements
 			tournamentVO = tournamentData.currentActiveTournaments[tournamentIndex];
 			
 			new element_artwork(hud.picture_artist, tournamentData.currentActiveTournaments[tournamentIndex].ARTWORK_URL);
+			
+			getfont(hud.details.txt_trackTitle, FontFaceType.BOLD);
+			getfont(hud.details.txt_artist, FontFaceType.REGULAR);
+			getfont(hud.details.txt_titleFinishes, FontFaceType.REGULAR);
+			getfont(hud.details.txt_finishes, FontFaceType.REGULAR);
+			getfont(hud.details.txt_prizes_title, FontFaceType.BOLD);
+			getfont(hud.details.txt_prizes, FontFaceType.REGULAR);
+			getfont(hud.details.txt_leader_title, FontFaceType.BOLD);
+			
+			getfont(hud.details.txt_player_name, FontFaceType.REGULAR);
+			getfont(hud.details.txt_score, FontFaceType.BOLD);
+			getfont(hud.previewBox.txt_preview, FontFaceType.BOLD);
 			
 			hud.details.txt_trackTitle.text = tournamentVO.TRACK;
 			hud.details.txt_artist.text = tournamentVO.ARTIST;

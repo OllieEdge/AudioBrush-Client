@@ -7,10 +7,12 @@ package com.edgington.view.huds
 	import com.edgington.model.audio.AudioModel;
 	import com.edgington.types.CollectionType;
 	import com.edgington.types.DeviceTypes;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.util.IDCreator;
 	import com.edgington.util.TextFieldManager;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.AudioBrushMediaItemVO;
 	import com.edgington.view.huds.base.AbstractHud;
@@ -124,6 +126,7 @@ package com.edgington.view.huds
 			
 			collectionHeadingHolder = new Sprite();
 			collectionHeadingText = TextFieldManager.createTextField(gettext("track_collection_heading_artists"), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 14*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.CENTER);
+			getfont(collectionHeadingText, FontFaceType.BOLD);
 			collectionHeadingHolder.addChild(collectionHeadingText);
 			collectionHeadingHolder.x = background.x + (background.width*.25) - collectionHeadingHolder.width*.5;
 			collectionHeadingHolder.y = background.y + background.getBodyOriginY() + (DynamicConstants.BUTTON_SPACING*.5);

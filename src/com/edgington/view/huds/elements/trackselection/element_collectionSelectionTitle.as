@@ -4,7 +4,9 @@ package com.edgington.view.huds.elements.trackselection
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.net.TrackData;
 	import com.edgington.types.CollectionType;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.util.TextFieldManager;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.huds.vo.CollectionListingItemVO;
 	
@@ -45,6 +47,9 @@ package com.edgington.view.huds.elements.trackselection
 			
 			trackCollectionPrefixTitle = TextFieldManager.createTextField(gettext("tract_collection_title_artist_prefix"), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, _height*.3, false, TextFieldAutoSize.LEFT);
 			trackCollectionTitle = TextFieldManager.createTextField(gettext("tract_collection_title_artist_none"), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, _height*.45, false, TextFieldAutoSize.LEFT);
+			
+			getfont(trackCollectionPrefixTitle, FontFaceType.BOLD);
+			getfont(trackCollectionTitle, FontFaceType.BOLD);
 			
 			trackCollectionPrefixTitle.x = artwork.x + artwork.width + (4*DynamicConstants.DEVICE_SCALE);
 			trackCollectionPrefixTitle.y = artwork.y + (artwork.height*0.05);

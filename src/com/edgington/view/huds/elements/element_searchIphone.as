@@ -2,6 +2,8 @@ package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.SearchProxy;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	
 	import flash.display.Sprite;
@@ -29,6 +31,9 @@ package com.edgington.view.huds.elements
 			this.searchSignal  = searchSignal;
 			
 			search = new ui_iphoneSearchLeaderboards();
+			
+			getfont(search.txt_search, FontFaceType.BOLD);
+			
 			noText = gettext("highscores_search_template");
 			search.txt_search.text = noText;
 			search.txt_search.addEventListener(FocusEvent.FOCUS_IN, readyForText);

@@ -5,6 +5,8 @@ package com.edgington.view.huds.elements
 	import com.edgington.control.Control;
 	import com.edgington.model.SoundManager;
 	import com.edgington.model.events.ButtonEvent;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.view.huds.interfaces.IAudioBrushButton;
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
@@ -52,6 +54,8 @@ package com.edgington.view.huds.elements
 			this.buttonOption = _buttonOption;
 			
 			button = new ui_miniMainButton();
+			
+			getfont(button.txt_label, FontFaceType.BOLD);
 			
 			this.addChild(button);
 			buttonSignal = new Signal();

@@ -4,6 +4,8 @@ package com.edgington.view.huds.elements
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.events.ButtonEvent;
 	import com.edgington.net.UserData;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	
 	import flash.display.Sprite;
@@ -42,6 +44,7 @@ package com.edgington.view.huds.elements
 		
 		private function setupVisuals():void{
 			bonus = new ui_bonus();
+			
 			bonus.scaleX = bonus.scaleY = DynamicConstants.MESSAGE_SCALE;
 			bonus.x = DynamicConstants.SCREEN_WIDTH - bonus.width - DynamicConstants.SCREEN_MARGIN;
 			bonus.y = DynamicConstants.SCREEN_HEIGHT - bonus.height - DynamicConstants.SCREEN_MARGIN;
@@ -68,6 +71,9 @@ package com.edgington.view.huds.elements
 		private function bonusCountDown():void{
 			collectionProcessed = false;
 			bonus.gotoAndStop(1);
+			getfont(bonus.txt_bonus_title, FontFaceType.BOLD);
+			getfont(bonus.txt_available_in, FontFaceType.REGULAR);
+			getfont(bonus.txt_time, FontFaceType.BOLD);
 			bonus.txt_bonus_title.text = gettext("bonus_title");
 			bonus.txt_available_in.text = gettext("bonus_available_in_title");
 			
@@ -92,6 +98,9 @@ package com.edgington.view.huds.elements
 			
 			//This contains the amount of milliseconds until available;
 			bonusTime = Constants.BONUS_DELAY - bonusTime;
+			
+			getfont(bonus.txt_bonus_title, FontFaceType.BOLD);
+			getfont(bonus.txt_time, FontFaceType.BOLD);
 			bonus.txt_time.text = getTimerText(bonusTime);
 		}
 		
@@ -101,6 +110,8 @@ package com.edgington.view.huds.elements
 		private function bonusAvailable():void{
 			bonus.gotoAndStop(2);
 			
+			
+			getfont(bonus.txt_available, FontFaceType.REGULAR);
 			bonus.txt_bonus_title.text = gettext("bonus_title");
 			bonus.txt_available.text = gettext("bonus_available_title");
 			
@@ -114,6 +125,9 @@ package com.edgington.view.huds.elements
 		private function handleButtonSignal(eventType:String, buttonOption:String = ""):void{
 			if(eventType == ButtonEvent.BUTTON_PRESSED){
 				bonus.gotoAndStop(3);
+				
+				getfont(bonus.txt_collected, FontFaceType.BOLD);
+				getfont(bonus.txt_credits, FontFaceType.BOLD);
 				bonus.txt_collected.text = gettext("bonus_collected");
 				bonus.txt_credits.text = gettext("bonus_credits");
 				

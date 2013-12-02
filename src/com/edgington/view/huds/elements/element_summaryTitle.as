@@ -3,7 +3,9 @@ package com.edgington.view.huds.elements
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.GameProxy;
 	import com.edgington.net.TrackData;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.util.NumberFormat;
+	import com.edgington.util.localisation.getfont;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -19,6 +21,7 @@ package com.edgington.view.huds.elements
 			super();
 			
 			title = new ui_summaryScore();
+			getfont(title.txt_score, FontFaceType.BOLD);
 			title.txt_score.text = NumberFormat.addThreeDigitCommaSeperator(GameProxy.INSTANCE.score);
 			this.scaleX = this.scaleY = DynamicConstants.MESSAGE_SCALE;
 			this.cacheAsBitmap = true;

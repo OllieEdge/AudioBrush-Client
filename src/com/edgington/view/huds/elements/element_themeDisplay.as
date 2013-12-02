@@ -3,7 +3,9 @@ package com.edgington.view.huds.elements
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.SettingsProxy;
 	import com.edgington.net.ProductsData;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.ThemeVO;
 	
@@ -48,6 +50,12 @@ package com.edgington.view.huds.elements
 		
 		private function setupVisuals():void{
 			theme = new ui_theme_display();
+			
+			getfont(theme.txt_title, FontFaceType.BOLD);
+			getfont(theme.txt_description, FontFaceType.REGULAR);
+			getfont(theme.share_to_timeline.txt_share, FontFaceType.REGULAR);
+			getfont(theme.selected.txt_selected_label, FontFaceType.BOLD);
+			
 			_width = theme.width*scaleX;
 			_height = theme.height*scaleY;
 			theme.txt_title.text = gettext("themes_theme_title_suffix", {themename:themeVO.themeName});

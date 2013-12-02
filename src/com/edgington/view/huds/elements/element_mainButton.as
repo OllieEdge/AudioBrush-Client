@@ -5,6 +5,8 @@ package com.edgington.view.huds.elements
 	import com.edgington.control.Control;
 	import com.edgington.model.SoundManager;
 	import com.edgington.model.events.ButtonEvent;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.view.huds.interfaces.IAudioBrushButton;
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
@@ -62,6 +64,7 @@ package com.edgington.view.huds.elements
 			}
 			else{
 				button.txt_premium.text = String(premiumCost);
+				getfont(button.txt_premium, FontFaceType.BOLD);
 				var colorTransform:ColorTransform = new ColorTransform();
 				colorTransform.color = 0xFCEE21;
 				button.rotater.transform.colorTransform = colorTransform;
@@ -70,12 +73,16 @@ package com.edgington.view.huds.elements
 			this.addChild(button);
 			buttonSignal = new Signal();
 			
+			getfont(button.txt_label, FontFaceType.BOLD);
+			
 			button.txt_label.text = _str;
 			button.txt_label.autoSize = TextFieldAutoSize.LEFT;
 			button.scaler.width = button.txt_label.textWidth + PADDING;
 			_width = this.getBounds(this).width;
 			textSizeXScale = button.scaler.scaleX;
 			overSizeXScale = textSizeXScale + 0.1;
+			
+			
 			
 			button.txt_label.visible = false;
 			button.scaler.scaleX = 0;

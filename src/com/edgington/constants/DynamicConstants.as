@@ -9,7 +9,7 @@ package com.edgington.constants
 		public static var SCREEN_WIDTH:int = 0;
 		public static var SCREEN_HEIGHT:int = 0;
 		
-		public static var CURRENT_LANGUAGE:String = "en_GB";
+		public static var CURRENT_LANGUAGE:String = "en";
 		
 		public static var CURRENT_GAME_STATE:String;
 		

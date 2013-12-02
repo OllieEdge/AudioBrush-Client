@@ -7,8 +7,10 @@ package com.edgington.view.huds.elements
 	import com.edgington.model.SoundManager;
 	import com.edgington.model.calculators.LevelCalculator;
 	import com.edgington.net.UserData;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.util.NumberFormat;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Quad;
@@ -45,6 +47,15 @@ package com.edgington.view.huds.elements
 		
 		private function setupVisuals():void{
 			level = new ui_level_up_screen();
+			
+			getfont(level.txt_credits, FontFaceType.REGULAR);
+			//getfont(level.txt_currentLevel, FontFaceType.BOLD);
+			getfont(level.txt_currentXP, FontFaceType.REGULAR);
+			getfont(level.txt_levelup, FontFaceType.BOLD);
+			getfont(level.txt_nextLevel, FontFaceType.BOLD);
+			getfont(level.txt_nextLvlXP, FontFaceType.REGULAR);
+			getfont(level.txt_prevLevel, FontFaceType.BOLD);
+			
 			level.scaleX = level.scaleY = DynamicConstants.MESSAGE_SCALE;
 			level.txt_levelup.text = gettext("level_screen_level_up");
 			level.txt_levelup.visible = false;

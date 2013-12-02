@@ -95,7 +95,7 @@ package com.edgington.view.huds
 			summaryOverview.x = DynamicConstants.SCREEN_WIDTH*.5 - score.width*.5;
 			summaryOverview.y = score.y + score.height + DynamicConstants.BUTTON_SPACING;
 			
-			dismissButton = new element_mainButton("OK", buttonOptions[0]);
+			dismissButton = new element_mainButton(gettext("summary_screen_ok"), buttonOptions[0]);
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
 				dismissButton.x = summaryOverview.x + summaryOverview.width - dismissButton.width;
 				dismissButton.y = summaryOverview.y + summaryOverview.height + DynamicConstants.BUTTON_SPACING;
@@ -123,7 +123,7 @@ package com.edgington.view.huds
 			viewScoreDetailsButton.y = pt.y+DynamicConstants.SCREEN_MARGIN*0.1;
 			
 			
-			restartButton = new element_mainButton("Replay", buttonOptions[0]);
+			restartButton = new element_mainButton(gettext("summary_screen_replay"), buttonOptions[0]);
 			restartButton.x = summaryOverview.x;
 			restartButton.y = dismissButton.y;
 			
@@ -131,11 +131,11 @@ package com.edgington.view.huds
 			addButton(viewScoreDetailsButton);
 			
 			addButton(dismissButton);
-			addButton(restartButton);
+			//addButton(restartButton);
 			
 			buttonSignal.add(handleInteraction);
 			
-			onScreenElements.push(score, summaryOverview, viewScoreDetailsButton, restartButton, dismissButton);
+			onScreenElements.push(score, summaryOverview, viewScoreDetailsButton, dismissButton);
 			if(viewHighscoresButton){
 				onScreenElements.push(viewHighscoresButton);
 			}

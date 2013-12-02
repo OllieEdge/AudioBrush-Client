@@ -15,10 +15,12 @@ package com.edgington.view.huds
 	import com.edgington.net.TournamentData;
 	import com.edgington.net.events.HighscoreEvent;
 	import com.edgington.types.DeviceTypes;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.util.NumberFormat;
 	import com.edgington.util.TextFieldManager;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.net.ServerScoreVO;
 	import com.edgington.view.huds.base.AbstractHud;
@@ -124,7 +126,7 @@ package com.edgington.view.huds
 			loading.x = tabContainer.x + tabContainer.width*.5;
 			loading.y = tabContainer.y + tabContainer.height*.5;
 			
-			backButton = new element_mainButton("Back", buttonOptions[0]);
+			backButton = new element_mainButton(gettext("purchase_menu_back"), buttonOptions[0]);
 			backButton.x = tabContainer.x + tabContainer.width - backButton.width;
 			backButton.y = tabContainer.y + tabContainer.height + DynamicConstants.BUTTON_SPACING;
 			
@@ -255,6 +257,7 @@ package com.edgington.view.huds
 					levelIndicator.scaleY = levelIndicator.scaleX;
 					levelIndicator.x = profilePicture.x + profilePicture.width-levelIndicator.width;
 					levelIndicator.y = profilePicture.y + profilePicture.height-levelIndicator.height;
+					getfont(levelIndicator.txt_level, FontFaceType.BOLD);
 					levelIndicator.txt_level.text = String(LevelCalculator.getLevel(highscores[i].userId.xp));
 					levelIndicator.cacheAsBitmap = true;
 					clip.addChild(levelIndicator);
@@ -297,6 +300,7 @@ package com.edgington.view.huds
 			else{
 				var noScoresClip:Sprite = new Sprite();
 				var txtNoScores:TextField = TextFieldManager.createTextField(gettext("highscores_no_scores_available_global"), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 14*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.CENTER);
+				getfont(txtNoScores, FontFaceType.REGULAR);
 				txtNoScores.x = tabContainer.x + tabContainer.width*.5 - txtNoScores.textWidth*.5;
 				txtNoScores.y = tabContainer.height*.5+tabContainer.y;
 				noScoresClip.addChild(txtNoScores);
@@ -311,6 +315,7 @@ package com.edgington.view.huds
 			highscoreListings = new Vector.<Sprite>;
 			var noScoresClip:Sprite = new Sprite();
 			var txtNoScores:TextField = TextFieldManager.createTextField(gettext("highscores_no_scores_available_global"), FONT_audiobrush_content_bold, Constants.DARK_FONT_COLOR, 14*DynamicConstants.DEVICE_SCALE, false, TextFieldAutoSize.CENTER);
+			getfont(txtNoScores, FontFaceType.REGULAR);
 			txtNoScores.height = 30;
 			txtNoScores.x = tabContainer.x + tabContainer.width*.5 - txtNoScores.textWidth*.5;
 			txtNoScores.y = tabContainer.height*.5+tabContainer.y;

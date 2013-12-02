@@ -11,8 +11,10 @@ package com.edgington.view.game.analysis
 	import com.edgington.net.UserData;
 	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.DifficultyTypes;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.assets.AssetLoader;
 	import com.edgington.view.huds.base.AbstractHud;
@@ -95,6 +97,10 @@ package com.edgington.view.game.analysis
 			trackData = AudioModel.getInstance().currentTrackDetails;
 			
 			trackTitle = new ui_trackAnalysisTitle();
+			
+			getfont(trackTitle.txt_title, FontFaceType.BOLD);
+			getfont(trackTitle.txt_artist, FontFaceType.REGULAR);
+			getfont(trackTitle.txt_difficulty, FontFaceType.BOLD);
 			
 			if(trackData != null && trackData.trackTitle != null){
 				trackTitle.txt_title.text = trackData.trackTitle;

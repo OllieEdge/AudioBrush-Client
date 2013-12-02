@@ -7,8 +7,10 @@ package com.edgington.view.huds.elements
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.SettingsProxy;
 	import com.edgington.model.SoundManager;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.types.HandDirectionType;
 	import com.edgington.util.TextFieldManager;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.view.game.Canvas;
 	
 	import flash.display.Sprite;
@@ -47,6 +49,7 @@ package com.edgington.view.huds.elements
 			multiText = TextFieldManager.createCentrallyAllignedTextField("x1", FONT_audiobrush_content_bold, CanvasConstants[SettingsProxy.getInstance().currentTheme.toUpperCase()+"_OVERLAY_TEXT_COLOR"][0], 35);
 			multiText.x = 55;
 			multiText.y = 55;
+			getfont(multiText, FontFaceType.BOLD);
 			
 			
 			if(SettingsProxy.getInstance().handSelection == HandDirectionType.RIGHT_HAND){

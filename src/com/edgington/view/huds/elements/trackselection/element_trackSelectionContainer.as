@@ -2,6 +2,8 @@ package com.edgington.view.huds.elements.trackselection
 {
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -37,6 +39,9 @@ package com.edgington.view.huds.elements.trackselection
 			background.graphics.endFill();
 			
 			containerDescription = new ui_list_description_box();
+			
+			getfont(containerDescription.txt_description, FontFaceType.REGULAR);
+			
 			containerDescription.txt_description.text = containerDescriptionLabel;
 			containerDescription.txt_description.scaleX = containerDescription.txt_description.scaleY = DynamicConstants.DEVICE_SCALE;
 			containerDescription.background.width = (DynamicConstants.SCREEN_WIDTH-(DynamicConstants.SCREEN_MARGIN*2)) - (DynamicConstants.BUTTON_SPACING*2);

@@ -4,6 +4,8 @@ package com.edgington.view.huds.elements
 	import com.edgington.model.tournaments.TournamentAssetsManager;
 	import com.edgington.net.TournamentData;
 	import com.edgington.net.events.TournamentEvent;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	
 	import flash.display.Sprite;
@@ -19,6 +21,10 @@ package com.edgington.view.huds.elements
 			super();
 			
 			hud = new ui_tournament_downloading();
+			
+			getfont(hud.txt_description, FontFaceType.REGULAR);
+			getfont(hud.txt_downloading, FontFaceType.BOLD);
+			
 			hud.txt_downloading.text = gettext("tournament_downloading");
 			hud.txt_description.text = gettext("tournament_description");
 			

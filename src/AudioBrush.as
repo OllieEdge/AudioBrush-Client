@@ -2,6 +2,7 @@ package
 {
 		import com.edgington.constants.Constants;
 		import com.edgington.constants.DynamicConstants;
+		import com.edgington.constants.FontConstants;
 		import com.edgington.control.Control;
 		import com.edgington.model.GameProxy;
 		import com.edgington.model.InitialLoadManager;
@@ -12,10 +13,13 @@ package
 		import com.edgington.model.facebook.FacebookManager;
 		import com.edgington.net.SingleSignOnManager;
 		import com.edgington.net.UserData;
+		import com.edgington.types.FontFaceType;
 		import com.edgington.types.GameStateTypes;
 		import com.edgington.types.ThemeTypes;
+		import com.edgington.util.LanguageIdentifier;
 		import com.edgington.util.TextFieldManager;
 		import com.edgington.util.debug.LOG;
+		import com.edgington.util.localisation.getfont;
 		import com.edgington.view.GameStateHandler;
 		import com.edgington.view.model.ScreenManager;
 		import com.greensock.TweenLite;
@@ -63,6 +67,9 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.quality = StageQuality.LOW;
+			
+			DynamicConstants.CURRENT_LANGUAGE = LanguageIdentifier.getBestLanguageTagForUser();
+			FontConstants.decideNativeFontUse(DynamicConstants.CURRENT_LANGUAGE);
 			
 			SoundMixer.audioPlaybackMode = AudioPlaybackMode.AMBIENT;
 			
@@ -286,6 +293,7 @@ package
 			startupLoader.y = stage.fullScreenHeight*.8;
 			
 			startupLoadingText = TextFieldManager.createCentrallyAllignedTextField("by Ollie Edgington", FONT_audiobrush_content_bold, Constants.NORMAL_WHITE_COLOUR, 18);
+			getfont(startupLoadingText, FontFaceType.BOLD);
 			startupLoadingText.y = startupLoader.y + (startupLoader.height*.5) + 40;
 			startupLoadingText.x = startupLoader.x - startupLoadingText.textWidth*.5;
 			

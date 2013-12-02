@@ -1,5 +1,8 @@
 package com.edgington.view.huds.elements
 {
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -38,6 +41,7 @@ package com.edgington.view.huds.elements
 		
 		private function setupVisuals():void{
 			tickBox = new ui_tickBoxWithText();
+			getfont(tickBox.txt_label, FontFaceType.REGULAR);
 			tickBox.txt_label.text = label;
 			tickBox.blob.visible = TICKED;
 			

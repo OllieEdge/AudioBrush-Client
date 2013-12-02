@@ -3,6 +3,8 @@ package com.edgington.view.huds.elements
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.SoundConstants;
 	import com.edgington.model.SoundManager;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.view.huds.events.TabContainerEvent;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Back;
@@ -53,6 +55,7 @@ package com.edgington.view.huds.elements
 			tabs = new Vector.<ui_tab>;
 			for(var i:int = 0; i < tabLabels.length; i++){
 				var tab:ui_tab = new ui_tab();
+				getfont(tab.txt_label, FontFaceType.BOLD);
 				tab.txt_label.text = tabLabels[i];
 				tab.txt_label.width = tab.txt_label.textWidth + 18;
 				tab.background.width = tab.txt_label.textWidth + 30;
@@ -84,6 +87,7 @@ package com.edgington.view.huds.elements
 			this.addChild(body);
 			if(tabDescriptions.length > 0){
 				tabDescription = new ui_list_description_box();
+				getfont(tabDescription.txt_description, FontFaceType.BOLD);
 				tabDescription.txt_description.text = tabDescriptions[0];
 				tabDescription.txt_description.scaleX = tabDescription.txt_description.scaleY = DynamicConstants.DEVICE_SCALE;
 				tabDescription.background.width = (DynamicConstants.SCREEN_WIDTH-(DynamicConstants.SCREEN_MARGIN*2)) - (DynamicConstants.BUTTON_SPACING*2);
@@ -120,6 +124,7 @@ package com.edgington.view.huds.elements
 							tabDescription.txt_description.text = tabDescriptions[i];
 							tabDescription.visible = (tabDescriptions[i] != "");
 						}
+						getfont(tabDescription.txt_description, FontFaceType.BOLD);
 						tabDescription.txt_description.text = tabDescriptions[i];
 						tabSignal.dispatch(TabContainerEvent.TAB_CHANGED, tabLabel[i]);
 						tabTweens.push(TweenMax.to(tabs[i], 0.3, {scaleX:DynamicConstants.BUTTON_SCALE, scaleY:DynamicConstants.BUTTON_SCALE, ease:Back.easeOut, onUpdate:positionTab, onUpdateParams:[tabs[i]]}));

@@ -7,7 +7,9 @@ package com.edgington.view.game.draw
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.SettingsProxy;
 	import com.edgington.model.TutorialManager;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.util.DrawingShapes;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.game.Canvas;
 	import com.greensock.TweenLite;
@@ -63,12 +65,14 @@ package com.edgington.view.game.draw
 				this.isRogue = isRogue;		
 				if(GameProxy.INSTANCE.isTutorial && TutorialManager.getInstance().currentTutorialStage == 5){
 					tutorialMessage = new ui_tutorial_arrow();
+					getfont(tutorialMessage.txt_label, FontFaceType.BOLD);
 					tutorialMessage.txt_label.text = gettext("tutorial_gameplay_message_"+TutorialManager.getInstance().currentTutorialStage);
 				}
 			}
 			else{
 				if(GameProxy.INSTANCE.isTutorial && TutorialManager.getInstance().currentTutorialStage == 1 || TutorialManager.getInstance().currentTutorialStage == 2){
 					tutorialMessage = new ui_tutorial_arrow();
+					getfont(tutorialMessage.txt_label, FontFaceType.BOLD);
 					tutorialMessage.txt_label.text = gettext("tutorial_gameplay_message_"+TutorialManager.getInstance().currentTutorialStage);
 				}
 			}

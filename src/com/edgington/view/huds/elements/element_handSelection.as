@@ -2,6 +2,8 @@ package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.types.DeviceTypes;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	
 	import flash.display.Sprite;
@@ -17,6 +19,7 @@ package com.edgington.view.huds.elements
 			super();
 			
 			message = new ui_settings_direction;
+			getfont(message.txt_hand, FontFaceType.BOLD);
 			message.txt_hand.text = gettext("settings_hand_selection_question");
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPAD){
 				message.iphone_left.visible = false;

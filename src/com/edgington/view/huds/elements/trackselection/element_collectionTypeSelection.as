@@ -4,6 +4,8 @@ package com.edgington.view.huds.elements.trackselection
 	import com.edgington.constants.SoundConstants;
 	import com.edgington.model.SoundManager;
 	import com.edgington.types.CollectionType;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	
 	import flash.display.Sprite;
@@ -126,6 +128,11 @@ package com.edgington.view.huds.elements.trackselection
 					spotify.gotoAndStop(2);
 					break;
 			}
+			
+			getfont(spotify.txt_label, FontFaceType.REGULAR);
+			getfont(albums.txt_label, FontFaceType.REGULAR);
+			getfont(artists.txt_label, FontFaceType.REGULAR);
+			getfont(playlist.txt_label, FontFaceType.REGULAR);
 			
 			spotify.txt_label.text = gettext("track_collection_button_not_available");
 			albums.txt_label.text = gettext("track_collection_button_albums");

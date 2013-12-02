@@ -3,6 +3,8 @@ package com.edgington.view.huds.elements
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.facebook.FacebookManager;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.valueobjects.net.HighscoreServerVO;
 	
@@ -23,6 +25,10 @@ package com.edgington.view.huds.elements
 			super();
 			
 			summary = new ui_summaryOverview();
+			getfont(summary.txt_percentage, FontFaceType.BOLD);
+			getfont(summary.txt_noRanking, FontFaceType.REGULAR);
+			getfont(summary.txt_rank, FontFaceType.BOLD);
+			getfont(summary.txt_star_rating, FontFaceType.BOLD);
 			
 			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
 				summary.txt_noRanking.visible = false;
@@ -45,6 +51,7 @@ package com.edgington.view.huds.elements
 			summary.txt_percentage.text = gettext("percentage_beats_hit", {percentage:GameProxy.INSTANCE.percentageOfBeatsHit});
 			
 			summary.share_to_timeline.visible = false;
+			getfont(summary.share_to_timeline.txt_share, FontFaceType.REGULAR);
 			summary.share_to_timeline.txt_share.text = gettext("summary_screen_share");
 			summary.share_to_timeline.tick.addEventListener(MouseEvent.MOUSE_UP, handleTick);
 			summary.share_to_timeline.blob.mouseEnabled = false;

@@ -1,9 +1,10 @@
 package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
-	import com.edgington.constants.FacebookConstants;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.types.DeviceTypes;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.huds.vo.SmallListItemVO;
 	
@@ -48,11 +49,13 @@ package com.edgington.view.huds.elements
 		private function setupVisuals():void{
 			if(DynamicConstants.DEVICE_TYPE == DeviceTypes.IPHONE){
 				iphoneSendItemSurround = new ui_sendItemScreenIphone();
+				getfont(iphoneSendItemSurround.txt_num_friends, FontFaceType.BOLD);
 				iphoneSendItemSurround.y += 50;
 				this.addChild(iphoneSendItemSurround);
 			}
 			else{
 				ipadSendItemSurround = new ui_sendItemScreenIpad();
+				getfont(ipadSendItemSurround.txt_number_friends, FontFaceType.BOLD);
 				userProfilePicture = ipadSendItemSurround.img_you;
 				friendProfilePic = new Vector.<ui_profile_picture>;
 				friendProfilePic.push(ipadSendItemSurround.img_friend_1);

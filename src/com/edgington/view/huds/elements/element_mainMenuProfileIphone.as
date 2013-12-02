@@ -2,6 +2,8 @@ package com.edgington.view.huds.elements
 {
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.UserData;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -17,6 +19,9 @@ package com.edgington.view.huds.elements
 			super();
 			
 			profile = new ui_main_menu_profile_box_iphone();
+			
+			getfont(profile.credits.txt_label, FontFaceType.REGULAR);
+			
 			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
 			//	profile.txt_name.text = FacebookManager.getInstance().currentLoggedInUser.firstName + " " + FacebookManager.getInstance().currentLoggedInUser.lastName;
 				picture = new element_profile_picture(profile.picture as ui_profile_picture, FacebookManager.getInstance().currentLoggedInUser.id);

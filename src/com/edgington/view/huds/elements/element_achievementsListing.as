@@ -11,6 +11,8 @@ package com.edgington.view.huds.elements
 	import com.edgington.control.Control;
 	import com.edgington.net.AchievementData;
 	import com.edgington.types.DeviceTypes;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.huds.vo.AchievementVO;
 	import com.greensock.TweenLite;
@@ -75,6 +77,10 @@ package com.edgington.view.huds.elements
 			achievementsTitle.cacheAsBitmap = true;
 			achievementsTitle.x = (DynamicConstants.SCREEN_WIDTH*.5) - (achievementsTitle.width *.5);
 			achievementsTitle.y = DynamicConstants.SCREEN_MARGIN;
+			
+			getfont(achievementsTitle.txt_title, FontFaceType.BOLD);
+			getfont(achievementsTitle.txt_percentage_complete, FontFaceType.REGULAR);
+			
 			achievementsTitle.txt_title.text = gettext("achievements_screen_title");
 			achievementsTitle.txt_percentage_complete.text = gettext("achievements_screen_complete_percentage", {percentage:totalCompletion});
 			achievementsTitle.ui_progressbar.bar.scaleX = totalCompletion*.01;
@@ -138,6 +144,11 @@ package com.edgington.view.huds.elements
 				itemBackground.graphics.endFill();
 				
 				var achievement:ui_achievement_listing = new ui_achievement_listing();
+				
+				getfont(achievement.txt_title, FontFaceType.BOLD);
+				getfont(achievement.txt_description, FontFaceType.REGULAR);
+				getfont(achievement.progress.txt_percentage, FontFaceType.REGULAR);
+				
 				achievement.height = itemBackground.height - (6*DynamicConstants.DEVICE_SCALE);
 				achievement.scaleX = achievement.scaleY;
 				achievement.x = 3*DynamicConstants.DEVICE_SCALE;
@@ -161,11 +172,15 @@ package com.edgington.view.huds.elements
 					var achievementReward:MovieClip;
 					if(achievements[i].credits > 0){
 						achievementReward = new ui_achievement_reward_listing() as MovieClip;
+						getfont(achievementReward.txt_reward_title, FontFaceType.BOLD);
+						getfont(achievementReward.txt_rewardName, FontFaceType.REGULAR);
 						ui_achievement_reward_listing(achievementReward).txt_reward_title.text = gettext("achievements_reward_title");
 						ui_achievement_reward_listing(achievementReward).txt_rewardName.text = gettext("achievements_reward_credits", {credits:achievements[i].credits});
 					}
 					else{
 						achievementReward = new ui_achievement_reward_listing_item as MovieClip;
+						getfont(achievementReward.txt_reward_title, FontFaceType.BOLD);
+						getfont(achievementReward.txt_rewardName, FontFaceType.REGULAR);
 						ui_achievement_reward_listing_item(achievementReward).txt_reward_title.text = gettext("achievements_reward_title");
 						ui_achievement_reward_listing_item(achievementReward).txt_rewardName.text = achievements[i].reward;
 					}

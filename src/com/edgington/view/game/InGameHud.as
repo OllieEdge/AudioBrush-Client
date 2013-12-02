@@ -7,9 +7,11 @@ package com.edgington.view.game
 	import com.edgington.model.SettingsProxy;
 	import com.edgington.model.audio.AudioModel;
 	import com.edgington.types.DeviceTypes;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.types.HandDirectionType;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.view.huds.miniHudPauseMenu;
 	import com.edgington.view.huds.elements.element_inGameStarRating;
 	import com.edgington.view.huds.elements.element_multiplier;
@@ -55,6 +57,10 @@ package com.edgington.view.game
 			hud = new ui_inGameHud();
 			hud.scaleX = hud.scaleY = DynamicConstants.MESSAGE_SCALE;
 			hud.txt_score.x = DynamicConstants.SCREEN_WIDTH* (1/DynamicConstants.MESSAGE_SCALE) - 242;
+			
+			getfont(hud.txt_trackInfo, FontFaceType.REGULAR);
+			getfont(hud.txt_score, FontFaceType.REGULAR);
+			
 			hud.txt_trackInfo.text = AudioModel.getInstance().currentTrackDetails.trackTitle + "\nby " + AudioModel.getInstance().currentTrackDetails.artist;
 			hud.txt_trackInfo.cacheAsBitmap = true;
 			hud.txt_score.text = "0";

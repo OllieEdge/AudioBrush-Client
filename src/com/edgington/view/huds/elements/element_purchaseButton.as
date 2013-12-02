@@ -4,7 +4,9 @@ package com.edgington.view.huds.elements
 	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.ProductConstants;
 	import com.edgington.model.events.ButtonEvent;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.huds.interfaces.IAudioBrushButton;
 	import com.greensock.TweenLite;
@@ -60,6 +62,11 @@ package com.edgington.view.huds.elements
 			this.buttonOption = _buttonOption;
 			
 			button = new ui_mainPurchaseButton();
+			
+			getfont(button.txt_container.txt_title, FontFaceType.BOLD);
+			getfont(button.txt_container.txt_description, FontFaceType.REGULAR);
+			getfont(button.txt_container.txt_saving, FontFaceType.REGULAR);
+			getfont(button.txt_container.txt_price, FontFaceType.BOLD);
 			
 			this.addChild(button);
 			buttonSignal = new Signal();

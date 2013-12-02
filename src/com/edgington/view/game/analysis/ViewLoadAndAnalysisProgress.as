@@ -9,8 +9,10 @@ package com.edgington.view.game.analysis
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.TournamentData;
 	import com.edgington.types.DeviceTypes;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.huds.base.AbstractHud;
 	import com.edgington.view.huds.base.IAbstractHud;
@@ -116,6 +118,10 @@ package com.edgington.view.game.analysis
 			didYouKnow.x = DynamicConstants.SCREEN_WIDTH*.5 - didYouKnow.width*.5;
 			didYouKnow.y = DynamicConstants.SCREEN_HEIGHT - DynamicConstants.SCREEN_MARGIN - didYouKnow.height;
 			didYouKnow.visible = false;
+			
+			
+			getfont(progress.txt_analising, FontFaceType.BOLD);
+			getfont(progress.txt_trackInformation, FontFaceType.REGULAR);
 			
 			progress.txt_analising.text = gettext("menu_loading_section_waiting");
 			progress.txt_trackInformation.text = "";

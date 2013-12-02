@@ -2,6 +2,9 @@ package com.edgington.constants
 {
 	public class Constants
 	{
+		
+		public static const AVAILABLE_LANGUAGES:Array = ["en", "zh-CN", "ja"];
+		
 		public static const OS_WINDOWS:String = "windows";
 		public static const OS_MAC:String = "mac";
 		public static const OS_IOS:String = "iOS";

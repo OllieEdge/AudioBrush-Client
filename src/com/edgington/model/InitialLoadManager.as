@@ -6,7 +6,6 @@ package com.edgington.model
 	import com.edgington.model.payments.MobilePurchaseManager;
 	import com.edgington.util.PushNotificationsManager;
 	import com.edgington.util.RateAppManager;
-	import com.edgington.util.TextFieldManager;
 	import com.edgington.util.localisation.LOCALE_INSTANCE;
 	import com.edgington.util.localisation.Locale;
 	import com.edgington.util.localisation.gettext;

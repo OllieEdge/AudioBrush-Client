@@ -7,8 +7,10 @@ package com.edgington.view.game
 	import com.edgington.model.GameProxy;
 	import com.edgington.model.SettingsProxy;
 	import com.edgington.model.SoundManager;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.types.HandDirectionType;
 	import com.edgington.util.TextFieldManager;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.greensock.TweenLite;
 	import com.greensock.easing.Quad;
@@ -59,6 +61,10 @@ package com.edgington.view.game
 				perfectChainDescription = TextFieldManager.createTextField(gettext("game_perfect_streak_notification"), FONT_audiobrush_content_bold, 0x3a3a3a, 15*DynamicConstants.DEVICE_SCALE, true, TextFieldAutoSize.LEFT);
 			}
 				
+			getfont(normalChainTextfield, FontFaceType.BOLD);
+			getfont(perfectChainDescription, FontFaceType.BOLD);
+			getfont(perfectChainTextField, FontFaceType.BOLD);
+			
 			normalChainTextfield.cacheAsBitmap = true;
 			perfectChainTextField.cacheAsBitmap = true;
 			perfectChainDescription.cacheAsBitmap = true;

@@ -1,5 +1,7 @@
 package com.edgington.util
 {	
+	import com.edgington.constants.FontConstants;
+	
 	import flash.text.Font;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -12,7 +14,22 @@ package com.edgington.util
 		{
 			var tf : TextFormat = new TextFormat();
 			tf.align = TextFieldAutoSize.LEFT;
-			tf.font = Font(new font()).fontName;
+			if(font == FONT_audiobrush_content_bold){
+				if(FontConstants.useEmbedded){
+					tf.font = Font(new FontConstants.defaultBoldFont()).fontName;
+				}
+				else{
+					tf.font = FontConstants.defaultBoldNativeFont;
+				}
+			}
+			else{
+				if(FontConstants.useEmbedded){
+					tf.font = Font(new FontConstants.defaultFont()).fontName;
+				}
+				else{
+					tf.font = FontConstants.defaultNativeFont;
+				}
+			}
 			tf.size = size;
 			tf.color = colour;
 			
@@ -20,7 +37,7 @@ package com.edgington.util
 			tField.defaultTextFormat = tf;
 			tField.border = false;
 			tField.selectable = false;
-			tField.embedFonts = true;
+			tField.embedFonts = FontConstants.useEmbedded;
 			tField.htmlText = text;
 			tField.multiline = multiline;
 			tField.autoSize = TextFieldAutoSize.LEFT;
@@ -36,7 +53,24 @@ package com.edgington.util
 		{
 			var tf : TextFormat = new TextFormat();
 			tf.align = TextFieldAutoSize.CENTER;
-			tf.font = Font(new font()).fontName;
+			
+			if(font == FONT_audiobrush_content_bold){
+				if(FontConstants.useEmbedded){
+					tf.font = Font(new FontConstants.defaultBoldFont()).fontName;
+				}
+				else{
+					tf.font = FontConstants.defaultBoldNativeFont;
+				}
+			}
+			else{
+				if(FontConstants.useEmbedded){
+					tf.font = Font(new FontConstants.defaultFont()).fontName;
+				}
+				else{
+					tf.font = FontConstants.defaultNativeFont;
+				}
+			}
+			
 			tf.size = size;
 			tf.color = colour;
 			
@@ -45,7 +79,7 @@ package com.edgington.util
 			tField.defaultTextFormat = tf;
 			tField.border = false;
 			tField.selectable = false;
-			tField.embedFonts = true;
+			tField.embedFonts = FontConstants.useEmbedded;
 			tField.multiline = multiline;
 			tField.wordWrap = multiline;
 			tField.text = text;
@@ -63,7 +97,22 @@ package com.edgington.util
 		public static function createTextFieldWithAlignment(text : String, font : Class, colour : Number, size : int, alignment : String, multiline:Boolean = false, width:int = 0) : TextField 
 		{
 			var tf : TextFormat = new TextFormat();
-			tf.font = Font(new font()).fontName;
+			if(font == FONT_audiobrush_content_bold){
+				if(FontConstants.useEmbedded){
+					tf.font = Font(new FontConstants.defaultBoldFont()).fontName;
+				}
+				else{
+					tf.font = FontConstants.defaultBoldNativeFont;
+				}
+			}
+			else{
+				if(FontConstants.useEmbedded){
+					tf.font = Font(new FontConstants.defaultFont()).fontName;
+				}
+				else{
+					tf.font = FontConstants.defaultNativeFont;
+				}
+			}
 			tf.size = size;
 			tf.color = colour;
 			tf.align = alignment;
@@ -74,7 +123,7 @@ package com.edgington.util
 			tField.selectable = false;
 			tField.multiline = multiline;
 			tField.wordWrap = multiline;
-			tField.embedFonts = true;
+			tField.embedFonts = FontConstants.useEmbedded;
 			tField.text = text;
 			
 			if(width != 0) {

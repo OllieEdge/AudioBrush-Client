@@ -2,6 +2,8 @@ package com.edgington.view.huds.elements
 {
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.UserData;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	
 	import flash.display.Sprite;
@@ -18,6 +20,10 @@ package com.edgington.view.huds.elements
 			super();
 			
 			profile = new ui_main_menu_profile_box();
+			
+			getfont(profile.txt_name, FontFaceType.REGULAR);
+			getfont(profile.credits.txt_label, FontFaceType.REGULAR);
+			
 			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()){
 				profile.txt_name.text = FacebookManager.getInstance().currentLoggedInUser.name;
 				picture = new element_profile_picture(profile.picture as ui_profile_picture, FacebookManager.getInstance().currentLoggedInUser.id);

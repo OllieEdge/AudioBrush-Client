@@ -6,9 +6,11 @@ package com.edgington.view.huds
 	import com.doitflash.utils.scroll.TouchScroll;
 	import com.edgington.constants.Constants;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.util.TextFieldManager;
 	import com.edgington.util.debug.LOG;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.edgington.view.huds.base.AbstractHud;
 	import com.edgington.view.huds.elements.element_mainButton;

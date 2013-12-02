@@ -2,6 +2,8 @@ package com.edgington.view.huds.elements.trackselection
 {
 	import com.edgington.constants.SoundConstants;
 	import com.edgington.model.SoundManager;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	
 	import flash.display.Sprite;
@@ -41,6 +43,7 @@ package com.edgington.view.huds.elements.trackselection
 		
 		private function setupVisuals():void{
 			search = new ui_track_selection_search_bar();
+			getfont(search.txt_search, FontFaceType.REGULAR);
 			search.txt_search.text = noText;
 			search.cancel.visible = false;
 			search.txt_search.addEventListener(FocusEvent.FOCUS_IN, readyForText);

@@ -8,7 +8,9 @@ package com.edgington.view.huds.elements
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.GiftData;
 	import com.edgington.net.UserData;
+	import com.edgington.types.FontFaceType;
 	import com.edgington.types.GameStateTypes;
+	import com.edgington.util.localisation.getfont;
 	import com.edgington.util.localisation.gettext;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Quad;
@@ -91,6 +93,10 @@ package com.edgington.view.huds.elements
 			profilePicture.y = DynamicConstants.BUTTON_SPACING;
 			
 			level = new ui_level_box();
+			
+			getfont(level.txt_level, FontFaceType.BOLD);
+			getfont(level.txt_percentage, FontFaceType.BOLD);
+			
 			level.height = profilePicture.height*buttonPercentageScale;
 			level.scaleX = level.scaleY;
 			level.txt_level.text = String(LevelCalculator.getLevel(UserData.getInstance().userProfile.xp));
@@ -99,6 +105,9 @@ package com.edgington.view.huds.elements
 			level.y = Math.max(barBackground.height - level.height*.5, DynamicConstants.BUTTON_SPACING);
 			
 			credits = new credits_box();
+			
+			getfont(credits.txt_label, FontFaceType.BOLD);
+			
 			credits.height = profilePicture.height*buttonPercentageScale;
 			credits.scaleX = credits.scaleY;
 			credits.txt_label.text = String(UserData.getInstance().userProfile.credits);
@@ -111,6 +120,7 @@ package com.edgington.view.huds.elements
 			inbox.y = credits.y;
 			
 			inbox_badge = new badge_indicator();
+			getfont(inbox_badge.txt_label, FontFaceType.BOLD);
 			inbox_badge.scaleX = inbox_badge.scaleY = DynamicConstants.DEVICE_SCALE;
 			
 			inbox_badge.y = inbox.y;

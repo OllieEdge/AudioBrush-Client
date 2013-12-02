@@ -1,6 +1,8 @@
 package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.types.FontFaceType;
+	import com.edgington.util.localisation.getfont;
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Back;
@@ -35,6 +37,9 @@ package com.edgington.view.huds.elements
 			this.customLogo = customLogo;
 			showRotater = _showRotater;
 			message = new ui_mainMessage();
+			
+			getfont(message.txt_label, FontFaceType.REGULAR);
+			
 			if(customLogo){
 				customLogo.cacheAsBitmap = true;
 				customLogo.width = message.background.imgBackground.width;
