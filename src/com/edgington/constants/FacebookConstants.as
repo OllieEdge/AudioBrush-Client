@@ -11,9 +11,9 @@ package com.edgington.constants
 		public static const OPEN_GRAPH_HIGHSCORE_OBJECT_URL:String = "http://audiobrush.com/opengraph/highscore.php?ABobject=";
 		public static const OPEN_GRAPH_RANK_OBJECT_URL:String = "http://audiobrush.com/opengraph/ranked.php?ABobject=";
 		
-//		public static const DEBUG_USER_ID:String = "879575611";
-//		public static const DEBUG_USER_NAME:String = "Ollie Edgington";
-//		public static const DEBUG_FACEBOOK_ALLOWED:Boolean = true;
-//		public static const DEBUG_USER_FRIENDS:Array = [0, 879575611];
+		public static const DEBUG_USER_ID:String = "879575611";
+		public static const DEBUG_USER_NAME:String = "Ollie Edgington";
+		public static var DEBUG_FACEBOOK_ALLOWED:Boolean = true;
+		public static const DEBUG_USER_FRIENDS:Array = [0, 879575611];
 	}
 }

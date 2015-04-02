@@ -281,8 +281,10 @@ package com.edgington.view.huds.elements
 		}
 		
 		private function destroy(e:Event):void{
-			_scroller.removeEventListener(ScrollEvent.MOUSE_MOVE, checkVisibility);
-			_scroller.removeEventListener(ScrollEvent.TOUCH_TWEEN_UPDATE, checkVisibility);
+			if(_scroller != null){
+				_scroller.removeEventListener(ScrollEvent.MOUSE_MOVE, checkVisibility);
+				_scroller.removeEventListener(ScrollEvent.TOUCH_TWEEN_UPDATE, checkVisibility);
+			}
 			TweenLite.killDelayedCallsTo(setScroller);
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
 			while(this.numChildren > 0){

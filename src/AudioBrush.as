@@ -2,6 +2,7 @@ package
 {
 		import com.edgington.constants.Constants;
 		import com.edgington.constants.DynamicConstants;
+		import com.edgington.constants.FacebookConstants;
 		import com.edgington.constants.FontConstants;
 		import com.edgington.control.Control;
 		import com.edgington.model.GameProxy;
@@ -68,6 +69,10 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.quality = StageQuality.LOW;
 			
+			if(DynamicConstants.isMobileOS()){
+				FacebookConstants.DEBUG_FACEBOOK_ALLOWED = false;
+			}
+			
 			DynamicConstants.CURRENT_LANGUAGE = LanguageIdentifier.getBestLanguageTagForUser();
 			FontConstants.decideNativeFontUse(DynamicConstants.CURRENT_LANGUAGE);
 			
@@ -103,6 +108,8 @@ package
 				screenManager = new ScreenManager();
 				screenManager.setupDynamicScaling();
 				
+				
+				
 				enterFrameClip = new Sprite();
 				stage.addChild(enterFrameClip);
 				
@@ -121,8 +128,8 @@ package
 				singleSignOnManager.destroy();
 				singleSignOnManager = null;
 				ThemeTypes.populateThemes();
-				this.addEventListener(Event.ACTIVATE, handleReActivation);
-				this.addEventListener(Event.DEACTIVATE, handleDeActivation);
+				//this.addEventListener(Event.ACTIVATE, handleReActivation);
+				//this.addEventListener(Event.DEACTIVATE, handleDeActivation);
 				if(isAvailable){
 					//FacebookConstants.DEBUG_FACEBOOK_ALLOWED = false;
 					if(SettingsProxy.getInstance().handSelection == null){

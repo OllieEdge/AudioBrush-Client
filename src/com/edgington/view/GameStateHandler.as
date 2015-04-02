@@ -5,7 +5,6 @@ package com.edgington.view
 	import com.edgington.constants.SoundConstants;
 	import com.edgington.model.SoundManager;
 	import com.edgington.net.UserData;
-	import com.edgington.types.DeviceTypes;
 	import com.edgington.types.GameStateTypes;
 	import com.edgington.util.debug.LOG;
 	import com.edgington.view.assets.AssetCacher;

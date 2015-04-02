@@ -46,33 +46,38 @@ package com.edgington.view.huds.elements
 			addListeners();
 			
 			friends = new Vector.<SmallListItemVO>;
-//			if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-//				friends = new Vector.<SmallListItemVO>;
-//				friends.push(new SmallListItemVO("Natasha Ancel", "899295388"));
-//				friends.push(new SmallListItemVO("Hailz Anne Campbell", "694881083"));
-//				friends.push(new SmallListItemVO("Grace Ann Rowland", "508274951"));
-//				friends.push(new SmallListItemVO("Adam Scott", "1075321660"));
-//				friends.push(new SmallListItemVO("Nikos Asfis", "1609420253"));
-//				friends.push(new SmallListItemVO("Luke Armstrong", "503608430"));
-//				friends.push(new SmallListItemVO("Katie Anne", "1056784533"));
-//				friends.push(new SmallListItemVO("Elliot A King", "514180110"));
-//				friends.push(new SmallListItemVO("Afsana Choudhury", "100001789641254"));
-//				friends.push(new SmallListItemVO("Robert Andrew Adams", "797308306"));
-//				friends.push(new SmallListItemVO("Alex Bentley", "516832798"));
-//				friends.push(new SmallListItemVO("Annie Bell-Carfrae", "743930439"));
-//				friends.push(new SmallListItemVO("Anna Nguyen", "819690230"));
-//				friends.push(new SmallListItemVO("Daryl Armstrong", "517927632"));
-//				friends.push(new SmallListItemVO("Lauren Anneyce", "531362131"));
-//				friends.push(new SmallListItemVO("Caren Armstrong", "604960549"));
-//				friends.push(new SmallListItemVO("Astrid Lily Whan", "514088532"));
-//				friends.push(new SmallListItemVO("Anna Lloyd", "506926528"));
-//				friends.push(new SmallListItemVO("Akshay Khullar", "720145760"));
-//			}
-//			else{
+			
+			
+			
+			if(/*FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/true){
+				
+				
+				friends = new Vector.<SmallListItemVO>;
+				friends.push(new SmallListItemVO("Natasha Ancel", "899295388"));
+				friends.push(new SmallListItemVO("Hailz Anne Campbell", "694881083"));
+				friends.push(new SmallListItemVO("Grace Ann Rowland", "508274951"));
+				friends.push(new SmallListItemVO("Adam Scott", "1075321660"));
+				friends.push(new SmallListItemVO("Nikos Asfis", "1609420253"));
+				friends.push(new SmallListItemVO("Luke Armstrong", "503608430"));
+				friends.push(new SmallListItemVO("Katie Anne", "1056784533"));
+				friends.push(new SmallListItemVO("Elliot A King", "514180110"));
+				friends.push(new SmallListItemVO("Afsana Choudhury", "100001789641254"));
+				friends.push(new SmallListItemVO("Robert Andrew Adams", "797308306"));
+				friends.push(new SmallListItemVO("Alex Bentley", "516832798"));
+				friends.push(new SmallListItemVO("Annie Bell-Carfrae", "743930439"));
+				friends.push(new SmallListItemVO("Anna Nguyen", "819690230"));
+				friends.push(new SmallListItemVO("Daryl Armstrong", "517927632"));
+				friends.push(new SmallListItemVO("Lauren Anneyce", "531362131"));
+				friends.push(new SmallListItemVO("Caren Armstrong", "604960549"));
+				friends.push(new SmallListItemVO("Astrid Lily Whan", "514088532"));
+				friends.push(new SmallListItemVO("Anna Lloyd", "506926528"));
+				friends.push(new SmallListItemVO("Akshay Khullar", "720145760"));
+			}
+			else{
 				for(var i:int = 0; i < FacebookManager.getInstance().currentLoggedInUserFriends.length; i++){
 					friends.push(new SmallListItemVO( FacebookManager.getInstance().currentLoggedInUserFriends[i].name,  FacebookManager.getInstance().currentLoggedInUserFriends[i].id));
 				}
-//			}			
+			}			
 			
 			setupVisuals();
 			
@@ -154,46 +159,46 @@ package com.edgington.view.huds.elements
 			var i:int = 0;
 			friends = new Vector.<SmallListItemVO>;
 			if(audioBrushOnlyTickBox.TICKED){
-//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-//					friends.push(new SmallListItemVO("Natasha Ancel", "899295388"));
-//					friends.push(new SmallListItemVO("Hailz Anne Campbell", "694881083"));
-//					friends.push(new SmallListItemVO("Grace Ann Rowland", "508274951"));
-//					friends.push(new SmallListItemVO("Adam Scott", "1075321660"));
-//					friends.push(new SmallListItemVO("Nikos Asfis", "1609420253"));
-//				}
-//				else{
+				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+					friends.push(new SmallListItemVO("Natasha Ancel", "899295388"));
+					friends.push(new SmallListItemVO("Hailz Anne Campbell", "694881083"));
+					friends.push(new SmallListItemVO("Grace Ann Rowland", "508274951"));
+					friends.push(new SmallListItemVO("Adam Scott", "1075321660"));
+					friends.push(new SmallListItemVO("Nikos Asfis", "1609420253"));
+				}
+				else{
 					for(i = 0; i < FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.length; i++){
 						friends.push(new SmallListItemVO( FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].rawFacebookData.name,  FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].rawFacebookData.id));
 					}
-//				}			
+				}			
 			}
 			else{
-//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-//					friends.push(new SmallListItemVO("Natasha Ancel", "899295388"));
-//					friends.push(new SmallListItemVO("Hailz Anne Campbell", "694881083"));
-//					friends.push(new SmallListItemVO("Grace Ann Rowland", "508274951"));
-//					friends.push(new SmallListItemVO("Adam Scott", "1075321660"));
-//					friends.push(new SmallListItemVO("Nikos Asfis", "1609420253"));
-//					friends.push(new SmallListItemVO("Luke Armstrong", "503608430"));
-//					friends.push(new SmallListItemVO("Katie Anne", "1056784533"));
-//					friends.push(new SmallListItemVO("Elliot A King", "514180110"));
-//					friends.push(new SmallListItemVO("Afsana Choudhury", "100001789641254"));
-//					friends.push(new SmallListItemVO("Robert Andrew Adams", "797308306"));
-//					friends.push(new SmallListItemVO("Alex Bentley", "516832798"));
-//					friends.push(new SmallListItemVO("Annie Bell-Carfrae", "743930439"));
-//					friends.push(new SmallListItemVO("Anna Nguyen", "819690230"));
-//					friends.push(new SmallListItemVO("Daryl Armstrong", "517927632"));
-//					friends.push(new SmallListItemVO("Lauren Anneyce", "531362131"));
-//					friends.push(new SmallListItemVO("Caren Armstrong", "604960549"));
-//					friends.push(new SmallListItemVO("Astrid Lily Whan", "514088532"));
-//					friends.push(new SmallListItemVO("Anna Lloyd", "506926528"));
-//					friends.push(new SmallListItemVO("Akshay Khullar", "720145760"));
-//				}
-//				else{
+				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+					friends.push(new SmallListItemVO("Natasha Ancel", "899295388"));
+					friends.push(new SmallListItemVO("Hailz Anne Campbell", "694881083"));
+					friends.push(new SmallListItemVO("Grace Ann Rowland", "508274951"));
+					friends.push(new SmallListItemVO("Adam Scott", "1075321660"));
+					friends.push(new SmallListItemVO("Nikos Asfis", "1609420253"));
+					friends.push(new SmallListItemVO("Luke Armstrong", "503608430"));
+					friends.push(new SmallListItemVO("Katie Anne", "1056784533"));
+					friends.push(new SmallListItemVO("Elliot A King", "514180110"));
+					friends.push(new SmallListItemVO("Afsana Choudhury", "100001789641254"));
+					friends.push(new SmallListItemVO("Robert Andrew Adams", "797308306"));
+					friends.push(new SmallListItemVO("Alex Bentley", "516832798"));
+					friends.push(new SmallListItemVO("Annie Bell-Carfrae", "743930439"));
+					friends.push(new SmallListItemVO("Anna Nguyen", "819690230"));
+					friends.push(new SmallListItemVO("Daryl Armstrong", "517927632"));
+					friends.push(new SmallListItemVO("Lauren Anneyce", "531362131"));
+					friends.push(new SmallListItemVO("Caren Armstrong", "604960549"));
+					friends.push(new SmallListItemVO("Astrid Lily Whan", "514088532"));
+					friends.push(new SmallListItemVO("Anna Lloyd", "506926528"));
+					friends.push(new SmallListItemVO("Akshay Khullar", "720145760"));
+				}
+				else{
 					for(i = 0; i < FacebookManager.getInstance().currentLoggedInUserFriends.length; i++){
 						friends.push(new SmallListItemVO( FacebookManager.getInstance().currentLoggedInUserFriends[i].name,  FacebookManager.getInstance().currentLoggedInUserFriends[i].id));
 					}
-//				}
+				}
 			}
 			
 			this.removeChild(friendsList);

@@ -1,7 +1,6 @@
 package com.edgington.valueobjects.net
 {
 	import com.edgington.util.DateFormatter;
-	import com.edgington.util.debug.LOG;
 
 	public class ServerUserVO
 	{

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<application xmlns="http://ns.adobe.com/air/application/3.9">
+<application xmlns="http://ns.adobe.com/air/application/15.0">
 
 <!-- Adobe AIR Application Descriptor File Template.
 
@@ -15,7 +15,7 @@
 
 	<!-- A universally unique application identifier. Must be unique across all AIR applications.
 	Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
-	<id>com.edgington.audiobrush</id>
+	<id>com.everadventure.slots.slotser</id>
 
 	<!-- Used as the filename for the application. Required. -->
 	<filename>AudioBrush</filename>
@@ -262,7 +262,7 @@
     <!-- </android> -->
 	<!-- End of the schema for adding the android specific tags in AndroidManifest.xml file -->
 
-<android>
+<!-- <android>
         <manifestAdditions><![CDATA[
 			<manifest android:installLocation="auto">
 			
@@ -272,7 +272,8 @@
 			        android:largeScreens="true"
 			        android:xlargeScreens="true"/>
 			      <compatible-screens>
-			        <!-- list the screens you support here -->
+
+	
 			        <screen android:screenSize="normal" android:screenDensity="hdpi" />
 			        <screen android:screenSize="normal" android:screenDensity="xhdpi" />
 			        <screen android:screenSize="large" android:screenDensity="mdpi" />
@@ -305,23 +306,9 @@
 			</manifest>
 			
 		]]></manifestAdditions>
-    </android>
+    </android> -->
+
     <iPhone>
-        
-        <Entitlements>
-			<![CDATA[
-			<key>get-task-allow</key>
-			<false/>
-			<key>aps-environment</key>
-			<string>production</string>
-			<key>application-identifier</key>
-			<string>D6U5J2B65E.com.edgington.audiobrush</string>
-			<key>keychain-access-groups</key>
-			<array>
-			<string>D6U5J2B65E.com.edgington.audiobrush</string>
-			</array>
-			]]>
-		</Entitlements>
         
         <InfoAdditions><![CDATA[
         	<key>UIPrerenderedIcon</key> 
@@ -350,15 +337,15 @@
 
 <extensions>
         
-    	<extensionID>com.milkmangames.extensions.GoViral</extensionID>
 	    <extensionID>com.edgington.testflight</extensionID>
-    	<extensionID>com.milkmangames.extensions.EasyPush</extensionID>
    		<extensionID>com.adobe.ane.productStore</extensionID>
     
     <extensionID>com.adobe.ane.gameCenter</extensionID>
     <extensionID>com.edgington.ipodlibrary</extensionID>
+    
     <extensionID>com.milkmangames.extensions.StoreKit</extensionID>
-    <extensionID>com.milkmangames.extensions.RateBox</extensionID>
-    <extensionID>com.edgington.testflightandroid</extensionID>
+        <extensionID>com.milkmangames.extensions.EasyPush</extensionID>
+        <extensionID>com.milkmangames.extensions.GoViral</extensionID>
+        <extensionID>com.milkmangames.extensions.RateBox</extensionID>
     </extensions>
 </application>

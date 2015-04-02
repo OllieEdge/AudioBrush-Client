@@ -151,10 +151,12 @@ package com.edgington.view.assets
 		}
 		
 		public static function CLEAR_MEMORY():void{
-			for(var str:String in INSTANCE._imageDictionary){
-				INSTANCE._imageDictionary[str].dispose();
+			if(INSTANCE != null){
+				for(var str:String in INSTANCE._imageDictionary){
+					INSTANCE._imageDictionary[str].dispose();
+				}
+				INSTANCE._imageDictionary = new Dictionary();
 			}
-			INSTANCE._imageDictionary = new Dictionary();
 		}
 	}
 }

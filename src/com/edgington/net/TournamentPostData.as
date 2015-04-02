@@ -44,14 +44,14 @@ package com.edgington.net
 		
 		
 		public function postHighscore():void{
-			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				var facebookID:String
-//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-//					facebookID = FacebookConstants.DEBUG_USER_ID;
-//				}
-//				else{
+				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+					facebookID = FacebookConstants.DEBUG_USER_ID;
+				}
+				else{
 					facebookID = FacebookManager.getInstance().currentLoggedInUser.id;
-//				}
+				}
 				
 			}
 			else{

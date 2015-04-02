@@ -55,17 +55,17 @@ package com.edgington.net
 		}
 		
 		public function getFriendsTracks(searchCriteria:String = ""):void{
-			if(FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				var friends:Array = new Array();
 				
-//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-//					friends = FacebookConstants.DEBUG_USER_FRIENDS;
-//				}
-//				else{
+				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+					friends = FacebookConstants.DEBUG_USER_FRIENDS;
+				}
+				else{
 					for(var i:int = 0; i < FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.length; i++){
 						friends.push(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].id);
 					}
-//				}
+				}
 				
 				if(friends.length > 0){
 					if(friends.length == 1){

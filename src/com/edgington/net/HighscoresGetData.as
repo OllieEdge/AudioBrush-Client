@@ -62,18 +62,18 @@ package com.edgington.net
 		}
 		
 		public function getFriendsScores(amountOfResults:int, trackDetails:ILMediaItem, difficulty:int):void{
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				var friendIDs:Array = new Array();
 				
-//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-//					friendIDs = FacebookConstants.DEBUG_USER_FRIENDS.concat();
-//				}
-//				else{
+				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+					friendIDs = FacebookConstants.DEBUG_USER_FRIENDS.concat();
+				}
+				else{
 					friendIDs.push(FacebookManager.getInstance().currentLoggedInUser.id);
 					for(var i:int = 0; i < FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.length; i++){
 						friendIDs.push(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].id);
 					}
-//				}
+				}
 				
 				var regExp:RegExp=new RegExp(/[^a-zA-Z 0-9]+|\s/g);
 				var track:String = trackDetails.trackTitle.replace(regExp, "").toLowerCase();
@@ -90,18 +90,18 @@ package com.edgington.net
 		}
 		
 		public function getFriendsScoresWithTrackkey(amountOfResults:int, trackkey:String):void{
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				var friendIDs:Array = new Array();
 				
-				//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-				//					friendIDs = FacebookConstants.DEBUG_USER_FRIENDS.concat();
-				//				}
-				//				else{
+								if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+									friendIDs = FacebookConstants.DEBUG_USER_FRIENDS.concat();
+								}
+								else{
 				friendIDs.push(FacebookManager.getInstance().currentLoggedInUser.id);
 				for(var i:int = 0; i < FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall.length; i++){
 					friendIDs.push(FacebookManager.getInstance().currentLoggedInUserFriendsWithInstall[i].id);
 				}
-				//				}
+								}
 				
 				var obj:Object = new Object();
 				obj.friends = friendIDs;

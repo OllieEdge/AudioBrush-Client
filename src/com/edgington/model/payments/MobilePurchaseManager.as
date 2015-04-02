@@ -5,6 +5,7 @@ package com.edgington.model.payments
 	import com.adobe.ane.productStore.ProductStore;
 	import com.adobe.ane.productStore.Transaction;
 	import com.adobe.ane.productStore.TransactionEvent;
+	import com.edgington.constants.DynamicConstants;
 	import com.edgington.constants.ProductConstants;
 	import com.edgington.model.events.TransactionABEvent;
 	import com.edgington.net.UserData;
@@ -31,7 +32,7 @@ package com.edgington.model.payments
 		
 		public var avaliable:Boolean = false;
 		
-		private const allowOnDesktop:Boolean = false; //debug
+		private const allowOnDesktop:Boolean = true; //debug
 		
 		private var AppStoreProducts:Vector.<String> = new <String>[ProductConstants.ADDITIONAL_CREDITS_25, ProductConstants.ADDITIONAL_CREDITS_55, ProductConstants.ADDITIONAL_CREDITS_310];
 		private var loadedProducts:Vector.<Product>;
@@ -56,9 +57,9 @@ package com.edgington.model.payments
 		{
 			super(null);
 			
-//			if(DynamicConstants.isIOSPlatform()){
-//				allowOnDesktop = false;
-//			}
+			if(DynamicConstants.isIOSPlatform()){
+				//allowOnDesktop = false;
+			}
 			
 			LOG.create(this);
 			transactionSignal = new Signal();
