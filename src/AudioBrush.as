@@ -36,7 +36,7 @@ package
 		import flash.media.SoundMixer;
 		import flash.text.TextField;
 	
-	[SWF(backgroundColor='#000000', frameRate='60')]
+	[SWF(backgroundColor='#000000', frameRate='60', width='1024', height='768')]
 	
 	public class AudioBrush extends Sprite
 	{
@@ -98,8 +98,8 @@ package
 				this.removeEventListener(Event.ADDED_TO_STAGE, setupGame);
 
 				//set the screen size
-				DynamicConstants.SCREEN_WIDTH = stage.fullScreenWidth;
-				DynamicConstants.SCREEN_HEIGHT = stage.fullScreenHeight;
+				DynamicConstants.SCREEN_WIDTH = stage.stageWidth;
+				DynamicConstants.SCREEN_HEIGHT = stage.stageHeight;
 				screenManager = new ScreenManager();
 				screenManager.setupDynamicScaling();
 				
@@ -181,12 +181,12 @@ package
 		 */
 		private function setupMobileStuff():void{
 			var startOrientation:String = stage.orientation;
-			if (startOrientation == StageOrientation.DEFAULT || startOrientation == StageOrientation.UPSIDE_DOWN){
-				stage.setOrientation(StageOrientation.ROTATED_RIGHT);
-			}
-			else{
-				stage.setOrientation(startOrientation);
-			}
+//			if (startOrientation == StageOrientation.DEFAULT || startOrientation == StageOrientation.UPSIDE_DOWN){
+//				stage.setOrientation(StageOrientation.ROTATED_RIGHT);
+//			}
+//			else{
+//				stage.setOrientation(startOrientation);
+//			}
 			
 			stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGING, orientationChangeListener, false, 0, true);
 		}

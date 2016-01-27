@@ -2,6 +2,7 @@ package com.edgington.net
 {
 	import com.edgington.constants.AchievementConstants;
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.FacebookConstants;
 	import com.edgington.model.facebook.FacebookManager;
 	import com.edgington.net.helpers.NetResponceHandler;
 	import com.edgington.util.ObjectLength;
@@ -147,19 +148,19 @@ package com.edgington.net
 				userDataSignal.dispatch();
 			}
 			else{
-				if(FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+				if(FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 					LOG.info("User doesn't exist - creating new user now");
 					newUserBeingCreated = true;
 					var urlVariables:Object = new Object();
 					
-					/*if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-						
+					if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+
 						urlVariables.fb_id = FacebookConstants.DEBUG_USER_ID;
 						urlVariables.username = FacebookConstants.DEBUG_USER_NAME;
-						
+
 						PUT(new NetResponceHandler(onNewUserCreated, onNewUserCreatedFailed), FacebookConstants.DEBUG_USER_ID, urlVariables);
 					}
-					else{*/
+					else{
 						
 						urlVariables.fb_id = FacebookManager.getInstance().currentLoggedInUser.id;
 						urlVariables.username = FacebookManager.getInstance().currentLoggedInUser.name;
@@ -168,7 +169,7 @@ package com.edgington.net
 						}
 						
 						PUT(new NetResponceHandler(onNewUserCreated, onNewUserCreatedFailed), FacebookManager.getInstance().currentLoggedInUser.id, urlVariables);
-				//	}
+					}
 				}
 			}
 		}
@@ -213,14 +214,14 @@ package com.edgington.net
 		 * When the server response as successful after creating a new user
 		 */
 		private function onNewUserCreated(e:Object = null):void{
-			if(e && DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(e && DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				LOG.server("New user was created, now re-downloading the profile");
-				/*if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 					POST(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), FacebookConstants.DEBUG_USER_ID, null);
 				}
-				else{*/
+				else{
 					POST(new NetResponceHandler(onUserDataRecevied, onUserDataFailed), FacebookManager.getInstance().currentLoggedInUser.id, null);
-				//}
+				}
 			}
 			else{
 				LOG.server("New user creation FAILED");
@@ -250,7 +251,7 @@ package com.edgington.net
 				}
 			}
 			if(override){
-				if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+				if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 					POST(new NetResponceHandler(onCreditsUpdated, onCreditsUpdateFailed), "update/"+userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
 				}
 			}
@@ -262,14 +263,14 @@ package com.edgington.net
 		public function addCredits(creditsAmount:int):void{
 			userProfile.credits += creditsAmount;
 			saveProfile();
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				POST(new NetResponceHandler(onCreditsUpdated, onCreditsUpdateFailed), "update/"+userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
 			}
 		}
 		public function useCredits(creditsAmount:int):void{
 			userProfile.credits -= creditsAmount;
 			saveProfile();
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				POST(new NetResponceHandler(onCreditsUpdated, onCreditsUpdateFailed), "update/"+userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
 			}
 		}
@@ -293,7 +294,7 @@ package com.edgington.net
 			userProfile.unlimited = "true";
 			saveProfile();
 			unlimited = true;
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				POST(new NetResponceHandler(onUnlimitedEditSuccess, onUnlimitedEditFailed), "update/"+userProfile.fb_id, JSON.parse(JSON.stringify(userProfile)));
 			}
 		}
@@ -313,12 +314,12 @@ package com.edgington.net
 		}
 		
 		public function checkBonusStatus():void{
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				GET(new NetResponceHandler(onBonusStatus, onBonusStatusFailed), false, "bonus/"+userProfile.fb_id);
 			}
 		}
 		public function collectBonus():void{
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				POST(new NetResponceHandler(onBonusCollected, onBonusCollectFailed), "bonus/"+userProfile.fb_id, null);
 			}
 		}

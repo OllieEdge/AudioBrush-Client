@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<application xmlns="http://ns.adobe.com/air/application/3.9">
+<application xmlns="http://ns.adobe.com/air/application/17.0">
 
 <!-- Adobe AIR Application Descriptor File Template.
 
@@ -15,7 +15,7 @@
 
 	<!-- A universally unique application identifier. Must be unique across all AIR applications.
 	Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
-	<id>com.edgington.audiobrush</id>
+	<id>com.everadventure.casino.slotser</id>
 
 	<!-- Used as the filename for the application. Required. -->
 	<filename>AudioBrush</filename>
@@ -46,7 +46,7 @@
 	<initialWindow>
 		<!-- The main SWF or HTML file of the application. Required. -->
 		<!-- Note: In Flash Builder, the SWF reference is set automatically. -->
-		<content>[This value will be overwritten by Flash Builder in the output app.xml]</content>
+		<content>AudioBrush.swf</content>
 		
 		<!-- The title of the main window. Optional. -->
 		<!-- <title></title> -->
@@ -89,10 +89,9 @@
 
         <!-- The aspect ratio of the app ("portrait" or "landscape" or "any"). Optional. Mobile only. Default is the natural orientation of the device -->
 
-        <aspectRatio>landscape</aspectRatio>
+        <!-- <aspectRatio>landscape</aspectRatio> -->
 
         <!-- Whether the app will begin auto-orienting on launch. Optional. Mobile only. Default false -->
-
         <!-- <autoOrients></autoOrients> -->
 
         <!-- Whether the app launches in full screen. Optional. Mobile only. Default false -->
@@ -111,7 +110,7 @@
 
 		<!-- Display Resolution for the app (either "standard" or "high"). Optional, OSX-only. Default "standard" -->
 		<!-- <requestedDisplayResolution></requestedDisplayResolution> -->
-	<autoOrients>true</autoOrients>
+	<autoOrients>false</autoOrients>
         <fullScreen>true</fullScreen>
         <visible>true</visible>
     </initialWindow>
@@ -359,6 +358,5 @@
     <extensionID>com.edgington.ipodlibrary</extensionID>
     <extensionID>com.milkmangames.extensions.StoreKit</extensionID>
     <extensionID>com.milkmangames.extensions.RateBox</extensionID>
-    <extensionID>com.edgington.testflightandroid</extensionID>
     </extensions>
 </application>

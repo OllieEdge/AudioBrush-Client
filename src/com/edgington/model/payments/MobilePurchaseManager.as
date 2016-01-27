@@ -31,7 +31,7 @@ package com.edgington.model.payments
 		
 		public var avaliable:Boolean = false;
 		
-		private const allowOnDesktop:Boolean = false; //debug
+		private const allowOnDesktop:Boolean = true; //debug
 		
 		private var AppStoreProducts:Vector.<String> = new <String>[ProductConstants.ADDITIONAL_CREDITS_25, ProductConstants.ADDITIONAL_CREDITS_55, ProductConstants.ADDITIONAL_CREDITS_310];
 		private var loadedProducts:Vector.<Product>;

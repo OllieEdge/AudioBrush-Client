@@ -75,7 +75,7 @@ package com.edgington.net
 		 * Get products for user
 		 */
 		public function getAchievements():void{
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				GET(new NetResponceHandler(onAchievementsRecevied, onAchievementsFailed), false, UserData.getInstance().userProfile._id);
 			}
 		}
@@ -122,7 +122,7 @@ package com.edgington.net
 		 * Parse the achievementID and the TOTAL progress to update the achievement.
 		 */
 		public function updateAchievement(achievementID:int, progress:int):void{
-			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
+			if(DynamicConstants.IS_CONNECTED && FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
 				var obj:Object = new Object();
 				obj.userID = UserData.getInstance().userProfile._id;
 				obj.progress = progress;

@@ -1,6 +1,7 @@
 package com.edgington.view.huds.elements
 {
 	import com.edgington.constants.DynamicConstants;
+	import com.edgington.constants.FacebookConstants;
 	import com.edgington.constants.SoundConstants;
 	import com.edgington.control.Control;
 	import com.edgington.model.SoundManager;
@@ -80,13 +81,13 @@ package com.edgington.view.huds.elements
 			barBackground.width = DynamicConstants.SCREEN_WIDTH;
 			barBackground.cacheAsBitmap = true;
 			
-			if(FacebookManager.getInstance().checkIfUserIsLoggedIn() /*|| FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
-//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-//					profilePicture = new element_profile_picture(null, FacebookConstants.DEBUG_USER_ID);
-//				}
-//				else{
+			if(FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+					profilePicture = new element_profile_picture(null, FacebookConstants.DEBUG_USER_ID);
+				}
+				else{
 					profilePicture = new element_profile_picture(null, FacebookManager.getInstance().currentLoggedInUser.id);		
-//				}
+				}
 			}
 			
 			profilePicture.width = profilePicture.height = profilePictureSize*DynamicConstants.MESSAGE_SCALE;
@@ -371,13 +372,13 @@ package com.edgington.view.huds.elements
 			level.txt_level.text = String(LevelCalculator.getLevel(UserData.getInstance().userProfile.xp));
 			level.txt_percentage.text = gettext("user_hud_level_percentage", {percentage:LevelCalculator.getNextLevelPercentage(UserData.getInstance().userProfile.xp)});
 			level.bar.scaleX = LevelCalculator.getNextLevelPercentage(UserData.getInstance().userProfile.xp) * 0.01;
-			if(FacebookManager.getInstance().checkIfUserIsLoggedIn()/* || FacebookConstants.DEBUG_FACEBOOK_ALLOWED*/){
-//				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
-//					profilePicture.changeImage(FacebookConstants.DEBUG_USER_ID);
-//				}
-//				else{
+			if(FacebookManager.getInstance().checkIfUserIsLoggedIn() || FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+				if(FacebookConstants.DEBUG_FACEBOOK_ALLOWED){
+					profilePicture.changeImage(FacebookConstants.DEBUG_USER_ID);
+				}
+				else{
 					profilePicture.changeImage(FacebookManager.getInstance().currentLoggedInUser.id);		
-//				}
+				}
 			}
 		}
 		
